@@ -1,0 +1,50 @@
+[package]
+name = "hyperion"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.95"
+authors = ["Ryan Clanton <ryanclanton@outlook.com>"]
+description = "Atlas photon and optical interaction-law foundation"
+repository = "https://github.com/ryancinsight/hyperion"
+license = "MIT OR Apache-2.0"
+readme = "README.md"
+keywords = ["photon", "optics", "attenuation", "multiphysics"]
+categories = ["no-std", "science"]
+publish = false
+
+[dependencies]
+aequitas = { version = "0.1.0", git = "https://github.com/ryancinsight/aequitas", rev = "cf9b2c3debabf0c08a2769fa8246908ad7cf53da", default-features = false }
+eunomia = { version = "0.6.0", git = "https://github.com/ryancinsight/eunomia", default-features = false }
+proteus = { version = "0.1.0", git = "https://github.com/ryancinsight/proteus", rev = "a61d0e5647503e7b44e7489be373fc2b20f62785", default-features = false }
+
+[dev-dependencies]
+proptest = "1.11.0"
+stats_alloc = "0.1.10"
+
+[features]
+default = ["std"]
+std = ["aequitas/std", "eunomia/std", "proteus/std"]
+
+[lints.rust]
+missing_docs = "deny"
+unsafe_code = "forbid"
+
+[lints.clippy]
+pedantic = { level = "warn", priority = -1 }
+unwrap_used = "deny"
+
+[profile.dev]
+debug = "line-tables-only"
+overflow-checks = true
+
+[profile.dev.package."*"]
+debug = false
+
+[profile.test]
+debug = "line-tables-only"
+overflow-checks = true
+
+[profile.release]
+debug = false
+strip = "symbols"
+overflow-checks = true

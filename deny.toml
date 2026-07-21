@@ -1,0 +1,18 @@
+[advisories]
+yanked = "deny"
+
+[licenses]
+allow = ["Apache-2.0", "MIT", "Unicode-3.0"]
+
+[bans]
+multiple-versions = "warn"
+wildcards = "deny"
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"
+allow-git = [
+    "https://github.com/ryancinsight/aequitas",
+    "https://github.com/ryancinsight/eunomia",
+    "https://github.com/ryancinsight/proteus",
+]
