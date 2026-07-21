@@ -6,6 +6,6 @@ mod fluence;
 mod path;
 
 pub use anisotropy::Anisotropy;
-pub use dimensionless::{OpticalDepth, Transmission, TransportAlbedo};
+pub use dimensionless::{OpticalDepth, SingleScatteringAlbedo, Transmission, TransportAlbedo};
 pub use fluence::EnergyFluence;
 pub use path::{PathLength, PhotonEnergy};

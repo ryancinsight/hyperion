@@ -18,10 +18,14 @@ The governing relations are:
 
 ```text
 mu_s' = mu_s (1 - g)
+mu_t = mu_a + mu_s
+ell = 1 / mu_t
+omega = mu_s / mu_t
 tau = sum_i mu_i L_i
 T = exp(-tau)
 mu = (mu/rho) rho
 D = 1 / (3 (mu_a + mu_s'))
+ell_tr = 1 / (mu_a + mu_s')
 mu_eff = sqrt(3 mu_a (mu_a + mu_s'))
 delta = 1 / mu_eff
 F(z) = F_0 exp(-mu_eff z)
@@ -67,6 +71,14 @@ transport are roles, not duplicated numeric wrappers. Bounds live on methods;
 the representation remains bound-free and `#[repr(transparent)]` over the
 quantity. Static role dispatch monomorphizes without a vtable.
 
+`OpticalCoefficients<T>` owns the unreduced pair and derives total attenuation,
+ordinary mean free path, and ordinary single-scattering albedo.
+`DiffusionCoefficients<T>` owns the absorption/reduced-scattering pair and
+derives transport coefficient, transport mean free path, diffusion coefficient,
+effective attenuation, and reduced transport albedo. Vacuum is valid for the
+unreduced pair and returns `None` for ratios or reciprocal lengths that have no
+finite value; the diffusion pair rejects a zero transport coefficient.
+
 Separate transparent newtypes enforce the domains of anisotropy, path length,
 photon energy, energy fluence, optical depth, transmission, optical diffusion
 coefficient, and reduced transport albedo. `TransportError<T>` preserves the
@@ -90,7 +102,9 @@ The generic conformance suite instantiates `f32` and `f64` and covers:
 - `mu_s' = mu_s(1-g)`, its endpoint laws, and monotonicity in `g`;
 - additive optical depth, `T(0)=1`, and Beer-Lambert concatenation;
 - `mu=(mu/rho)rho` through a Proteus mass density;
-- `D`, `mu_eff`, `mu_eff^2=mu_a/D`, and finite-depth contracts;
+- `mu_t`, ordinary mean free path and albedo, including the vacuum boundary;
+- `D`, transport mean free path, `mu_eff`, `mu_eff^2=mu_a/D`, and finite-depth
+  contracts;
 - planar fluence equal to `F_0/e` at one penetration depth;
 - exact NIST knots, range rejection, and log-interpolation reference values;
 - transparent layout, zero-sized roles, and allocation-free operations.

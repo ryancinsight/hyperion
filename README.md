@@ -22,8 +22,9 @@ Hyperion owns:
 - validated absorption, scattering, reduced-scattering, linear-attenuation,
   effective-attenuation, and mass-attenuation coefficients;
 - additive optical depth and Beer-Lambert transmission;
-- diffusion coefficient, effective attenuation, penetration depth, reduced
-  transport albedo, and planar fluence decay;
+- total attenuation, ordinary and transport mean free paths, ordinary and
+  reduced transport albedos, diffusion coefficient, effective attenuation,
+  penetration depth, and planar fluence decay;
 - bounded NIST mass-attenuation lookup for the first-wave photon materials.
 
 Hyperion does not own material identity or tissue presets, chromophore spectra,
@@ -85,10 +86,14 @@ For passive coefficients and non-negative path length:
 
 ```text
 mu_s' = mu_s (1 - g)
+mu_t = mu_a + mu_s
+ell = 1 / mu_t
+omega = mu_s / mu_t
 tau = sum_i mu_i L_i
 T = exp(-tau)
 mu = (mu/rho) rho
 D = 1 / (3 (mu_a + mu_s'))
+ell_tr = 1 / (mu_a + mu_s')
 mu_eff = sqrt(3 mu_a (mu_a + mu_s'))
 delta = 1 / mu_eff
 F(z) = F_0 exp(-mu_eff z)

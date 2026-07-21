@@ -34,6 +34,8 @@ pub enum ValueKind {
     OpticalDiffusionCoefficient,
     /// Reduced transport albedo.
     TransportAlbedo,
+    /// Ordinary single-scattering albedo.
+    SingleScatteringAlbedo,
 }
 
 /// Constraint imposed at a Hyperion validity boundary.
@@ -74,6 +76,16 @@ pub enum TransportLaw {
     PlanarFluence,
     /// NIST table interpolation.
     NistInterpolation,
+    /// Total attenuation from absorption plus scattering.
+    TotalAttenuation,
+    /// Ordinary mean free path.
+    MeanFreePath,
+    /// Reduced transport coefficient from absorption plus reduced scattering.
+    TransportCoefficient,
+    /// Reduced transport mean free path.
+    TransportMeanFreePath,
+    /// Ordinary single-scattering albedo.
+    SingleScatteringAlbedo,
 }
 
 /// Typed failure at a photon or optical interaction boundary.

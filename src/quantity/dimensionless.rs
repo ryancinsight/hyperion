@@ -100,6 +100,45 @@ impl<T> Transmission<T> {
     }
 }
 
+/// Finite ordinary single-scattering albedo `mu_s / (mu_a + mu_s)` in `[0, 1]`.
+#[derive(Clone, Copy, Debug, PartialEq, PartialOrd)]
+#[repr(transparent)]
+pub struct SingleScatteringAlbedo<T>(Dimensionless<T>);
+
+impl<T: RealField> SingleScatteringAlbedo<T> {
+    /// Validate an ordinary single-scattering albedo.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`TransportError::InvalidValue`] outside `[0, 1]` or for a
+    /// non-finite value.
+    pub fn new(quantity: Dimensionless<T>) -> Result<Self, TransportError<T>> {
+        let value = validation::closed_unit_interval(
+            ValueKind::SingleScatteringAlbedo,
+            quantity.into_base(),
+        )?;
+        Ok(Self(Dimensionless::from_base(value)))
+    }
+}
+
+impl<T> SingleScatteringAlbedo<T> {
+    /// Borrow the dimensionless albedo quantity.
+    #[must_use]
+    pub const fn quantity(&self) -> &Dimensionless<T> {
+        &self.0
+    }
+
+    /// Move out the dimensionless albedo quantity.
+    #[must_use]
+    pub fn into_quantity(self) -> Dimensionless<T> {
+        self.0
+    }
+
+    pub(crate) const fn from_validated(quantity: Dimensionless<T>) -> Self {
+        Self(quantity)
+    }
+}
+
 /// Finite reduced transport albedo `mu_s' / (mu_a + mu_s')` in `[0, 1]`.
 #[derive(Clone, Copy, Debug, PartialEq, PartialOrd)]
 #[repr(transparent)]

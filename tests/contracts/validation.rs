@@ -8,8 +8,8 @@ use hyperion::{
     TransportError, ValueConstraint, ValueKind,
     coefficient::{Absorption, InteractionCoefficient, MassAttenuation},
     quantity::{
-        Anisotropy, EnergyFluence, OpticalDepth, PathLength, PhotonEnergy, Transmission,
-        TransportAlbedo,
+        Anisotropy, EnergyFluence, OpticalDepth, PathLength, PhotonEnergy, SingleScatteringAlbedo,
+        Transmission, TransportAlbedo,
     },
     transport::OpticalDiffusionCoefficient,
 };
@@ -28,6 +28,39 @@ fn assert_invalid_value<T: RealField>(
             value,
             constraint,
         }
+    );
+}
+
+fn assert_ratio_boundaries<T: RealField>() {
+    let zero = <T as NumericElement>::ZERO;
+    for value in [zero, <T as NumericElement>::ONE] {
+        assert_eq!(
+            Transmission::new(Dimensionless::from_base(value))
+                .expect("transmission endpoints are physical")
+                .into_quantity()
+                .into_base(),
+            value
+        );
+        assert_eq!(
+            SingleScatteringAlbedo::new(Dimensionless::from_base(value))
+                .expect("single-scattering-albedo endpoints are physical")
+                .into_quantity()
+                .into_base(),
+            value
+        );
+        assert_eq!(
+            TransportAlbedo::new(Dimensionless::from_base(value))
+                .expect("transport-albedo endpoints are physical")
+                .into_quantity()
+                .into_base(),
+            value
+        );
+    }
+    assert_invalid_value(
+        Transmission::new(Dimensionless::from_base(T::from_f64(1.01))),
+        ValueKind::Transmission,
+        T::from_f64(1.01),
+        ValueConstraint::ClosedUnitInterval,
     );
 }
 
@@ -95,28 +128,7 @@ fn assert_boundaries<T: RealField>() {
         ValueConstraint::ClosedMinusOneToOne,
     );
 
-    for value in [zero, <T as NumericElement>::ONE] {
-        assert_eq!(
-            Transmission::new(Dimensionless::from_base(value))
-                .expect("transmission endpoints are physical")
-                .into_quantity()
-                .into_base(),
-            value
-        );
-        assert_eq!(
-            TransportAlbedo::new(Dimensionless::from_base(value))
-                .expect("transport-albedo endpoints are physical")
-                .into_quantity()
-                .into_base(),
-            value
-        );
-    }
-    assert_invalid_value(
-        Transmission::new(Dimensionless::from_base(T::from_f64(1.01))),
-        ValueKind::Transmission,
-        T::from_f64(1.01),
-        ValueConstraint::ClosedUnitInterval,
-    );
+    assert_ratio_boundaries::<T>();
 
     match PathLength::new(Length::from_base(nan)) {
         Err(TransportError::InvalidValue {

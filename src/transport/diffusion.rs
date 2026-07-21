@@ -7,7 +7,7 @@ use crate::{
         Absorption, EffectiveAttenuation, InteractionCoefficient, ReducedScattering, Scattering,
         Transport,
     },
-    quantity::{Anisotropy, TransportAlbedo},
+    quantity::{Anisotropy, PathLength, TransportAlbedo},
     validation,
 };
 
@@ -119,6 +119,18 @@ impl<T: RealField> DiffusionCoefficients<T> {
         ))
     }
 
+    /// Return the reduced transport mean free path `1 / (mu_a + mu_s')`.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`TransportError::DerivedNonFinite`] when the reciprocal is not
+    /// finite.
+    pub fn transport_mean_free_path(&self) -> Result<PathLength<T>, TransportError<T>> {
+        let value = self.transport_value()?.recip();
+        let valid = validation::derived_finite(TransportLaw::TransportMeanFreePath, value)?;
+        Ok(PathLength::from_validated(Length::from_base(valid)))
+    }
+
     /// Return `mu_eff = sqrt(3 mu_a (mu_a + mu_s'))`.
     ///
     /// # Errors
@@ -158,7 +170,7 @@ impl<T: RealField> DiffusionCoefficients<T> {
         let absorption = *self.absorption.quantity().as_base();
         let reduced = *self.reduced_scattering.quantity().as_base();
         let sum =
-            validation::derived_finite(TransportLaw::DiffusionCoefficient, absorption + reduced)?;
+            validation::derived_finite(TransportLaw::TransportCoefficient, absorption + reduced)?;
         if sum == <T as NumericElement>::ZERO {
             Err(TransportError::DegenerateTransport)
         } else {

@@ -9,8 +9,8 @@ use aequitas::systems::si::quantities::{
 use hyperion::{
     coefficient::{Absorption, EffectiveAttenuation, InteractionCoefficient, MassAttenuation},
     quantity::{
-        Anisotropy, EnergyFluence, OpticalDepth, PathLength, PhotonEnergy, Transmission,
-        TransportAlbedo,
+        Anisotropy, EnergyFluence, OpticalDepth, PathLength, PhotonEnergy, SingleScatteringAlbedo,
+        Transmission, TransportAlbedo,
     },
     transport::{DiffusionCoefficients, OpticalDiffusionCoefficient, planar_fluence_at_depth},
 };
@@ -44,6 +44,10 @@ fn transparent_domain_types_preserve_quantity_layout() {
     );
     assert_eq!(
         size_of::<Transmission<f64>>(),
+        size_of::<Dimensionless<f64>>()
+    );
+    assert_eq!(
+        size_of::<SingleScatteringAlbedo<f64>>(),
         size_of::<Dimensionless<f64>>()
     );
     assert_eq!(

@@ -10,7 +10,7 @@ use hyperion::{
     TransportError, TransportLaw,
     coefficient::{
         Absorption, EffectiveAttenuation, InteractionCoefficient, LinearAttenuation,
-        MassAttenuation, ReducedScattering, Scattering,
+        MassAttenuation, OpticalCoefficients, ReducedScattering, Scattering,
     },
     quantity::OpticalDepth,
     transport::{
@@ -18,6 +18,60 @@ use hyperion::{
     },
 };
 use proteus::MassDensity;
+
+fn assert_unreduced_optical_laws<T: RealField>() {
+    let coefficients = OpticalCoefficients::new(
+        coefficient::<T, Absorption>(2.0),
+        coefficient::<T, Scattering>(20.0),
+    )
+    .expect("fixture total attenuation is finite");
+    assert_eq!(
+        coefficients
+            .total_attenuation()
+            .expect("fixture sum remains finite")
+            .in_unit::<PerMeter>(),
+        T::from_f64(22.0)
+    );
+    let mean_free_path = coefficients
+        .mean_free_path()
+        .expect("fixture reciprocal remains finite")
+        .expect("non-vacuum medium has a finite mean free path")
+        .into_quantity()
+        .into_base();
+    assert_relative_close(mean_free_path, T::from_f64(1.0 / 22.0), 2.0);
+    let albedo = coefficients
+        .single_scattering_albedo()
+        .expect("fixture ratio remains finite")
+        .expect("non-vacuum medium has a defined scattering albedo")
+        .into_quantity()
+        .into_base();
+    assert_relative_close(albedo, T::from_f64(20.0 / 22.0), 2.0);
+
+    let vacuum = OpticalCoefficients::new(
+        coefficient::<T, Absorption>(0.0),
+        coefficient::<T, Scattering>(0.0),
+    )
+    .expect("vacuum has finite zero coefficients");
+    assert_eq!(
+        vacuum
+            .total_attenuation()
+            .expect("vacuum total is finite")
+            .in_unit::<PerMeter>(),
+        <T as NumericElement>::ZERO
+    );
+    assert_eq!(
+        vacuum
+            .mean_free_path()
+            .expect("vacuum is a defined boundary case"),
+        None
+    );
+    assert_eq!(
+        vacuum
+            .single_scattering_albedo()
+            .expect("vacuum is a defined boundary case"),
+        None
+    );
+}
 
 fn assert_reduced_and_diffusion_laws<T: RealField>() {
     let scattering = coefficient::<T, Scattering>(20.0);
@@ -73,6 +127,12 @@ fn assert_reduced_and_diffusion_laws<T: RealField>() {
         .into_quantity()
         .into_base();
     assert_relative_close(diffusion, T::from_f64(1.0 / 51.0), 3.0);
+    let transport_mean_free_path = pair
+        .transport_mean_free_path()
+        .expect("fixture reciprocal remains finite")
+        .into_quantity()
+        .into_base();
+    assert_relative_close(transport_mean_free_path, T::from_f64(1.0 / 17.0), 2.0);
 
     let effective = pair
         .effective_attenuation()
@@ -160,6 +220,8 @@ fn assert_beer_lambert_and_fluence_laws<T: RealField>() {
 
 #[test]
 fn transport_laws_hold_for_every_supported_real_scalar() {
+    assert_unreduced_optical_laws::<f32>();
+    assert_unreduced_optical_laws::<f64>();
     assert_reduced_and_diffusion_laws::<f32>();
     assert_reduced_and_diffusion_laws::<f64>();
     assert_beer_lambert_and_fluence_laws::<f32>();
@@ -202,6 +264,38 @@ fn degenerate_and_overflowing_laws_report_the_exact_failure() {
         aequitas::systems::si::quantities::ReciprocalLength::from_base(f64::MAX),
     )
     .expect("the largest finite coefficient passes the input boundary");
+    let largest_absorption = InteractionCoefficient::<f64, Absorption>::new(
+        aequitas::systems::si::quantities::ReciprocalLength::from_base(f64::MAX),
+    )
+    .expect("the largest finite coefficient passes the input boundary");
+    let total_error = OpticalCoefficients::new(largest_absorption, largest)
+        .expect_err("summing two largest finite coefficients must overflow");
+    match total_error {
+        TransportError::DerivedNonFinite { law, value } => {
+            assert_eq!(law, TransportLaw::TotalAttenuation);
+            assert!(value.is_infinite() && value.is_sign_positive());
+        }
+        other => panic!("expected total-attenuation overflow, got {other:?}"),
+    }
+
+    let largest_absorption = InteractionCoefficient::<f64, Absorption>::new(
+        aequitas::systems::si::quantities::ReciprocalLength::from_base(f64::MAX),
+    )
+    .expect("the largest finite coefficient passes the input boundary");
+    let largest_reduced = InteractionCoefficient::<f64, ReducedScattering>::new(
+        aequitas::systems::si::quantities::ReciprocalLength::from_base(f64::MAX),
+    )
+    .expect("the largest finite coefficient passes the input boundary");
+    let transport_error = DiffusionCoefficients::new(largest_absorption, largest_reduced)
+        .expect_err("summing two largest finite coefficients must overflow");
+    match transport_error {
+        TransportError::DerivedNonFinite { law, value } => {
+            assert_eq!(law, TransportLaw::TransportCoefficient);
+            assert!(value.is_infinite() && value.is_sign_positive());
+        }
+        other => panic!("expected transport-coefficient overflow, got {other:?}"),
+    }
+
     let error = reduced_scattering(largest, anisotropy::<f64>(-1.0))
         .expect_err("doubling the largest finite coefficient must overflow");
     match error {
