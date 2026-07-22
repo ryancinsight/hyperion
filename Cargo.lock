@@ -5,7 +5,7 @@ version = 4
 [[package]]
 name = "aequitas"
 version = "0.1.0"
-source = "git+https://github.com/ryancinsight/aequitas?rev=767e2d0550f1dc15bd8c4434a1a1002806f93498#767e2d0550f1dc15bd8c4434a1a1002806f93498"
+source = "git+https://github.com/ryancinsight/aequitas#262b3e09c19d844f57765d3e4ea6ab2336653d6d"
 dependencies = [
  "eunomia",
  "typenum",
@@ -77,7 +77,7 @@ dependencies = [
 [[package]]
 name = "eunomia"
 version = "0.7.0"
-source = "git+https://github.com/ryancinsight/eunomia?rev=7021628fe8eb3637c297105f626ee5df78abda84#7021628fe8eb3637c297105f626ee5df78abda84"
+source = "git+https://github.com/ryancinsight/eunomia#7021628fe8eb3637c297105f626ee5df78abda84"
 dependencies = [
  "bytemuck",
  "libm",
@@ -202,7 +202,7 @@ dependencies = [
 [[package]]
 name = "proteus"
 version = "0.1.0"
-source = "git+https://github.com/ryancinsight/proteus?rev=83734a2af355ad34c48983334ec87454f867fa49#83734a2af355ad34c48983334ec87454f867fa49"
+source = "git+https://github.com/ryancinsight/proteus#bb51ac414f74fb47d8001310206c5aea2e3a160c"
 dependencies = [
  "aequitas",
  "eunomia",
