@@ -25,7 +25,9 @@ Hyperion owns:
 - total attenuation, ordinary and transport mean free paths, ordinary and
   reduced transport albedos, diffusion coefficient, effective attenuation,
   penetration depth, and planar fluence decay;
-- bounded NIST mass-attenuation lookup for the first-wave photon materials.
+- bounded NIST mass-attenuation lookup for the first-wave photon materials;
+- local absorbed deposition, `Q = mu_a phi` in W/m3 and `q = mu_a Phi` in J/m3,
+  the point where a transport result becomes a thermal or damage source term.
 
 Hyperion does not own material identity or tissue presets, chromophore spectra,
 CT/HU calibration, ray or mesh geometry, numerical solvers, dose deposition,

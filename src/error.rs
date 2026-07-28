@@ -26,6 +26,12 @@ pub enum ValueKind {
     PhotonEnergy,
     /// Energy fluence.
     EnergyFluence,
+    /// Fluence rate.
+    FluenceRate,
+    /// Absorbed power density.
+    AbsorbedPowerDensity,
+    /// Absorbed energy density.
+    AbsorbedEnergyDensity,
     /// Optical depth.
     OpticalDepth,
     /// Transmission fraction.
@@ -86,6 +92,8 @@ pub enum TransportLaw {
     TransportMeanFreePath,
     /// Ordinary single-scattering albedo.
     SingleScatteringAlbedo,
+    /// Absorbed deposition from absorption acting on a fluence.
+    AbsorbedDeposition,
 }
 
 /// Typed failure at a photon or optical interaction boundary.

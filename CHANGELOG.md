@@ -6,6 +6,13 @@ All externally observable changes are recorded here.
 
 ### Added
 
+- Absorbed-deposition laws `Q = mu_a * phi` and `q = mu_a * Phi`, with the
+  validated `FluenceRate`, `AbsorbedPowerDensity`, and `AbsorbedEnergyDensity`
+  quantities. Deposition is where a transport result becomes a source term for
+  a thermal or damage model, so it belongs to one owner rather than to each
+  consumer. Verified against the Beer-Lambert conservation identity
+  `integral of mu_a Phi_0 exp(-mu_a x) dx = Phi_0`, an oracle independent of
+  the product being computed.
 - Validated, role-typed photon and optical interaction coefficients over
   Aequitas quantities and Eunomia real scalars.
 - Typed optical depth, Beer-Lambert transmission, diffuse optical coefficients,
