@@ -5,7 +5,7 @@ use aequitas::{
     },
     unit::LinearUnit,
 };
-use eunomia::RealField;
+use eunomia::{RealField, UnitScalar};
 
 use crate::{TransportError, ValueKind, validation};
 
@@ -14,7 +14,7 @@ use crate::{TransportError, ValueKind, validation};
 #[repr(transparent)]
 pub struct PathLength<T>(Length<T>);
 
-impl<T: RealField> PathLength<T> {
+impl<T: RealField + UnitScalar> PathLength<T> {
     /// Validate a physical length.
     ///
     /// # Errors
@@ -59,7 +59,7 @@ impl<T> PathLength<T> {
 #[repr(transparent)]
 pub struct PhotonEnergy<T>(Energy<T>);
 
-impl<T: RealField> PhotonEnergy<T> {
+impl<T: RealField + UnitScalar> PhotonEnergy<T> {
     /// Validate a photon energy.
     ///
     /// # Errors

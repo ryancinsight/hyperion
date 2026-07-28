@@ -1,5 +1,5 @@
 use aequitas::systems::si::quantities::{Dimensionless, Length};
-use eunomia::{NumericElement, RealField};
+use eunomia::{NumericElement, RealField, UnitScalar};
 
 use crate::{
     TransportError, TransportLaw,
@@ -10,7 +10,7 @@ use crate::{
     validation,
 };
 
-impl<T: RealField, Role: AttenuatingRole> InteractionCoefficient<T, Role> {
+impl<T: RealField + UnitScalar, Role: AttenuatingRole> InteractionCoefficient<T, Role> {
     /// Evaluate the dimensionless optical depth `tau = mu L` for one segment.
     ///
     /// # Errors

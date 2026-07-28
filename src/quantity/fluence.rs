@@ -2,7 +2,7 @@ use aequitas::{
     systems::si::{dimensions, quantities::EnergyPerArea},
     unit::LinearUnit,
 };
-use eunomia::RealField;
+use eunomia::{RealField, UnitScalar};
 
 use super::Transmission;
 use crate::{TransportError, TransportLaw, ValueKind, validation};
@@ -12,7 +12,7 @@ use crate::{TransportError, TransportLaw, ValueKind, validation};
 #[repr(transparent)]
 pub struct EnergyFluence<T>(EnergyPerArea<T>);
 
-impl<T: RealField> EnergyFluence<T> {
+impl<T: RealField + UnitScalar> EnergyFluence<T> {
     /// Validate an energy-per-area quantity.
     ///
     /// # Errors
@@ -41,6 +41,7 @@ impl<T: RealField> EnergyFluence<T> {
     #[must_use]
     pub fn in_unit<U>(&self) -> T
     where
+        T: UnitScalar,
         U: LinearUnit<dimensions::EnergyPerArea>,
     {
         self.0.in_unit::<U>()

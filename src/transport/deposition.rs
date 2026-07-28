@@ -6,7 +6,7 @@
 //! or radiation transport result becomes a source term for a thermal or damage
 //! model, so they belong to one owner rather than to each consumer.
 
-use eunomia::RealField;
+use eunomia::{RealField, UnitScalar};
 
 use crate::{
     TransportError, TransportLaw,
@@ -21,7 +21,7 @@ use crate::{
 ///
 /// Returns [`TransportError::DerivedNonFinite`] when the product overflows to a
 /// non-finite value.
-pub fn absorbed_power_density<T: RealField>(
+pub fn absorbed_power_density<T: RealField + UnitScalar>(
     absorption: InteractionCoefficient<T, Absorption>,
     fluence_rate: FluenceRate<T>,
 ) -> Result<AbsorbedPowerDensity<T>, TransportError<T>> {
@@ -38,7 +38,7 @@ pub fn absorbed_power_density<T: RealField>(
 ///
 /// Returns [`TransportError::DerivedNonFinite`] when the product overflows to a
 /// non-finite value.
-pub fn absorbed_energy_density<T: RealField>(
+pub fn absorbed_energy_density<T: RealField + UnitScalar>(
     absorption: InteractionCoefficient<T, Absorption>,
     fluence: EnergyFluence<T>,
 ) -> Result<AbsorbedEnergyDensity<T>, TransportError<T>> {

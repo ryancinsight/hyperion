@@ -2,7 +2,7 @@ use aequitas::systems::si::{
     quantities::{AreaPerMass, Energy},
     units::{MegaElectronVolt, SquareCentimeterPerGram},
 };
-use eunomia::RealField;
+use eunomia::{FloatElement, RealField, UnitScalar};
 
 use super::nist_data::{
     CORTICAL_BONE_MASS_ATTENUATION, DRY_AIR_MASS_ATTENUATION, KNOT_COUNT,
@@ -41,14 +41,14 @@ impl NistMassAttenuationTable {
     /// Returns [`TransportError::PhotonEnergyOutOfRange`] outside the inclusive
     /// 0.01–20 `MeV` interval and [`TransportError::DerivedNonFinite`] if
     /// interpolation produces a non-finite coefficient.
-    pub fn at<T: RealField>(
+    pub fn at<T: RealField + UnitScalar>(
         self,
         energy: PhotonEnergy<T>,
     ) -> Result<MassAttenuation<T>, TransportError<T>> {
         let energy_mev = energy.in_unit::<MegaElectronVolt>();
         let energy_base = energy.into_quantity().into_base();
-        let minimum = T::from_f64(MINIMUM_ENERGY_MEV);
-        let maximum = T::from_f64(MAXIMUM_ENERGY_MEV);
+        let minimum = <T as FloatElement>::from_f64(MINIMUM_ENERGY_MEV);
+        let maximum = <T as FloatElement>::from_f64(MAXIMUM_ENERGY_MEV);
         let minimum_base: T = knot_energy_base(MINIMUM_ENERGY_MEV);
         let maximum_base: T = knot_energy_base(MAXIMUM_ENERGY_MEV);
         if energy_base < minimum_base || energy_base > maximum_base {
@@ -62,7 +62,7 @@ impl NistMassAttenuationTable {
         let coefficients = self.coefficients();
         let upper = upper_knot(energy_base);
         let value = if energy_base == knot_energy_base(PHOTON_ENERGY_MEV[upper]) {
-            T::from_f64(coefficients[upper])
+            <T as FloatElement>::from_f64(coefficients[upper])
         } else {
             interpolate(energy_base, upper, coefficients)
         };
@@ -79,7 +79,7 @@ impl NistMassAttenuationTable {
     }
 }
 
-fn upper_knot<T: RealField>(energy_base: T) -> usize {
+fn upper_knot<T: RealField + UnitScalar>(energy_base: T) -> usize {
     let mut upper = 0;
     while upper + 1 < KNOT_COUNT && energy_base > knot_energy_base(PHOTON_ENERGY_MEV[upper]) {
         upper += 1;
@@ -87,12 +87,16 @@ fn upper_knot<T: RealField>(energy_base: T) -> usize {
     upper
 }
 
-fn interpolate<T: RealField>(energy_base: T, upper: usize, coefficients: &[f64; KNOT_COUNT]) -> T {
+fn interpolate<T: RealField + UnitScalar>(
+    energy_base: T,
+    upper: usize,
+    coefficients: &[f64; KNOT_COUNT],
+) -> T {
     let lower = upper - 1;
     let lower_energy: T = knot_energy_base(PHOTON_ENERGY_MEV[lower]);
     let upper_energy: T = knot_energy_base(PHOTON_ENERGY_MEV[upper]);
-    let lower_coefficient = T::from_f64(coefficients[lower]);
-    let upper_coefficient = T::from_f64(coefficients[upper]);
+    let lower_coefficient = <T as FloatElement>::from_f64(coefficients[lower]);
+    let upper_coefficient = <T as FloatElement>::from_f64(coefficients[upper]);
     let log_fraction =
         (energy_base.ln() - lower_energy.ln()) * (upper_energy.ln() - lower_energy.ln()).recip();
     let log_coefficient =
@@ -100,15 +104,17 @@ fn interpolate<T: RealField>(energy_base: T, upper: usize, coefficients: &[f64; 
     log_coefficient.exp()
 }
 
-fn knot_energy_base<T: RealField>(energy_mev: f64) -> T {
-    Energy::from_unit::<MegaElectronVolt>(T::from_f64(energy_mev)).into_base()
+fn knot_energy_base<T: RealField + UnitScalar>(energy_mev: f64) -> T {
+    Energy::from_unit::<MegaElectronVolt>(<T as FloatElement>::from_f64(energy_mev)).into_base()
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
 
-    fn assert_every_knot_bypasses_interpolation<T: RealField>(table: NistMassAttenuationTable) {
+    fn assert_every_knot_bypasses_interpolation<T: RealField + UnitScalar>(
+        table: NistMassAttenuationTable,
+    ) {
         for (&energy_mev, &coefficient) in PHOTON_ENERGY_MEV.iter().zip(table.coefficients()) {
             let energy = PhotonEnergy::new(Energy::from_unit::<MegaElectronVolt>(T::from_f64(
                 energy_mev,

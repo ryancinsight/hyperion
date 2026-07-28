@@ -21,3 +21,10 @@ All externally observable changes are recorded here.
   attenuation.
 - Bounded NIST mass-attenuation reference tables for dry air, liquid water,
   and cortical bone over 0.01–20 MeV.
+
+### Changed
+
+- Generic quantity and transport contracts now carry Eunomia's
+  provider-owned `UnitScalar` bound wherever they convert through Aequitas
+  linear units. This preserves the existing real scalar behavior while
+  keeping the provider contract compile-complete.

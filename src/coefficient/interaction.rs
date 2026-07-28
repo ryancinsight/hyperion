@@ -4,7 +4,7 @@ use aequitas::{
     systems::si::{dimensions, quantities::ReciprocalLength},
     unit::LinearUnit,
 };
-use eunomia::RealField;
+use eunomia::{RealField, UnitScalar};
 
 use super::{CoefficientKind, CoefficientRole};
 use crate::{TransportError, ValueKind, validation};
@@ -17,7 +17,7 @@ pub struct InteractionCoefficient<T, Role> {
     role: PhantomData<Role>,
 }
 
-impl<T: RealField, Role: CoefficientRole> InteractionCoefficient<T, Role> {
+impl<T: RealField + UnitScalar, Role: CoefficientRole> InteractionCoefficient<T, Role> {
     /// Validate a reciprocal-length quantity for this coefficient role.
     ///
     /// # Errors

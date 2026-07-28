@@ -2,7 +2,7 @@ use aequitas::{
     systems::si::{dimensions, quantities::AreaPerMass, quantities::ReciprocalLength},
     unit::LinearUnit,
 };
-use eunomia::RealField;
+use eunomia::{RealField, UnitScalar};
 use proteus::MassDensity;
 
 use super::{InteractionCoefficient, LinearAttenuation};
@@ -13,7 +13,7 @@ use crate::{TransportError, TransportLaw, ValueKind, validation};
 #[repr(transparent)]
 pub struct MassAttenuation<T>(AreaPerMass<T>);
 
-impl<T: RealField> MassAttenuation<T> {
+impl<T: RealField + UnitScalar> MassAttenuation<T> {
     /// Validate an area-per-mass quantity.
     ///
     /// # Errors

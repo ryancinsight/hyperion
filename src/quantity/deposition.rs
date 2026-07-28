@@ -5,7 +5,7 @@ use aequitas::{
     },
     unit::LinearUnit,
 };
-use eunomia::RealField;
+use eunomia::{RealField, UnitScalar};
 
 use crate::{TransportError, ValueKind, validation};
 
@@ -18,7 +18,7 @@ use crate::{TransportError, ValueKind, validation};
 #[repr(transparent)]
 pub struct FluenceRate<T>(Intensity<T>);
 
-impl<T: RealField> FluenceRate<T> {
+impl<T: RealField + UnitScalar> FluenceRate<T> {
     /// Validate an intensity quantity as a fluence rate.
     ///
     /// # Errors
@@ -61,7 +61,7 @@ impl<T> FluenceRate<T> {
 #[repr(transparent)]
 pub struct AbsorbedPowerDensity<T>(VolumetricPowerDensity<T>);
 
-impl<T: RealField> AbsorbedPowerDensity<T> {
+impl<T: RealField + UnitScalar> AbsorbedPowerDensity<T> {
     /// Validate a volumetric-power-density quantity as absorbed deposition.
     ///
     /// # Errors
@@ -109,7 +109,7 @@ impl<T> AbsorbedPowerDensity<T> {
 #[repr(transparent)]
 pub struct AbsorbedEnergyDensity<T>(EnergyPerVolume<T>);
 
-impl<T: RealField> AbsorbedEnergyDensity<T> {
+impl<T: RealField + UnitScalar> AbsorbedEnergyDensity<T> {
     /// Validate an energy-per-volume quantity as absorbed deposition.
     ///
     /// # Errors
