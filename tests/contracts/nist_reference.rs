@@ -2,10 +2,10 @@
 
 use crate::support::{assert_relative_close, photon_energy};
 use aequitas::systems::si::{quantities::AreaPerMass, units::SquareCentimeterPerGram};
-use eunomia::RealField;
+use eunomia::{RealField, UnitScalar};
 use hyperion::{TransportError, reference::NistMassAttenuationTable};
 
-fn assert_reference_knots<T: RealField>() {
+fn assert_reference_knots<T: RealField + UnitScalar>() {
     for (table, expected) in [
         (NistMassAttenuationTable::DryAir, 0.06358),
         (NistMassAttenuationTable::LiquidWater, 0.07072),
@@ -47,7 +47,7 @@ fn official_knots_are_exact_in_every_supported_real_scalar() {
     assert_reference_knots::<f64>();
 }
 
-fn assert_log_interpolation<T: RealField>() {
+fn assert_log_interpolation<T: RealField + UnitScalar>() {
     let geometric_midpoint = (0.1_f64 * 0.15_f64).sqrt();
     let expected = (T::from_f64(0.1707) * T::from_f64(0.1505)).sqrt();
     let actual = NistMassAttenuationTable::LiquidWater

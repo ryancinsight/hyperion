@@ -5,7 +5,7 @@ use aequitas::systems::si::{
     quantities::{AreaPerMass, Dimensionless, MassDensity as DensityQuantity},
     units::{JoulePerSquareMeter, PerMeter, SquareCentimeterPerGram},
 };
-use eunomia::{NumericElement, RealField};
+use eunomia::{NumericElement, RealField, UnitScalar};
 use hyperion::{
     TransportError, TransportLaw,
     coefficient::{
@@ -19,7 +19,7 @@ use hyperion::{
 };
 use proteus::MassDensity;
 
-fn assert_unreduced_optical_laws<T: RealField>() {
+fn assert_unreduced_optical_laws<T: RealField + UnitScalar>() {
     let coefficients = OpticalCoefficients::new(
         coefficient::<T, Absorption>(2.0),
         coefficient::<T, Scattering>(20.0),
@@ -73,7 +73,7 @@ fn assert_unreduced_optical_laws<T: RealField>() {
     );
 }
 
-fn assert_reduced_and_diffusion_laws<T: RealField>() {
+fn assert_reduced_and_diffusion_laws<T: RealField + UnitScalar>() {
     let scattering = coefficient::<T, Scattering>(20.0);
     let isotropic = reduced_scattering(scattering, anisotropy(0.0))
         .expect("finite coefficients produce finite reduced scattering");
@@ -153,7 +153,7 @@ fn assert_reduced_and_diffusion_laws<T: RealField>() {
     assert_relative_close(albedo, T::from_f64(15.0 / 17.0), 2.0);
 }
 
-fn assert_beer_lambert_and_fluence_laws<T: RealField>() {
+fn assert_beer_lambert_and_fluence_laws<T: RealField + UnitScalar>() {
     let empty = total_optical_depth::<T, LinearAttenuation, _>(core::iter::empty())
         .expect("the empty reduction is the additive identity");
     assert_eq!(

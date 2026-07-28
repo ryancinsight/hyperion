@@ -76,7 +76,7 @@ pub fn total_optical_depth<T, Role, Segments>(
     segments: Segments,
 ) -> Result<OpticalDepth<T>, TransportError<T>>
 where
-    T: RealField,
+    T: RealField + UnitScalar,
     Role: AttenuatingRole,
     Segments: IntoIterator<Item = (InteractionCoefficient<T, Role>, PathLength<T>)>,
 {
@@ -93,7 +93,7 @@ where
 ///
 /// Returns [`TransportError::DerivedNonFinite`] when optical depth or the
 /// attenuated fluence becomes non-finite.
-pub fn planar_fluence_at_depth<T: RealField>(
+pub fn planar_fluence_at_depth<T: RealField + UnitScalar>(
     surface: EnergyFluence<T>,
     attenuation: InteractionCoefficient<T, EffectiveAttenuation>,
     depth: PathLength<T>,

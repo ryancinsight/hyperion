@@ -3,7 +3,7 @@
 use aequitas::systems::si::quantities::{
     AreaPerMass, Dimensionless, Energy, EnergyPerArea, Length, ReciprocalLength,
 };
-use eunomia::{NumericElement, RealField};
+use eunomia::{NumericElement, RealField, UnitScalar};
 use hyperion::{
     TransportError, ValueConstraint, ValueKind,
     coefficient::{Absorption, InteractionCoefficient, MassAttenuation},
@@ -64,7 +64,7 @@ fn assert_ratio_boundaries<T: RealField>() {
     );
 }
 
-fn assert_boundaries<T: RealField>() {
+fn assert_boundaries<T: RealField + UnitScalar>() {
     let negative = -<T as NumericElement>::ONE;
     let zero = <T as NumericElement>::ZERO;
     let nan = T::nan();
