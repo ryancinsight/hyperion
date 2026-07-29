@@ -13,9 +13,9 @@ categories = ["no-std", "science"]
 publish = false
 
 [dependencies]
-aequitas = { version = "0.1.0", path = "../aequitas", default-features = false }
+aequitas = { version = "0.1.0", git = "https://github.com/ryancinsight/aequitas", default-features = false }
 eunomia = { version = "0.7.0", git = "https://github.com/ryancinsight/eunomia", default-features = false }
-proteus = { version = "0.1.0", path = "../proteus", default-features = false }
+proteus = { version = "0.1.0", git = "https://github.com/ryancinsight/proteus", default-features = false }
 
 [dev-dependencies]
 proptest = "1.11.0"
