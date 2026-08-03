@@ -5,6 +5,7 @@ version = 4
 [[package]]
 name = "aequitas"
 version = "0.1.0"
+source = "git+https://github.com/ryancinsight/aequitas#8f9974350fd12b2a0e9c62973ae73199bd372d7c"
 dependencies = [
  "eunomia",
  "typenum",
@@ -76,6 +77,7 @@ dependencies = [
 [[package]]
 name = "eunomia"
 version = "0.7.0"
+source = "git+https://github.com/ryancinsight/eunomia#98f853711a4832a2d3eea58e0fd3dc0f2a8810b3"
 dependencies = [
  "bytemuck",
  "libm",
@@ -200,6 +202,7 @@ dependencies = [
 [[package]]
 name = "proteus"
 version = "0.1.0"
+source = "git+https://github.com/ryancinsight/proteus#3eaa720b3c1e5016125a8ce79ee03e7f3075b0a1"
 dependencies = [
  "aequitas",
  "eunomia",
@@ -407,163 +410,3 @@ dependencies = [
  "quote",
  "syn",
 ]
-
-[[patch.unused]]
-name = "melinoe"
-version = "0.9.0"
-
-[[patch.unused]]
-name = "asclepius"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "asclepius-coeus"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "themis"
-version = "0.10.1"
-
-[[patch.unused]]
-name = "hermes-simd"
-version = "0.5.0"
-
-[[patch.unused]]
-name = "hephaestus-core"
-version = "0.18.0"
-
-[[patch.unused]]
-name = "hephaestus-cuda"
-version = "0.18.0"
-
-[[patch.unused]]
-name = "hephaestus-metal"
-version = "0.18.0"
-
-[[patch.unused]]
-name = "hephaestus-rocm"
-version = "0.18.0"
-
-[[patch.unused]]
-name = "hephaestus-wgpu"
-version = "0.18.0"
-
-[[patch.unused]]
-name = "apollo-fft"
-version = "0.25.0"
-
-[[patch.unused]]
-name = "moirai"
-version = "0.4.0"
-
-[[patch.unused]]
-name = "moirai-async"
-version = "0.4.0"
-
-[[patch.unused]]
-name = "moirai-core"
-version = "0.4.0"
-
-[[patch.unused]]
-name = "moirai-executor"
-version = "0.4.0"
-
-[[patch.unused]]
-name = "moirai-gpu"
-version = "0.4.0"
-
-[[patch.unused]]
-name = "moirai-http"
-version = "0.4.0"
-
-[[patch.unused]]
-name = "moirai-sync"
-version = "0.4.0"
-
-[[patch.unused]]
-name = "mnemosyne"
-version = "0.6.0"
-
-[[patch.unused]]
-name = "mnemosyne-core"
-version = "0.2.0"
-
-[[patch.unused]]
-name = "tyche-core"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "coeus-autograd"
-version = "0.9.0"
-
-[[patch.unused]]
-name = "coeus-core"
-version = "0.9.0"
-
-[[patch.unused]]
-name = "coeus-optim"
-version = "0.9.0"
-
-[[patch.unused]]
-name = "coeus-tensor"
-version = "0.9.0"
-
-[[patch.unused]]
-name = "gaia"
-version = "0.3.0"
-
-[[patch.unused]]
-name = "ritk-core"
-version = "0.9.0"
-
-[[patch.unused]]
-name = "ritk-dicom"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "ritk-io"
-version = "0.2.0"
-
-[[patch.unused]]
-name = "ritk-registration"
-version = "0.53.0"
-
-[[patch.unused]]
-name = "leto"
-version = "0.40.0"
-
-[[patch.unused]]
-name = "leto-ops"
-version = "0.40.0"
-
-[[patch.unused]]
-name = "consus-compression"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "consus-core"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "consus-hdf5"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "consus-io"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "consus-npy"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "consus-zarr"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "athena-core"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "horae"
-version = "0.1.0"
