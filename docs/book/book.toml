@@ -1,0 +1,14 @@
+[book]
+title = "hyperion: Photon Transport Coefficients for Atlas"
+authors = ["Ryan Clanton"]
+src = "."
+language = "en"
+[build]
+build-dir = "../../target/book/hyperion"
+create-missing = false
+[output.html]
+no-section-label = false
+mathjax-support = true
+site-url = "/hyperion/"
+git-repository-url = "https://github.com/ryancinsight/hyperion"
+default-theme = "rust"
