@@ -118,6 +118,15 @@ pub enum TransportError<T> {
         /// Non-finite derived canonical-SI scalar.
         value: T,
     },
+    /// Wavelength lies outside a tabulated spectrum's measured range.
+    WavelengthOutOfRange {
+        /// Rejected wavelength in nanometres.
+        value: T,
+        /// Inclusive lower bound.
+        minimum: T,
+        /// Inclusive upper bound.
+        maximum: T,
+    },
     /// Photon energy lies outside a bounded reference table.
     PhotonEnergyOutOfRange {
         /// Rejected energy in the table's declared unit.
@@ -132,6 +141,14 @@ pub enum TransportError<T> {
 impl<T: fmt::Debug> fmt::Display for TransportError<T> {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
+            Self::WavelengthOutOfRange {
+                value,
+                minimum,
+                maximum,
+            } => write!(
+                formatter,
+                "wavelength {value:?} nm outside tabulated range [{minimum:?}, {maximum:?}]"
+            ),
             Self::InvalidValue {
                 field,
                 value,
