@@ -24,6 +24,12 @@ All externally observable changes are recorded here.
 
 ### Changed
 
+- `hemoglobin_absorption` validates both molar concentrations through the
+  shared `finite_non_negative` boundary check before combining them, so an
+  invalid negative or non-finite input is rejected with
+  `ValueKind::ChromophoreConcentration` instead of silently propagating into
+  the linear combination. Monomorphization across `f32`/`f64` is pinned by
+  test.
 - Generic quantity and transport contracts now carry Eunomia's
   provider-owned `UnitScalar` bound wherever they convert through Aequitas
   linear units. This preserves the existing real scalar behavior while

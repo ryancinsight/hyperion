@@ -107,7 +107,9 @@ The diffuse-optics definitions and their domain follow the summary in
 [Jacques and Pogue, Table 1](https://pmc.ncbi.nlm.nih.gov/articles/PMC11166171/).
 The ownership decision, validity boundaries, numerical evidence, and migration
 ledger are recorded in
-[ADR 0001](docs/adr/0001-photon-optical-interaction-boundary.md).
+[ADR 0001](docs/adr/0001-photon-optical-interaction-boundary.md). The chromophore
+lookup and concentration-validation contract is documented in
+[`docs/chromophore_spectra.md`](docs/chromophore_spectra.md).
 
 ## Verification
 

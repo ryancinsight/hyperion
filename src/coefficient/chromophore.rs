@@ -11,7 +11,7 @@ use aequitas::systems::si::quantities::ReciprocalLength;
 use eunomia::{RealField, UnitScalar};
 
 use super::{Absorption, InteractionCoefficient};
-use crate::TransportError;
+use crate::{validation, TransportError, ValueKind};
 
 /// Oxyhemoglobin (`HbO₂`) molar extinction, M⁻¹·cm⁻¹ per tetramer.
 ///
@@ -168,6 +168,10 @@ pub fn hemoglobin_absorption<T: RealField + UnitScalar>(
     oxy_molar: T,
     deoxy_molar: T,
 ) -> Result<InteractionCoefficient<T, Absorption>, TransportError<T>> {
+    let oxy_molar =
+        validation::finite_non_negative(ValueKind::ChromophoreConcentration, oxy_molar)?;
+    let deoxy_molar =
+        validation::finite_non_negative(ValueKind::ChromophoreConcentration, deoxy_molar)?;
     let oxy_epsilon = OXYHEMOGLOBIN.molar_extinction(wavelength_nm)?;
     let deoxy_epsilon = DEOXYHEMOGLOBIN.molar_extinction(wavelength_nm)?;
     let per_centimetre = oxy_epsilon * oxy_molar + deoxy_epsilon * deoxy_molar;

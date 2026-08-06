@@ -5,7 +5,7 @@
 //! tabulated wavelength is what makes the move a relocation rather than a
 //! reimplementation: if any sample drifted in transit, this fails.
 
-use super::{DEOXYHEMOGLOBIN, OXYHEMOGLOBIN, hemoglobin_absorption};
+use super::{hemoglobin_absorption, DEOXYHEMOGLOBIN, OXYHEMOGLOBIN};
 use crate::TransportError;
 
 /// (wavelength nm, `HbO2` epsilon, Hb epsilon) as tabulated by `kwavers-optics`.
@@ -67,6 +67,35 @@ fn interpolation_is_linear_between_neighbouring_samples() {
         (got - expected).abs() < 1e-9,
         "expected {expected}, got {got}"
     );
+}
+
+#[test]
+fn interpolation_is_monomorphized_for_f32_and_f64() {
+    let f32_value = OXYHEMOGLOBIN
+        .molar_extinction::<f32>(812.5)
+        .expect("f32 query is inside the table");
+    let f64_value = OXYHEMOGLOBIN
+        .molar_extinction::<f64>(812.5)
+        .expect("f64 query is inside the table");
+
+    assert!(f32_value.is_finite());
+    assert!(f64_value.is_finite());
+    assert!((f64::from(f32_value) - f64_value).abs() < 0.01);
+}
+
+#[test]
+fn negative_concentration_is_rejected_at_the_coefficient_boundary() {
+    // Validate each concentration before combining it; a positive counterpart
+    // must not mask an invalid negative input.
+    let result = hemoglobin_absorption::<f64>(800.0, -1.0e-3, 1.0e-3);
+    assert!(matches!(
+        result,
+        Err(TransportError::InvalidValue {
+            field: crate::ValueKind::ChromophoreConcentration,
+            constraint: crate::ValueConstraint::FiniteNonNegative,
+            ..
+        })
+    ));
 }
 
 #[test]

@@ -42,6 +42,8 @@ pub enum ValueKind {
     TransportAlbedo,
     /// Ordinary single-scattering albedo.
     SingleScatteringAlbedo,
+    /// Oxyhemoglobin or deoxyhemoglobin concentration.
+    ChromophoreConcentration,
 }
 
 /// Constraint imposed at a Hyperion validity boundary.
