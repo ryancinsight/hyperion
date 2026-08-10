@@ -1,7 +1,7 @@
 //! Evaluate a typed hemoglobin spectrum at a sub-nanometre wavelength.
 
 use aequitas::systems::si::units::PerMeter;
-use hyperion::coefficient::{hemoglobin_absorption, OXYHEMOGLOBIN};
+use hyperion::coefficient::{OXYHEMOGLOBIN, hemoglobin_absorption};
 
 fn main() -> Result<(), hyperion::TransportError<f64>> {
     let wavelength_nm = 812.5_f64;
