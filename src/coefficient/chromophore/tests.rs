@@ -5,7 +5,7 @@
 //! tabulated wavelength is what makes the move a relocation rather than a
 //! reimplementation: if any sample drifted in transit, this fails.
 
-use super::{hemoglobin_absorption, DEOXYHEMOGLOBIN, OXYHEMOGLOBIN};
+use super::{DEOXYHEMOGLOBIN, OXYHEMOGLOBIN, hemoglobin_absorption};
 use crate::TransportError;
 
 /// (wavelength nm, `HbO2` epsilon, Hb epsilon) as tabulated by `kwavers-optics`.

@@ -11,7 +11,7 @@ use aequitas::systems::si::quantities::ReciprocalLength;
 use eunomia::{RealField, UnitScalar};
 
 use super::{Absorption, InteractionCoefficient};
-use crate::{validation, TransportError, ValueKind};
+use crate::{TransportError, ValueKind, validation};
 
 /// Oxyhemoglobin (`HbO₂`) molar extinction, M⁻¹·cm⁻¹ per tetramer.
 ///
