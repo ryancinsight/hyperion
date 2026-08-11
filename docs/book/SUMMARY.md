@@ -5,5 +5,7 @@
   - [Example: Chromophore Spectrum](examples/chromophore_spectrum.md)
 - [2. Beer-Lambert Transport](beer_lambert.md)
   - [Example: Photon Transport](examples/photon_transport.md)
+  - [Example: Mass Attenuation](examples/mass_attenuation.md)
+  - [Example: Diffusion and Deposition](examples/diffusion_deposition.md)
 # Part II -- The Atlas Stack
 - [3. Position in the Stack](stack_position.md)
