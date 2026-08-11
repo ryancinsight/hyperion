@@ -39,6 +39,10 @@ jobs:
         run: cargo doc --locked --no-deps --all-features
       - name: Example
         run: cargo run --locked --example photon_transport
+      - name: Mass-attenuation example
+        run: cargo run --locked --example book_mass_attenuation
+      - name: Diffusion and deposition example
+        run: cargo run --locked --example book_diffusion_deposition
 
   supply-chain:
     runs-on: ubuntu-latest
