@@ -22,6 +22,8 @@
 - [x] Add retrieval-date and table provenance to every embedded NIST source
       record; document that XCOM's fourth displayed digit is not an accuracy
       guarantee and retain that limit in the provider ADR.
+- [x] Regenerate the ADR index from the existing `Status: Accepted` header and
+      verify the generated index records the canonical status.
 
 ## Evidence boundary
 

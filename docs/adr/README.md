@@ -6,4 +6,4 @@
 
 | ADR | Title | Status |
 | --- | ----- | ------ |
-| [0001](0001-photon-optical-interaction-boundary.md) | Own photon and optical interaction laws in Hyperion | — |
+| [0001](0001-photon-optical-interaction-boundary.md) | Own photon and optical interaction laws in Hyperion | Accepted |
