@@ -82,6 +82,14 @@ different scalar. Aequitas owns dimensions and units. Proteus supplies
 validated mass density. Hyperion contains no array, allocator, scheduler,
 geometry, backend, or consumer dependency.
 
+The NIST reference lookup returns exact embedded knots and uses a natural
+cubic spline in log-energy/log-coefficient space between them, matching the
+interpolation family documented by
+[NIST XCOM](https://physics.nist.gov/PhysRefData/Xcom/Text/chap3.html).
+NIST's four-significant-digit display is an interpolation aid, not an accuracy
+claim; independent XCOM off-knot checks are therefore regression evidence, not
+a global error bound.
+
 ## Mathematical specification
 
 For passive coefficients and non-negative path length:

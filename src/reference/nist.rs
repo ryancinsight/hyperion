@@ -2,7 +2,7 @@ use aequitas::systems::si::{
     quantities::{AreaPerMass, Energy},
     units::{MegaElectronVolt, SquareCentimeterPerGram},
 };
-use eunomia::{FloatElement, RealField, UnitScalar};
+use eunomia::{FloatElement, NumericElement, RealField, UnitScalar};
 
 use super::nist_data::{
     CORTICAL_BONE_MASS_ATTENUATION, DRY_AIR_MASS_ATTENUATION, KNOT_COUNT,
@@ -18,6 +18,15 @@ use crate::{
 /// [X-Ray Mass Attenuation Coefficients](https://physics.nist.gov/PhysRefData/XrayMassCoef/)
 /// tables over the shared 0.01–20 `MeV` range. The selected knots do not cross a
 /// represented absorption edge.
+///
+/// Intervals use the log-log natural cubic-spline form described by the NIST
+/// XCOM method. The published four-significant-digit output is an
+/// interpolation aid, not an accuracy guarantee; the sparse embedded table
+/// therefore makes no global error claim between knots. Natural endpoint
+/// conditions are the explicit local boundary choice because the embedded
+/// table does not publish endpoint slopes. Independent XCOM checks belong in
+/// the contract suite rather than being converted into a fabricated runtime
+/// tolerance.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 #[non_exhaustive]
 pub enum NistMassAttenuationTable {
@@ -33,8 +42,9 @@ impl NistMassAttenuationTable {
     /// Return the mass attenuation coefficient at `energy`.
     ///
     /// Exact knots bypass interpolation and convert the stored NIST value
-    /// through Aequitas. Between adjacent knots this evaluates log-linear
-    /// interpolation in native `T` arithmetic.
+    /// through Aequitas. Between adjacent knots this evaluates a natural
+    /// cubic spline in log-energy/log-coefficient space using native `T`
+    /// arithmetic.
     ///
     /// # Errors
     ///
@@ -93,15 +103,57 @@ fn interpolate<T: RealField + UnitScalar>(
     coefficients: &[f64; KNOT_COUNT],
 ) -> T {
     let lower = upper - 1;
-    let lower_energy: T = knot_energy_base(PHOTON_ENERGY_MEV[lower]);
-    let upper_energy: T = knot_energy_base(PHOTON_ENERGY_MEV[upper]);
+    let lower_energy = knot_energy_base::<T>(PHOTON_ENERGY_MEV[lower]).ln();
+    let upper_energy = knot_energy_base::<T>(PHOTON_ENERGY_MEV[upper]).ln();
+    let energy = energy_base.ln();
+    let span = upper_energy - lower_energy;
+    let lower_weight = (upper_energy - energy) / span;
+    let upper_weight = (energy - lower_energy) / span;
     let lower_coefficient = <T as FloatElement>::from_f64(coefficients[lower]);
     let upper_coefficient = <T as FloatElement>::from_f64(coefficients[upper]);
-    let log_fraction =
-        (energy_base.ln() - lower_energy.ln()) * (upper_energy.ln() - lower_energy.ln()).recip();
-    let log_coefficient =
-        lower_coefficient.ln() + (upper_coefficient.ln() - lower_coefficient.ln()) * log_fraction;
-    log_coefficient.exp()
+    let second_derivatives = spline_second_derivatives::<T>(coefficients);
+    let six = <T as FloatElement>::from_f64(6.0);
+    let curvature = ((lower_weight * lower_weight * lower_weight - lower_weight)
+        * second_derivatives[lower]
+        + (upper_weight * upper_weight * upper_weight - upper_weight) * second_derivatives[upper])
+        * span
+        * span
+        / six;
+    (lower_weight * lower_coefficient.ln() + upper_weight * upper_coefficient.ln() + curvature)
+        .exp()
+}
+
+fn spline_second_derivatives<T: RealField + UnitScalar>(
+    coefficients: &[f64; KNOT_COUNT],
+) -> [T; KNOT_COUNT] {
+    let mut second = [<T as NumericElement>::ZERO; KNOT_COUNT];
+    let mut work = [<T as NumericElement>::ZERO; KNOT_COUNT];
+    let two = <T as FloatElement>::from_f64(2.0);
+    let six = <T as FloatElement>::from_f64(6.0);
+
+    for index in 1..KNOT_COUNT - 1 {
+        let previous_energy = knot_energy_base::<T>(PHOTON_ENERGY_MEV[index - 1]).ln();
+        let energy = knot_energy_base::<T>(PHOTON_ENERGY_MEV[index]).ln();
+        let next_energy = knot_energy_base::<T>(PHOTON_ENERGY_MEV[index + 1]).ln();
+        let previous_coefficient = <T as FloatElement>::from_f64(coefficients[index - 1]).ln();
+        let coefficient = <T as FloatElement>::from_f64(coefficients[index]).ln();
+        let next_coefficient = <T as FloatElement>::from_f64(coefficients[index + 1]).ln();
+        let left_span = energy - previous_energy;
+        let right_span = next_energy - energy;
+        let total_span = next_energy - previous_energy;
+        let sigma = left_span / total_span;
+        let pivot = sigma * second[index - 1] + two;
+        second[index] = (sigma - <T as NumericElement>::ONE) / pivot;
+        let left_slope = (coefficient - previous_coefficient) / left_span;
+        let right_slope = (next_coefficient - coefficient) / right_span;
+        work[index] =
+            (six * (right_slope - left_slope) / total_span - sigma * work[index - 1]) / pivot;
+    }
+
+    for index in (0..KNOT_COUNT - 1).rev() {
+        second[index] = second[index] * second[index + 1] + work[index];
+    }
+    second
 }
 
 fn knot_energy_base<T: RealField + UnitScalar>(energy_mev: f64) -> T {

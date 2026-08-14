@@ -24,6 +24,11 @@ All externally observable changes are recorded here.
 
 ### Changed
 
+- NIST reference-table intervals now use a native-`T` natural cubic spline in
+  log-energy/log-coefficient space, matching the interpolation family
+  documented by XCOM. The contract suite adds independently queried liquid-
+  water off-knot values and records that XCOM's fourth displayed digit is an
+  interpolation aid rather than an accuracy guarantee.
 - `hemoglobin_absorption` validates both molar concentrations through the
   shared `finite_non_negative` boundary check before combining them, so an
   invalid negative or non-finite input is rejected with

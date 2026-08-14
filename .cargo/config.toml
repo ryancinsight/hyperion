@@ -1,0 +1,7 @@
+# The `contracts` test binary uses a global `stats_alloc::Region` to assert
+# zero allocations in transport-path code.  Running tests concurrently causes
+# allocations from parallel tests to be counted by the region, producing false
+# failures.  Single-threaded execution ensures the region only sees allocations
+# from the test under measurement.
+[env]
+RUST_TEST_THREADS = { value = "1", force = false }
