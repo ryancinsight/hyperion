@@ -1,5 +1,7 @@
 //! Evaluate a typed diffuse-optics transport path.
 
+#![expect(clippy::print_stdout, reason = "example stdout is the deliverable")]
+
 use aequitas::systems::si::{
     quantities::{EnergyPerArea, Length, ReciprocalLength},
     units::{JoulePerSquareMeter, Meter, PerMeter},

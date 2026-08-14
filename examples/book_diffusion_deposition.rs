@@ -10,6 +10,8 @@
 //! absorption coefficient acting on a fluence (rate) into the absorbed
 //! deposition `Q = mu_a phi` / `q = mu_a Phi` that thermal models consume.
 
+#![expect(clippy::print_stdout, reason = "example stdout is the deliverable")]
+
 use aequitas::systems::si::{
     quantities::{Dimensionless, EnergyPerArea, Intensity, ReciprocalLength},
     units::{

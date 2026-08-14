@@ -1,5 +1,7 @@
 //! Evaluate a typed hemoglobin spectrum at a sub-nanometre wavelength.
 
+#![expect(clippy::print_stdout, reason = "example stdout is the deliverable")]
+
 use aequitas::systems::si::units::PerMeter;
 use hyperion::coefficient::{OXYHEMOGLOBIN, hemoglobin_absorption};
 

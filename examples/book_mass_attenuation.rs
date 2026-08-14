@@ -1,5 +1,7 @@
 //! Convert a mass attenuation coefficient to linear attenuation.
 
+#![expect(clippy::print_stdout, reason = "example stdout is the deliverable")]
+
 use aequitas::systems::si::{
     quantities::{AreaPerMass, MassDensity as DensityQuantity},
     units::{KilogramPerCubicMeter, Meter, PerMeter, SquareCentimeterPerGram},
