@@ -20,6 +20,8 @@ solvers, dose deposition, GPU dispatch, or Maxwell/radiative-transfer solvers
   f32/f64 spline residual maximum is below the former log-linear residual
   maximum. XCOM's published fourth-digit limitation is recorded; no global
   error bound is claimed from the sparse knot set.
+- ADR index: the generated index records ADR 0001's existing canonical
+  `Accepted` status.
 - Local planning trail completed at this audit with the missing `gap_audit.md`
   authored; `backlog.md` and `checklist.md` predate this audit.
 
@@ -31,6 +33,7 @@ solvers, dose deposition, GPU dispatch, or Maxwell/radiative-transfer solvers
 | H-001 | Registry publication (`publish = false`, occupied crates.io name) | Open — owner-gated Git-first decision documented in `backlog.md` |
 | H-002 | Material identity / tissue presets / chromophore spectra beyond the coefficient layer | Open — consumer-gated; explicitly out of HYPERION-001 scope |
 | H-003 | A global interpolation-error theorem for the sparse 28-knot table | Closed as a false precision requirement — NIST XCOM documents the interpolation family and explicitly disclaims accuracy for the fourth displayed digit; independent off-knot method regression is the supported evidence |
+| H-005 | Stale ADR index status for ADR 0001 | Closed — regenerated `docs/adr/README.md` from the existing `Status: Accepted` header |
 
 No source-level gaps remain in the delivered surface: no `TODO`/`FIXME`/
 `unimplemented!` markers exist in `src/`, and all gates are green at the
