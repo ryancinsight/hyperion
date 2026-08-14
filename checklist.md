@@ -16,6 +16,12 @@
 - [x] Complete the recorded consumer SemVer, differential, residue, and full
       publish gates for the first-wave extraction; future release work is a
       separate deferred watchpoint, not a reopened Phase 0 task.
+- [x] Replace the self-referential NIST geometric-midpoint identity with a
+      native-`T` natural log-log cubic spline and independently queried XCOM
+      off-knot regression values.
+- [x] Add retrieval-date and table provenance to every embedded NIST source
+      record; document that XCOM's fourth displayed digit is not an accuracy
+      guarantee and retain that limit in the provider ADR.
 
 ## Evidence boundary
 

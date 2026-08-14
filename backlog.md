@@ -31,3 +31,17 @@
 - Any future crates.io or hosted-release work requires a new package identity
   decision and must not introduce a parallel package or compatibility owner.
 - No implementation is claimed by this deferred watchpoint.
+
+## HYPERION-003 — NIST interpolation contract [minor] — done 2026-08-14
+
+- Outcome: replace the self-referential geometric-midpoint check with the
+  native-`T` natural cubic spline described by the NIST XCOM interpolation
+  method and an independent off-knot regression fixture.
+- Evidence: ten liquid-water off-knot values were queried from XCOM
+  1.5 on 2026-08-14. The f32 and f64 contract test confirms the spline's
+  maximum relative residual is below the former log-linear method's residual
+  over the independent fixture set.
+- Boundary: XCOM states that its fourth displayed digit aids interpolation but
+  is not an accuracy claim. The sparse 28-knot provider therefore makes no
+  global interpolation-error claim; the fixture is method-regression evidence,
+  not a fabricated tolerance.

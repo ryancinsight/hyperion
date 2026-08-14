@@ -91,7 +91,16 @@ are errors rather than clamped or defaulted results.
 `NistMassAttenuationTable` owns the bounded, allocation-free 28-knot datasets
 for dry air, liquid water, and cortical bone over 0.01–20 MeV. Exact knots
 bypass interpolation and convert the stored coefficient through Aequitas;
-intervals use native-`T` log-linear interpolation. The table role does not create a material catalog: Proteus owns
+intervals use a native-`T` natural cubic spline in log-energy/log-coefficient
+space, matching the interpolation family described by
+[NIST XCOM §3](https://physics.nist.gov/PhysRefData/Xcom/Text/chap3.html).
+The published four-significant-digit values are an interpolation aid, not an
+accuracy claim, so this sparse table makes no global error guarantee between
+knots. Natural endpoint second derivatives are zero because the embedded table
+does not publish endpoint slopes; this is an explicit local boundary choice,
+not a NIST accuracy claim. The contract suite uses independently queried XCOM
+off-knot values to detect method regressions; it does not turn rounded output
+into a fabricated tolerance. The table role does not create a material catalog: Proteus owns
 material identity, while Hyperion owns photon-energy-to-interaction data.
 
 ## Verification
@@ -106,7 +115,8 @@ The generic conformance suite instantiates `f32` and `f64` and covers:
 - `D`, transport mean free path, `mu_eff`, `mu_eff^2=mu_a/D`, and finite-depth
   contracts;
 - planar fluence equal to `F_0/e` at one penetration depth;
-- exact NIST knots, range rejection, and log-interpolation reference values;
+- exact NIST knots, range rejection, and independent XCOM off-knot method
+  regression values;
 - transparent layout, zero-sized roles, and allocation-free operations.
 
 Floating-point algebraic bounds use `gamma_n = n epsilon / (1 - n epsilon)`
