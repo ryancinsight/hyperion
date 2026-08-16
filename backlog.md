@@ -45,3 +45,16 @@
   is not an accuracy claim. The sparse 28-knot provider therefore makes no
   global interpolation-error claim; the fixture is method-regression evidence,
   not a fabricated tolerance.
+
+## HYPERION-004 — Proteus constitutive consumer contract [patch] — in-progress
+
+- Owner: current Atlas session; scope: Hyperion's transport contract tests and
+  provider-local adoption records. Proteus implementation and peer-dirty
+  checkout state are non-goals.
+- Acceptance: evaluate a real Proteus constitutive law for both supported real
+  scalar types, pass its validated density directly into Hyperion's
+  mass-to-linear attenuation conversion, and assert the dimensional result.
+  The test must fail if the consumer bypasses the constitutive surface or the
+  provider-to-consumer unit contract changes.
+- Evidence target: focused Nextest, strict Clippy, doctests, Rustdoc, and
+  hosted provider verification at the exact merged default head.
