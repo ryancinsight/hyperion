@@ -1,5 +1,34 @@
 # Hyperion ownership gap audit
 
+## ATLAS-HYPERION-AUDIT-074 — Isolated provider re-verification — closed 2026-08-16
+
+The provider default `1da0da0` was re-verified from outside the Atlas umbrella
+directory so the parent `.cargo/config.toml` development overlay could not
+rewrite the standalone lockfile. The exact locked commands were:
+
+- `cargo fmt --check --manifest-path D:\atlas\worktrees\hyperion-audit-20260816\Cargo.toml`
+- `cargo check --locked --all-features --all-targets --manifest-path D:\atlas\worktrees\hyperion-audit-20260816\Cargo.toml`
+- `cargo clippy --locked --all-targets --all-features --manifest-path D:\atlas\worktrees\hyperion-audit-20260816\Cargo.toml -- -D warnings`
+- `cargo nextest run --locked --all-features --manifest-path D:\atlas\worktrees\hyperion-audit-20260816\Cargo.toml` — 22/22 passed
+- `cargo test --locked --doc --all-features --manifest-path D:\atlas\worktrees\hyperion-audit-20260816\Cargo.toml` — 1 passed
+- `cargo doc --locked --no-deps --all-features --manifest-path D:\atlas\worktrees\hyperion-audit-20260816\Cargo.toml`
+- `cargo deny check` from the provider lane — advisories, bans, licenses, and
+      sources passed; three expected unmatched-source warnings identify the
+      local overlay paths for Aequitas, Eunomia, and Proteus.
+
+The provider source and standalone lockfile remain unchanged after
+verification. A locked Cargo command invoked from inside `D:\atlas` is a
+separate environment: local first-party patches are not represented in the
+standalone lockfile, so Cargo rejects the command before compilation and asks
+to rewrite `Cargo.lock`. That is an umbrella verification/configuration
+boundary, not a reason to commit overlay-generated lockfile churn.
+
+These checks establish formatting, compilation, static diagnostics, supply
+chain policy, test, doctest, and documentation behavior only. They make no new
+runtime, performance, memory, or hardware-backend claim. No source-level
+placeholder markers were found. Remaining release and consumer watchpoints
+retain their documented status below.
+
 ## Boundary
 
 Hyperion owns validated photon and optical interaction coefficients: typed

@@ -1,12 +1,13 @@
 # Hyperion Phase 0 checklist
 
-## ATLAS-HYPERION-AUDIT-074 — Isolated provider re-verification — in progress
+## ATLAS-HYPERION-AUDIT-074 — Isolated provider re-verification — closed 2026-08-16
 
 - Owner: current Atlas session.
 - Scope: `checklist.md` and `gap_audit.md`; no source or consumer changes.
-- Acceptance: record locked isolated-provider gates, the umbrella-overlay
-      lock boundary, and the remaining release/consumer triggers with exact
-      commands and evidence limits.
+- [x] Record locked isolated-provider gates, the umbrella-overlay lock
+      boundary, and the remaining release/consumer triggers with exact
+      commands and evidence limits. Revision `1da0da0`; isolated format,
+      check, Clippy, 22/22 Nextest, 1 doctest, rustdoc, and cargo-deny pass.
 
 - [x] Verify the GitHub repository name and document the occupied crates.io
       registry name with `publish = false` as the Git-first decision.
