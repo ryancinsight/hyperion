@@ -28,6 +28,29 @@ Hosted PR verification `31962953235` passes repository-owned `verify` and
 default workflow remains the post-merge integration check. The Atlas root
 record owns the cross-repository gitlink and hosted-run identifiers.
 
+## HYPERION-005 — Proteus lockstep consumer pin — closed 2026-08-16
+
+Hyperion's locked graph now follows the fetched Proteus default. Commit
+`7f36069` changes only `Cargo.lock`: Proteus advances from `3d6021e7` to
+`cb70021b`, while its locked Aequitas and Eunomia provider revisions advance to
+`5114cd1` and `88c685f`, respectively. The manifest remains Git-sourced with
+the declared semver requirements; no path dependency or compatibility layer
+was introduced.
+
+Final local evidence against that lock:
+
+- locked workspace check with all targets/features: pass;
+- locked Nextest: 23/23 pass;
+- strict all-target Clippy: pass;
+- locked no-default-features check: pass;
+- locked doctest: 1/1 pass;
+- warning-denied Rustdoc: pass;
+- locked examples build: pass;
+- cargo-deny advisories, bans, licenses, and sources: pass.
+
+The provider default and Pages workflow are the remaining integration boundary
+for this dependency-only change; the Atlas root owns the resulting gitlink.
+
 ## ATLAS-HYPERION-AUDIT-074 — Isolated provider re-verification — closed 2026-08-16
 
 The provider default `1da0da0` was re-verified from outside the Atlas umbrella

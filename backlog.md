@@ -62,3 +62,19 @@
 - overlay. Hosted PR verification `31962953235` passes `verify` and
   `supply-chain` at exact PR head `31d3bb3`; CodeRabbit reports pass. The
   merged-default workflow remains the post-merge integration check.
+
+## HYPERION-005 — Proteus lockstep consumer pin [patch] — done 2026-08-16
+
+- Owner: current Atlas session; scope: Hyperion's `Cargo.lock` and provider
+  dependency-coherence records. No Proteus source or peer-dirty checkout files
+  are in scope.
+- Acceptance: the locked Proteus source revision equals the fetched Proteus
+  default head `cb70021b104743010492c6ec76858eef6177c083`, and Hyperion's
+  locked compile, tests, Clippy, documentation, and supply-chain checks pass
+  against that graph.
+- The dependency update is intentional co-evolution state after the merged
+  Proteus provider head; no API compatibility shim or local path dependency is
+  permitted.
+- Evidence: `7f36069` advances Proteus `3d6021e7` to `cb70021b` and
+  co-evolves Aequitas `681042b` to `5114cd1` plus Eunomia `69ff96d` to
+  `88c685f`. The locked provider gates pass against the resulting graph.
