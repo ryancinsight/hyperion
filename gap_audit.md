@@ -1,6 +1,6 @@
 # Hyperion ownership gap audit
 
-## HYPERION-004 — Proteus constitutive consumer contract — implementation complete
+## HYPERION-004 — Proteus constitutive consumer contract — closed 2026-08-16
 
 Hyperion now exercises the direct provider path rather than only constructing
 Proteus's `MassDensity` wrapper. The generic contract test evaluates a real
@@ -10,7 +10,7 @@ Hyperion's mass-attenuation conversion. The analytical oracle is the declared
 SI conversion `0.07072 cm^2/g * 1000 kg/m^3 = 7.072 m^-1`; the assertion is
 value-semantic and independent of the test's construction path.
 
-Local evidence at `dde19eb`:
+Local evidence at `31d3bb3`:
 
 - `cargo check --locked --workspace --all-targets --all-features`: pass.
 - `cargo nextest run --locked --workspace --all-features`: 23/23 pass.
@@ -23,8 +23,10 @@ Local evidence at `dde19eb`:
 - `cargo deny ... --metadata-path ... --locked check`: advisories, bans,
   licenses, and sources pass.
 
-Hosted PR and merged-default verification remain the closure gate. The Atlas
-root record owns the cross-repository gitlink and hosted-run identifiers.
+Hosted PR verification `31962953235` passes repository-owned `verify` and
+`supply-chain` at exact head `31d3bb3`; CodeRabbit reports pass. The merged-
+default workflow remains the post-merge integration check. The Atlas root
+record owns the cross-repository gitlink and hosted-run identifiers.
 
 ## ATLAS-HYPERION-AUDIT-074 — Isolated provider re-verification — closed 2026-08-16
 

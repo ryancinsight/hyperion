@@ -46,7 +46,7 @@
   global interpolation-error claim; the fixture is method-regression evidence,
   not a fabricated tolerance.
 
-## HYPERION-004 — Proteus constitutive consumer contract [patch] — in-progress
+## HYPERION-004 — Proteus constitutive consumer contract [patch] — done 2026-08-16
 
 - Owner: current Atlas session; scope: Hyperion's transport contract tests and
   provider-local adoption records. Proteus implementation and peer-dirty
@@ -56,8 +56,9 @@
   mass-to-linear attenuation conversion, and assert the dimensional result.
   The test must fail if the consumer bypasses the constitutive surface or the
   provider-to-consumer unit contract changes.
-- Local implementation evidence: `dde19eb` adds the generic f32/f64 contract;
+- Local implementation evidence: `31d3bb3` adds the generic f32/f64 contract;
   locked check, 23/23 Nextest, strict Clippy, doctest, Rustdoc, no-default-
   feature check, examples build, and cargo-deny all pass outside the Atlas
-  overlay. Hosted provider verification at the exact merged default head is
-  the remaining closure gate.
+- overlay. Hosted PR verification `31962953235` passes `verify` and
+  `supply-chain` at exact PR head `31d3bb3`; CodeRabbit reports pass. The
+  merged-default workflow remains the post-merge integration check.

@@ -48,5 +48,5 @@ completion state and points inward to that SSOT to avoid duplicated evidence.
       Hyperion attenuation conversion.
 - [x] Assert the analytical unit conversion and retain the existing boundary
       failure tests unchanged.
-- [ ] Run the focused provider gates and synchronize `backlog.md` and
+- [x] Run the focused provider gates and synchronize `backlog.md` and
       `gap_audit.md` with exact revision and hosted evidence.
