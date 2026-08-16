@@ -53,9 +53,9 @@ completion state and points inward to that SSOT to avoid duplicated evidence.
 
 ## HYPERION-005 — Proteus lockstep consumer pin
 
-- [ ] Advance the locked Proteus source revision to the fetched provider
+- [x] Advance the locked Proteus source revision to the fetched provider
       default without changing the manifest's Git dependency boundary.
-- [ ] Run the locked provider gates and verify the lock contains the exact
+- [x] Run the locked provider gates and verify the lock contains the exact
       Proteus head.
-- [ ] Synchronize provider evidence and integrate the merged default head into
+- [x] Synchronize provider evidence and integrate the merged default head into
       Atlas.
