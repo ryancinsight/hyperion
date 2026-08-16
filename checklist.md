@@ -43,10 +43,10 @@ completion state and points inward to that SSOT to avoid duplicated evidence.
 
 ## HYPERION-004 — Proteus constitutive consumer contract
 
-- [ ] Add a generic f32/f64 contract test that evaluates `proteus::ConstantLaw`
+- [x] Add a generic f32/f64 contract test that evaluates `proteus::ConstantLaw`
       through `proteus::Material` and feeds the returned density into the
       Hyperion attenuation conversion.
-- [ ] Assert the analytical unit conversion and retain the existing boundary
+- [x] Assert the analytical unit conversion and retain the existing boundary
       failure tests unchanged.
 - [ ] Run the focused provider gates and synchronize `backlog.md` and
       `gap_audit.md` with exact revision and hosted evidence.

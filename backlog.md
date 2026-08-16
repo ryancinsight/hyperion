@@ -56,5 +56,8 @@
   mass-to-linear attenuation conversion, and assert the dimensional result.
   The test must fail if the consumer bypasses the constitutive surface or the
   provider-to-consumer unit contract changes.
-- Evidence target: focused Nextest, strict Clippy, doctests, Rustdoc, and
-  hosted provider verification at the exact merged default head.
+- Local implementation evidence: `dde19eb` adds the generic f32/f64 contract;
+  locked check, 23/23 Nextest, strict Clippy, doctest, Rustdoc, no-default-
+  feature check, examples build, and cargo-deny all pass outside the Atlas
+  overlay. Hosted provider verification at the exact merged default head is
+  the remaining closure gate.
