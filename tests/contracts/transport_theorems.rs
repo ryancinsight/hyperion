@@ -4,8 +4,7 @@ use crate::support::{anisotropy, assert_relative_close, coefficient, fluence, ga
 use aequitas::systems::si::{
     quantities::{
         AreaPerMass, Dimensionless, MassDensity as DensityQuantity,
-        SpecificHeatCapacity as HeatCapacityQuantity,
-        ThermalConductivity as ConductivityQuantity,
+        SpecificHeatCapacity as HeatCapacityQuantity, ThermalConductivity as ConductivityQuantity,
     },
     units::{JoulePerSquareMeter, PerMeter, SquareCentimeterPerGram},
 };
@@ -258,9 +257,9 @@ fn assert_constitutive_density_composes<T: RealField + UnitScalar>() {
         MassDensity::new(DensityQuantity::from_base(T::from_f64(1_000.0)))
             .expect("water density is finite and positive"),
         SpecificHeatCapacity::new(HeatCapacityQuantity::from_base(T::from_f64(4_180.0)))
-        .expect("water heat capacity is finite and positive"),
+            .expect("water heat capacity is finite and positive"),
         ThermalConductivity::new(ConductivityQuantity::from_base(T::from_f64(0.6)))
-        .expect("water conductivity is finite and non-negative"),
+            .expect("water conductivity is finite and non-negative"),
     )
     .expect("water properties are valid");
     let material = Material::borrowed("water", ConstantLaw::new(properties));
