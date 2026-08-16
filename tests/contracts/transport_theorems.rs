@@ -2,7 +2,10 @@
 
 use crate::support::{anisotropy, assert_relative_close, coefficient, fluence, gamma, path};
 use aequitas::systems::si::{
-    quantities::{AreaPerMass, Dimensionless, MassDensity as DensityQuantity},
+    quantities::{
+        AreaPerMass, Dimensionless, MassDensity as DensityQuantity,
+        SpecificHeatCapacity as HeatCapacityQuantity, ThermalConductivity as ConductivityQuantity,
+    },
     units::{JoulePerSquareMeter, PerMeter, SquareCentimeterPerGram},
 };
 use eunomia::{NumericElement, RealField, UnitScalar};
@@ -17,7 +20,10 @@ use hyperion::{
         DiffusionCoefficients, planar_fluence_at_depth, reduced_scattering, total_optical_depth,
     },
 };
-use proteus::MassDensity;
+use proteus::{
+    ConstantLaw, MassDensity, Material, NoState, SpecificHeatCapacity, ThermalConductivity,
+    ThermophysicalProperties,
+};
 
 fn assert_unreduced_optical_laws<T: RealField + UnitScalar>() {
     let coefficients = OpticalCoefficients::new(
@@ -244,6 +250,37 @@ fn mass_attenuation_composes_with_proteus_density_and_aequitas_units() {
     // equals 7.072 m^-1. The conversion and product are exact in binary only
     // up to three rounded operations, so gamma_3 bounds the result.
     assert_relative_close(linear.in_unit::<PerMeter>(), 7.072_f64, 3.0);
+}
+
+fn assert_constitutive_density_composes<T: RealField + UnitScalar>() {
+    let properties = ThermophysicalProperties::new(
+        MassDensity::new(DensityQuantity::from_base(T::from_f64(1_000.0)))
+            .expect("water density is finite and positive"),
+        SpecificHeatCapacity::new(HeatCapacityQuantity::from_base(T::from_f64(4_180.0)))
+            .expect("water heat capacity is finite and positive"),
+        ThermalConductivity::new(ConductivityQuantity::from_base(T::from_f64(0.6)))
+            .expect("water conductivity is finite and non-negative"),
+    )
+    .expect("water properties are valid");
+    let material = Material::borrowed("water", ConstantLaw::new(properties));
+    let evaluated = material
+        .properties(NoState)
+        .expect("the constant constitutive law is infallible");
+    let mass_attenuation = MassAttenuation::new(AreaPerMass::from_unit::<SquareCentimeterPerGram>(
+        T::from_f64(0.07072),
+    ))
+    .expect("NIST water fixture is finite and non-negative");
+    let linear = mass_attenuation
+        .to_linear(*evaluated.density())
+        .expect("constitutive density composes without overflow");
+
+    assert_relative_close(linear.in_unit::<PerMeter>(), T::from_f64(7.072), 3.0);
+}
+
+#[test]
+fn proteus_constitutive_material_composes_with_transport_for_supported_scalars() {
+    assert_constitutive_density_composes::<f32>();
+    assert_constitutive_density_composes::<f64>();
 }
 
 #[test]

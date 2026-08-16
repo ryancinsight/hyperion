@@ -40,3 +40,13 @@ The lower-case `checklist.md` is the sole tracked provider checklist. Atlas
 root `backlog.md` owns cross-repository hashes, hosted-run identifiers, exact
 consumer counts, and registration history; this file records only the local
 completion state and points inward to that SSOT to avoid duplicated evidence.
+
+## HYPERION-004 — Proteus constitutive consumer contract
+
+- [x] Add a generic f32/f64 contract test that evaluates `proteus::ConstantLaw`
+      through `proteus::Material` and feeds the returned density into the
+      Hyperion attenuation conversion.
+- [x] Assert the analytical unit conversion and retain the existing boundary
+      failure tests unchanged.
+- [x] Run the focused provider gates and synchronize `backlog.md` and
+      `gap_audit.md` with exact revision and hosted evidence.
