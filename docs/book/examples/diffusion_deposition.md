@@ -11,6 +11,8 @@ transport albedo), and evaluates both deposition laws
 ## Source
 
 ```rust
+# extern crate aequitas;
+# extern crate hyperion;
 {{#include ../../../examples/book_diffusion_deposition.rs}}
 ```
 
