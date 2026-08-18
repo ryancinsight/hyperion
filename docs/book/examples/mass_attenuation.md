@@ -9,4 +9,7 @@ with a Proteus mass density and evaluates the resulting half-value layer.
 
 ```rust
 {{#include ../../../examples/book_mass_attenuation.rs}}
+# extern crate aequitas;
+# extern crate hyperion;
+# extern crate proteus;
 ```
