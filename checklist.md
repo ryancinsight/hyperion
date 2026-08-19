@@ -16,7 +16,8 @@
 - [x] Implement the complete coefficient, quantity, transport, reference-table,
       and typed-error contracts from ADR 0001.
 - [x] Pass formatting, both feature checks, warning-denied Clippy, nextest,
-      doctests, warning-denied rustdoc, the example, and cargo-deny.- [x] Register the Git-first provider and verify hosted CI plus anonymous
+      doctests, warning-denied rustdoc, the example, and cargo-deny.
+- [x] Register the Git-first provider and verify hosted CI plus anonymous
       remote-default identity; the occupied crates.io name remains intentionally
       unpublished (`publish = false`). See the Atlas root execution evidence.
 - [x] Migrate Helios, Kwavers, and CFDrs directly and delete every superseded law
