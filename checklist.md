@@ -59,3 +59,13 @@ completion state and points inward to that SSOT to avoid duplicated evidence.
       Proteus head.
 - [x] Synchronize provider evidence and integrate the merged default head into
       Atlas.
+
+## HYPERION-006 — Provider lock closure refresh
+
+- [x] Refresh `Cargo.lock` to Aequitas `260ad10`, Eunomia `85e590b`, and
+      Proteus `f612c99` without changing the Git dependency boundary.
+- [x] Run `cargo fmt --all -- --check` and locked all-feature dependency
+      metadata against the refreshed graph.
+- [ ] Push the provider branch and collect hosted `verify` and `supply-chain`
+      at the exact head; update Atlas's gitlink only after the provider default
+      merges.

@@ -78,3 +78,22 @@
 - Evidence: `7f36069` advances Proteus `3d6021e7` to `cb70021b` and
   co-evolves Aequitas `681042b` to `5114cd1` plus Eunomia `69ff96d` to
   `88c685f`. The locked provider gates pass against the resulting graph.
+
+## HYPERION-006 — Provider lock closure refresh [patch] — in progress 2026-08-18
+
+- Owner: current Atlas session; scope: `Cargo.lock` and this provider's local
+  PM records. Hyperion source, Proteus source, and peer-owned checkouts are
+  non-goals.
+- Acceptance: the locked Aequitas, Eunomia, and Proteus revisions equal the
+  fetched provider defaults `260ad10dd5480eef8c82958d1d148199656db59e`,
+  `85e590b789505c66f5174043c2e7e851c20547a5`, and
+  `f612c9981547d56021db3a1be7f75631fd78ff4c`; hosted `verify` and
+  `supply-chain` pass at the exact pushed head.
+- The manifest remains Git-sourced with its existing semver requirements. No
+  path dependency, compatibility layer, or source change is permitted.
+- Local evidence so far: `cargo fmt --all -- --check` and locked,
+  all-feature dependency metadata pass. `cargo check --locked
+  --all-features --all-targets` reaches the Atlas overlay and is rejected
+  before compilation because the local patches are absent from this standalone
+  lock. Full standalone locked compilation, tests, documentation, and
+  supply-chain evidence is therefore hosted-gated.
