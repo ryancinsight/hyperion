@@ -51,6 +51,23 @@ Final local evidence against that lock:
 The provider default and Pages workflow are the remaining integration boundary
 for this dependency-only change; the Atlas root owns the resulting gitlink.
 
+## HYPERION-006 — Provider lock closure refresh — in progress 2026-08-18
+
+The committed lock is being refreshed to the current fetched provider defaults:
+Aequitas `260ad10dd5480eef8c82958d1d148199656db59e`, Eunomia
+`85e590b789505c66f5174043c2e7e851c20547a5`, and Proteus
+`f612c9981547d56021db3a1be7f75631fd78ff4c`. The manifest remains Git-sourced;
+no source or compatibility path is introduced.
+
+Local evidence on `codex/hyperion-lockstep-076` includes formatting and locked,
+all-feature dependency metadata. `cargo check --locked --all-features
+--all-targets` reaches the parent Atlas overlay and is rejected before
+compilation because the local patches are not represented by this standalone
+lock. A full locked compilation/test/doc/supply-chain claim therefore
+requires the provider's hosted standalone workflow. Hosted `verify` and
+`supply-chain` are the acceptance gate, and the Atlas gitlink remains at the
+merged default until that gate and the merge pass.
+
 ## ATLAS-HYPERION-AUDIT-074 — Isolated provider re-verification — closed 2026-08-16
 
 The provider default `1da0da0` was re-verified from outside the Atlas umbrella
