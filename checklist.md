@@ -66,6 +66,7 @@ completion state and points inward to that SSOT to avoid duplicated evidence.
       Proteus `f612c99` without changing the Git dependency boundary.
 - [x] Run `cargo fmt --all -- --check` and locked all-feature dependency
       metadata against the refreshed graph.
-- [ ] Push the provider branch and collect hosted `verify` and `supply-chain`
-      at the exact head; update Atlas's gitlink only after the provider default
-      merges.
+- [x] Push the provider branch and collect hosted `verify` and `supply-chain`
+      at exact head `880eb8cce28d1e887942fbeb185a1cf4173c776a`; PR #15 merged
+      at provider default `0156f59f78aba1e3b06d4511ffb1ce30d5c0c6d4`, and Atlas
+      records that merge commit.
