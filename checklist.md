@@ -34,6 +34,11 @@
       guarantee and retain that limit in the provider ADR.
 - [x] Regenerate the ADR index from the existing `Status: Accepted` header and
       verify the generated index records the canonical status.
+- [x] Re-verify the merged default at provider head `a33c2f7` on 2026-08-19:
+      no-default-feature and all-feature checks, warning-denied Clippy,
+      23/23 Nextest, doctest, rustdoc, examples, and all mdBook chapters pass.
+      The book test uses the committed dependency directory after the exact
+      Hyperion, Aequitas, and Proteus package artifacts are rebuilt.
 
 ## Evidence boundary
 

@@ -98,6 +98,24 @@ runtime, performance, memory, or hardware-backend claim. No source-level
 placeholder markers were found. Remaining release and consumer watchpoints
 retain their documented status below.
 
+## Current default re-verification — 2026-08-19
+
+The merged provider default `a33c2f7` was re-verified from the Atlas stack root
+against its committed lockfile. The no-default-feature check, all-feature
+check, warning-denied all-target Clippy, and locked examples build pass. Locked
+Nextest passes 23/23, the README doctest passes 1/1, and warning-denied
+Rustdoc completes successfully. The mdBook test passes every chapter after
+the exact Hyperion, Aequitas, and Proteus package artifacts are rebuilt and
+the dependency directory is supplied with `-L D:/atlas/target/debug/deps`.
+
+Running a locked command from inside the provider directory while the Atlas
+development overlay is active attempted to rewrite the standalone lockfile;
+the committed lockfile remained authoritative and was restored before the
+stack-root recheck. This is an environment boundary, not a source or
+dependency change. The evidence establishes build, static, test, doctest,
+example, and book behavior only; it adds no runtime, performance, memory, or
+hardware-backend claim.
+
 ## Boundary
 
 Hyperion owns validated photon and optical interaction coefficients: typed
