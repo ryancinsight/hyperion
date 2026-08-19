@@ -79,7 +79,7 @@
   co-evolves Aequitas `681042b` to `5114cd1` plus Eunomia `69ff96d` to
   `88c685f`. The locked provider gates pass against the resulting graph.
 
-## HYPERION-006 — Provider lock closure refresh [patch] — done 2026-08-19
+## HYPERION-006 — Provider lock closure refresh [patch] — done 2026-08-18
 
 - Owner: current Atlas session; scope: `Cargo.lock` and this provider's local
   PM records. Hyperion source, Proteus source, and peer-owned checkouts are

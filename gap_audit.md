@@ -51,7 +51,7 @@ Final local evidence against that lock:
 The provider default and Pages workflow are the remaining integration boundary
 for this dependency-only change; the Atlas root owns the resulting gitlink.
 
-## HYPERION-006 — Provider lock closure refresh — closed 2026-08-19
+## HYPERION-006 — Provider lock closure refresh — closed 2026-08-18
 
 The committed lock now follows the current provider defaults:
 Aequitas `260ad10dd5480eef8c82958d1d148199656db59e`, Eunomia
