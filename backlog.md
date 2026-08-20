@@ -1,5 +1,13 @@
 # Hyperion backlog
 
+## ATLAS-HYPERION-WORKFLOW-PIN-2026-08-20 — Refresh shared book workflow pin [patch] — hosted verification pending
+
+- Owner: Atlas integration. Scope is the Pages caller and this PM/changelog
+  record; the Hyperion implementation and lockfile remain unchanged.
+- Acceptance: pin the caller to the current Atlas reusable workflow while
+  preserving the existing executable book-test inputs, then pass the exact
+  hosted source and Pages gates before advancing the Atlas gitlink.
+
 ## HYPERION-001 — Photon and optical interaction Phase 0 [arch] [minor] — done 2026-07-22
 
 - Owner: Codex `/root`; completion evidence is maintained by the Atlas root
