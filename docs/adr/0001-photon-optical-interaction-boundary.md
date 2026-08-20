@@ -103,6 +103,33 @@ off-knot values to detect method regressions; it does not turn rounded output
 into a fabricated tolerance. The table role does not create a material catalog: Proteus owns
 material identity, while Hyperion owns photon-energy-to-interaction data.
 
+## Revision 2026-08-20: Chromophore spectra ownership
+
+The chromophore spectra introduced after the original decision are part of
+Hyperion's optical-coefficient boundary. They are reference data that feed the
+owned Beer–Lambert absorption law, not consumer-specific tissue presets or
+photoacoustic workflows. Hyperion therefore owns the tabulated oxy- and
+deoxyhemoglobin spectra and their concentration-validation contract; Proteus
+continues to own material identity and Kwavers retains photoacoustic source and
+diagnostic workflow policy.
+
+The source is Scott Prahl's 1999 OMLC compilation, which identifies Gratzer and
+Kollias as source contributors:
+<https://omlc.org/spectra/hemoglobin/summary.html>. OMLC states that its
+tabulated molar extinction uses 64,500 g/mol hemoglobin. Because that molecular
+mass is the hemoglobin tetramer, the values pair directly with tetramer-molar
+concentrations. The earlier implementation's additional factor of four was a
+per-heme interpretation contradicted by the source's molecular-mass contract;
+the provider now stores the source values directly. The validity boundary is
+the compiled 450–1000 nm subset, continuous linear interpolation between its
+source knots, and rejection outside that measured range.
+
+The alternatives were to retain the relocated Kwavers table as the oracle, or
+to preserve the factor of four and document it as a local convention. Both
+would leave the source normalization unverified. The independent source-knot
+test and the explicit source citation are the acceptance evidence for this
+revision.
+
 ## Verification
 
 The generic conformance suite instantiates `f32` and `f64` and covers:

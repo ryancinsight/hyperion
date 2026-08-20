@@ -1,53 +1,54 @@
-//! Differential check against the tables this module replaced.
+//! Differential check against the independent Prahl/OMLC source table.
 //!
-//! The values below are transcribed from the Kwavers `kwavers-optics`
-//! chromophore database that ADR 0032 §4 retires. Asserting equality at every
-//! tabulated wavelength is what makes the move a relocation rather than a
-//! reimplementation: if any sample drifted in transit, this fails.
+//! The source table is available at
+//! <https://omlc.org/spectra/hemoglobin/summary.html> (retrieved 2026-08-20).
+//! OMLC reports molar extinction per hemoglobin molecule using 64,500 g/mol;
+//! the provider knots below select source rows and therefore must not carry a
+//! second factor of four.
 
 use super::{DEOXYHEMOGLOBIN, OXYHEMOGLOBIN, hemoglobin_absorption};
 use crate::TransportError;
 
-/// (wavelength nm, `HbO2` epsilon, Hb epsilon) as tabulated by `kwavers-optics`.
-const KWAVERS_TABLE: &[(f64, f64, f64)] = &[
-    (450.0, 251_264.0, 413_168.0),
-    (475.0, 120_454.4, 60_193.6),
-    (500.0, 83_731.2, 83_448.0),
-    (525.0, 117_076.8, 137_590.4),
-    (532.0, 175_504.0, 162_336.0),
-    (550.0, 172_064.0, 213_648.0),
-    (575.0, 196_688.0, 173_360.0),
-    (600.0, 12_800.0, 58_708.8),
-    (625.0, 3_096.0, 23_627.2),
-    (650.0, 1_472.0, 15_000.48),
-    (675.0, 1_142.4, 10_510.56),
-    (700.0, 1_160.0, 7_177.12),
-    (725.0, 1_560.0, 4_408.8),
-    (750.0, 2_072.0, 5_620.96),
-    (775.0, 2_708.8, 4_852.0),
-    (800.0, 3_264.0, 3_046.88),
-    (825.0, 3_825.6, 2_773.28),
-    (850.0, 4_232.0, 2_765.28),
-    (875.0, 4_550.4, 2_856.32),
-    (900.0, 4_792.0, 3_047.36),
-    (925.0, 4_907.2, 3_089.44),
-    (950.0, 4_816.0, 2_408.96),
-    (975.0, 4_576.0, 1_557.152),
-    (1000.0, 4_096.0, 827.136),
+/// (wavelength nm, `HbO2` epsilon, Hb epsilon) from the OMLC source table.
+const PRAHL_OMLC_TABLE: &[(u16, f64, f64)] = &[
+    (450, 62_816.0, 103_292.0),
+    (474, 30_113.6, 15_048.4),
+    (500, 20_932.8, 20_862.0),
+    (524, 29_269.2, 34_397.6),
+    (532, 43_876.0, 40_584.0),
+    (550, 43_016.0, 53_412.0),
+    (574, 53_308.0, 41_716.0),
+    (600, 3_200.0, 14_677.2),
+    (624, 774.0, 5_906.8),
+    (650, 368.0, 3_750.12),
+    (674, 285.6, 2_627.64),
+    (700, 290.0, 1_794.28),
+    (724, 364.0, 1_244.44),
+    (750, 518.0, 1_405.24),
+    (774, 677.2, 1_213.0),
+    (800, 816.0, 761.72),
+    (824, 944.8, 693.48),
+    (850, 1_058.0, 691.32),
+    (874, 1_137.6, 714.08),
+    (900, 1_198.0, 761.84),
+    (924, 1_227.2, 776.64),
+    (950, 1_204.0, 602.24),
+    (974, 1_150.8, 402.28),
+    (1000, 1_024.0, 206.784),
 ];
 
 #[test]
 // Exact equality is the property under test: a sample hit must return the
 // stored value unchanged, with no arithmetic applied. A tolerance here would
 // let a transcription error through, which is the only thing this guards.
-#[expect(clippy::float_cmp, reason = "table lookup must be bit-exact")]
-fn every_tabulated_wavelength_matches_the_retired_kwavers_tables() {
-    for &(wavelength, oxy, deoxy) in KWAVERS_TABLE {
+#[expect(clippy::float_cmp, reason = "source knots must be bit-exact")]
+fn every_tabulated_wavelength_matches_the_prahl_omlc_source() {
+    for &(wavelength, oxy, deoxy) in PRAHL_OMLC_TABLE {
         let got_oxy = OXYHEMOGLOBIN
-            .molar_extinction::<f64>(wavelength)
+            .molar_extinction::<f64>(f64::from(wavelength))
             .expect("tabulated wavelength is in range");
         let got_deoxy = DEOXYHEMOGLOBIN
-            .molar_extinction::<f64>(wavelength)
+            .molar_extinction::<f64>(f64::from(wavelength))
             .expect("tabulated wavelength is in range");
         // Exact: a sample hit returns the stored value, it is not interpolated.
         assert_eq!(got_oxy, oxy, "HbO2 at {wavelength} nm");
@@ -57,12 +58,12 @@ fn every_tabulated_wavelength_matches_the_retired_kwavers_tables() {
 
 #[test]
 fn interpolation_is_linear_between_neighbouring_samples() {
-    // Midpoint of the 800-825 nm interval, where both curves are smooth.
-    let midpoint = 812.5_f64;
+    // Midpoint of the 800-824 nm interval, where both curves are smooth.
+    let midpoint = 812.0_f64;
     let got = OXYHEMOGLOBIN
         .molar_extinction::<f64>(midpoint)
         .expect("inside the table");
-    let expected = f64::midpoint(3_264.0, 3_825.6);
+    let expected = f64::midpoint(816.0, 944.8);
     assert!(
         (got - expected).abs() < 1e-9,
         "expected {expected}, got {got}"
@@ -72,10 +73,10 @@ fn interpolation_is_linear_between_neighbouring_samples() {
 #[test]
 fn interpolation_is_monomorphized_for_f32_and_f64() {
     let f32_value = OXYHEMOGLOBIN
-        .molar_extinction::<f32>(812.5)
+        .molar_extinction::<f32>(812.0)
         .expect("f32 query is inside the table");
     let f64_value = OXYHEMOGLOBIN
-        .molar_extinction::<f64>(812.5)
+        .molar_extinction::<f64>(812.0)
         .expect("f64 query is inside the table");
 
     assert!(f32_value.is_finite());

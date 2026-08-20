@@ -26,11 +26,13 @@ Hyperion owns:
   reduced transport albedos, diffusion coefficient, effective attenuation,
   penetration depth, and planar fluence decay;
 - bounded NIST mass-attenuation lookup for the first-wave photon materials;
+- oxy- and deoxyhemoglobin molar-extinction spectra and their validated
+  Beer–Lambert absorption conversion;
 - local absorbed deposition, `Q = mu_a phi` in W/m3 and `q = mu_a Phi` in J/m3,
   the point where a transport result becomes a thermal or damage source term.
 
-Hyperion does not own material identity or tissue presets, chromophore spectra,
-CT/HU calibration, ray or mesh geometry, numerical solvers, dose deposition,
+Hyperion does not own material identity or tissue presets, CT/HU calibration,
+ray or mesh geometry, numerical solvers, dose deposition,
 GPU dispatch, Maxwell or radiative-transfer solvers, photoacoustic source
 generation, or workflow policy. These remain with `Proteus`, `Helios`,
 `Kwavers`, `CFDrs`, `Gaia`, `Athena`, and `Hephaestus`.
@@ -115,8 +117,9 @@ The diffuse-optics definitions and their domain follow the summary in
 [Jacques and Pogue, Table 1](https://pmc.ncbi.nlm.nih.gov/articles/PMC11166171/).
 The ownership decision, validity boundaries, numerical evidence, and migration
 ledger are recorded in
-[ADR 0001](docs/adr/0001-photon-optical-interaction-boundary.md). The chromophore
-lookup and concentration-validation contract is documented in
+[ADR 0001](docs/adr/0001-photon-optical-interaction-boundary.md), including the
+chromophore ownership revision. The chromophore lookup and
+concentration-validation contract is documented in
 [`docs/chromophore_spectra.md`](docs/chromophore_spectra.md).
 
 ## Verification
