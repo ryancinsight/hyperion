@@ -1,12 +1,19 @@
 # Hyperion backlog
 
-## ATLAS-HYPERION-WORKFLOW-PIN-2026-08-20 — Refresh shared book workflow pin [patch] — hosted verification pending
+## ATLAS-HYPERION-WORKFLOW-PIN-2026-08-20 — Refresh shared book workflow pin [patch] — done 2026-08-20
 
 - Owner: Atlas integration. Scope is the Pages caller and this PM/changelog
   record; the Hyperion implementation and lockfile remain unchanged.
 - Acceptance: pin the caller to the current Atlas reusable workflow while
   preserving the existing executable book-test inputs, then pass the exact
   hosted source and Pages gates before advancing the Atlas gitlink.
+- Evidence: source `5e8d47008e01f401c8d1b464c30e2909ff1a56c8`, PR #19, and
+  merged default `719d84e80163b958cc5500b5fa44a5b01095d6d1`. Exact PR
+  `verify`, `supply-chain`, and Pages book-build checks pass; post-merge CI
+  `32341198738`, Deploy mdBook `32341199236`, and dynamic Pages `32341197889`
+  pass. Live Pages returns HTTP 200 with the expected Hyperion title.
+- Delivery: the Atlas gitlink records the merged default and this provider
+  item is closed.
 
 ## HYPERION-001 — Photon and optical interaction Phase 0 [arch] [minor] — done 2026-07-22
 
