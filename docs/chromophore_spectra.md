@@ -5,6 +5,14 @@ molar-extinction spectra used to derive optical absorption. The tables are
 borrowed static slices, so lookup remains allocation-free and works under
 `no_std`.
 
+The samples come from Scott Prahl's 1999 OMLC compilation, which identifies
+the source contributors as Gratzer and Kollias:
+<https://omlc.org/spectra/hemoglobin/summary.html> (retrieved 2026-08-20).
+OMLC reports molar extinction in `cm⁻¹/M` using 64,500 g/mol hemoglobin. A
+hemoglobin molecule is the tetramer, so Hyperion pairs these values directly
+with tetramer-molar concentrations; it does not apply an additional factor of
+four. The committed source-knot test is the independent value oracle.
+
 ## Continuous interpolation
 
 `ExtinctionSpectrum::molar_extinction` accepts a real scalar wavelength in
@@ -16,7 +24,7 @@ silently clamping or extrapolating.
 ```rust
 use hyperion::coefficient::OXYHEMOGLOBIN;
 
-let extinction = OXYHEMOGLOBIN.molar_extinction::<f64>(812.5)?;
+let extinction = OXYHEMOGLOBIN.molar_extinction::<f64>(812.0)?;
 assert!(extinction.is_finite());
 # Ok::<(), hyperion::TransportError<f64>>(())
 ```

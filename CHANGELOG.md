@@ -24,6 +24,12 @@ All externally observable changes are recorded here.
 
 ### Changed
 
+- Correct the hemoglobin spectrum normalization against Prahl's OMLC source:
+  the published values already use 64,500 g/mol hemoglobin (the tetramer), so
+  the provider no longer applies an additional factor of four before pairing
+  them with tetramer-molar concentrations. Source-knot regression coverage and
+  the ownership decision are now independent of the retired Kwavers table.
+
 - Refresh the Pages caller to the current Atlas reusable workflow revision;
   retain the existing package-staged executable book gate. Exact hosted CI,
   mdBook, and Pages deployment runs pass at merged default `719d84e`; live

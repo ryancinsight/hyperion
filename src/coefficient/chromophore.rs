@@ -1,7 +1,8 @@
 //! Chromophore molar-extinction spectra and the absorption they imply.
 //!
 //! Hyperion owns optical coefficients, so the reference spectra that produce
-//! them belong here rather than in an integrator's leaf crate (ADR 0032 §4).
+//! them belong here rather than in an integrator's leaf crate (ADR 0001,
+//! chromophore revision).
 //!
 //! Spectra are tabulated, not analytic: each is a `&'static` table of
 //! (wavelength, molar extinction) samples, read without allocating, which is
@@ -13,66 +14,70 @@ use eunomia::{RealField, UnitScalar};
 use super::{Absorption, InteractionCoefficient};
 use crate::{TransportError, ValueKind, validation};
 
-/// Oxyhemoglobin (`HbO₂`) molar extinction, M⁻¹·cm⁻¹ per tetramer.
+/// Oxyhemoglobin (`HbO₂`) molar extinction, M⁻¹·cm⁻¹ per hemoglobin molecule.
 ///
-/// Prahl SA (1999), *Optical Absorption of Hemoglobin*, OMLC compiled
-/// tabulation (Gratzer / Kollias); per-heme values scaled ×4 because a
-/// tetramer carries four heme groups. Concentrations paired with these values
-/// are therefore tetramer-molar.
+/// Scott Prahl's 1999 OMLC compilation presents these values using the
+/// 64,500 g/mol molecular mass of hemoglobin ([source table][prahl]). A
+/// hemoglobin molecule is the tetramer, so tetramer-molar concentrations pair
+/// with these values directly; no additional per-heme-to-tetramer factor is
+/// applied.
+///
+/// [prahl]: https://omlc.org/spectra/hemoglobin/summary.html
 const OXYHEMOGLOBIN_SAMPLES: &[(u16, f64)] = &[
-    (450, 251_264.0),
-    (475, 120_454.4),
-    (500, 83_731.2),
-    (525, 117_076.8),
-    (532, 175_504.0),
-    (550, 172_064.0),
-    (575, 196_688.0),
-    (600, 12_800.0),
-    (625, 3_096.0),
-    (650, 1_472.0),
-    (675, 1_142.4),
-    (700, 1_160.0),
-    (725, 1_560.0),
-    (750, 2_072.0),
-    (775, 2_708.8),
-    (800, 3_264.0),
-    (825, 3_825.6),
-    (850, 4_232.0),
-    (875, 4_550.4),
-    (900, 4_792.0),
-    (925, 4_907.2),
-    (950, 4_816.0),
-    (975, 4_576.0),
-    (1000, 4_096.0),
+    (450, 62_816.0),
+    (474, 30_113.6),
+    (500, 20_932.8),
+    (524, 29_269.2),
+    (532, 43_876.0),
+    (550, 43_016.0),
+    (574, 53_308.0),
+    (600, 3_200.0),
+    (624, 774.0),
+    (650, 368.0),
+    (674, 285.6),
+    (700, 290.0),
+    (724, 364.0),
+    (750, 518.0),
+    (774, 677.2),
+    (800, 816.0),
+    (824, 944.8),
+    (850, 1_058.0),
+    (874, 1_137.6),
+    (900, 1_198.0),
+    (924, 1_227.2),
+    (950, 1_204.0),
+    (974, 1_150.8),
+    (1000, 1_024.0),
 ];
 
-/// Deoxyhemoglobin (Hb) molar extinction, M⁻¹·cm⁻¹ per tetramer. Same source
-/// and normalisation as [`OXYHEMOGLOBIN_SAMPLES`].
+/// Deoxyhemoglobin (Hb) molar extinction, M⁻¹·cm⁻¹ per hemoglobin molecule.
+/// The source and molecular/tetramer normalization are those of
+/// [`OXYHEMOGLOBIN_SAMPLES`].
 const DEOXYHEMOGLOBIN_SAMPLES: &[(u16, f64)] = &[
-    (450, 413_168.0),
-    (475, 60_193.6),
-    (500, 83_448.0),
-    (525, 137_590.4),
-    (532, 162_336.0),
-    (550, 213_648.0),
-    (575, 173_360.0),
-    (600, 58_708.8),
-    (625, 23_627.2),
-    (650, 15_000.48),
-    (675, 10_510.56),
-    (700, 7_177.12),
-    (725, 4_408.8),
-    (750, 5_620.96),
-    (775, 4_852.0),
-    (800, 3_046.88),
-    (825, 2_773.28),
-    (850, 2_765.28),
-    (875, 2_856.32),
-    (900, 3_047.36),
-    (925, 3_089.44),
-    (950, 2_408.96),
-    (975, 1_557.152),
-    (1000, 827.136),
+    (450, 103_292.0),
+    (474, 15_048.4),
+    (500, 20_862.0),
+    (524, 34_397.6),
+    (532, 40_584.0),
+    (550, 53_412.0),
+    (574, 41_716.0),
+    (600, 14_677.2),
+    (624, 5_906.8),
+    (650, 3_750.12),
+    (674, 2_627.64),
+    (700, 1_794.28),
+    (724, 1_244.44),
+    (750, 1_405.24),
+    (774, 1_213.0),
+    (800, 761.72),
+    (824, 693.48),
+    (850, 691.32),
+    (874, 714.08),
+    (900, 761.84),
+    (924, 776.64),
+    (950, 602.24),
+    (974, 402.28),
+    (1000, 206.784),
 ];
 
 /// A tabulated molar-extinction spectrum, sampled in ascending wavelength.
