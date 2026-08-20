@@ -25,7 +25,9 @@ All externally observable changes are recorded here.
 ### Changed
 
 - Refresh the Pages caller to the current Atlas reusable workflow revision;
-  retain the existing package-staged executable book gate.
+  retain the existing package-staged executable book gate. Exact hosted CI,
+  mdBook, and Pages deployment runs pass at merged default `719d84e`; live
+  Pages returns HTTP 200.
 
 - NIST reference-table intervals now use a native-`T` natural cubic spline in
   log-energy/log-coefficient space, matching the interpolation family
