@@ -115,14 +115,16 @@ diagnostic workflow policy.
 
 The source is Scott Prahl's 1999 OMLC compilation, which identifies Gratzer and
 Kollias as source contributors:
-<https://omlc.org/spectra/hemoglobin/summary.html>. OMLC states that its
-tabulated molar extinction uses 64,500 g/mol hemoglobin. Because that molecular
-mass is the hemoglobin tetramer, the values pair directly with tetramer-molar
-concentrations. The earlier implementation's additional factor of four was a
-per-heme interpretation contradicted by the source's molecular-mass contract;
-the provider now stores the source values directly. The validity boundary is
-the compiled 450–1000 nm subset, continuous linear interpolation between its
-source knots, and rejection outside that measured range.
+<https://omlc.org/spectra/hemoglobin/summary.html> (retrieved 2026-08-20),
+specifically its preformatted `lambda`/`Hb02`/`Hb` table columns. OMLC states
+that its tabulated molar extinction uses 64,500 g/mol hemoglobin. Because that
+molecular mass is the hemoglobin tetramer, the values pair directly with
+tetramer-molar concentrations. The earlier implementation's additional factor
+of four was a per-heme interpretation contradicted by the source's
+molecular-mass contract; the provider now stores the source values directly.
+The validity boundary is the compiled 450–1000 nm subset, continuous linear
+interpolation between its source knots, and rejection outside that measured
+range.
 
 The alternatives were to retain the relocated Kwavers table as the oracle, or
 to preserve the factor of four and document it as a local convention. Both

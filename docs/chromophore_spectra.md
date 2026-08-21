@@ -11,7 +11,14 @@ the source contributors as Gratzer and Kollias:
 OMLC reports molar extinction in `cm⁻¹/M` using 64,500 g/mol hemoglobin. A
 hemoglobin molecule is the tetramer, so Hyperion pairs these values directly
 with tetramer-molar concentrations; it does not apply an additional factor of
-four. The committed source-knot test is the independent value oracle.
+four. The source table's `lambda`, `Hb02`, and `Hb` columns are the locator for
+the embedded values. The committed source-knot test independently transcribes
+representative rows from those columns and is the value oracle; it does not
+read the production slices to construct its expected values.
+
+The source's 64,500 g/mol molecular mass already describes hemoglobin as a
+tetramer. Applying a further per-heme-to-tetramer factor would therefore
+double-count the four heme groups and is not part of Hyperion's contract.
 
 ## Continuous interpolation
 

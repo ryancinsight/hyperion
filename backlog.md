@@ -1,5 +1,26 @@
 # Hyperion backlog
 
+## HYPERION-007 — Anchor chromophore source oracle [patch] — done 2026-08-20
+
+- Owner: current Atlas session; scope is the chromophore source citation,
+  source-knot test oracle, and synchronized provider documentation. Consumer
+  repositories and the dirty detached primary checkout are non-goals.
+- Acceptance met: the independent OMLC table URL, retrieval date, and
+  preformatted `lambda`/`Hb02`/`Hb` column locator are recorded. The test
+  fixture is independently transcribed from representative source rows and
+  checks every embedded knot. OMLC's 64,500 g/mol value describes hemoglobin
+  molecules (tetramers), so the provider applies no second factor of four;
+  applying one would double-count the heme groups.
+- Evidence: clean lane `fix/hyperion-chromophore-source-oracle`, based on
+  fetched `origin/main` `4df62f6`, publishes `4542bc8`. The exact source rows
+  at 450, 500, 532, 550, 600, 650, 800, and 1000 nm were reread from the
+  OMLC table on 2026-08-20. A temporary source-knot mutation failed the
+  source-oracle test and was restored.
+- Provider format, locked all-target checks, warning-denied Clippy, all-feature
+  and no-default Nextest (23/23 each), doctests (1/1 each), and warning-denied
+  Rustdoc pass. `cargo-deny` is unavailable in the local toolchain; prior
+  hosted supply-chain evidence remains the applicable external check.
+
 ## ATLAS-HYPERION-WORKFLOW-PIN-2026-08-20 — Refresh shared book workflow pin [patch] — done 2026-08-20
 
 - Owner: Atlas integration. Scope is the Pages caller and this PM/changelog

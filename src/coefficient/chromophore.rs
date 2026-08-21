@@ -16,11 +16,12 @@ use crate::{TransportError, ValueKind, validation};
 
 /// Oxyhemoglobin (`HbO₂`) molar extinction, M⁻¹·cm⁻¹ per hemoglobin molecule.
 ///
-/// Scott Prahl's 1999 OMLC compilation presents these values using the
-/// 64,500 g/mol molecular mass of hemoglobin ([source table][prahl]). A
-/// hemoglobin molecule is the tetramer, so tetramer-molar concentrations pair
-/// with these values directly; no additional per-heme-to-tetramer factor is
-/// applied.
+/// Scott Prahl's 1999 OMLC compilation presents these values in the
+/// preformatted source table's `lambda`/`Hb02` columns using the 64,500 g/mol
+/// molecular mass of hemoglobin ([source table][prahl]). A hemoglobin
+/// molecule is the tetramer, so tetramer-molar concentrations pair with these
+/// values directly; no additional per-heme-to-tetramer factor is applied.
+/// The page was retrieved on 2026-08-20.
 ///
 /// [prahl]: https://omlc.org/spectra/hemoglobin/summary.html
 const OXYHEMOGLOBIN_SAMPLES: &[(u16, f64)] = &[
@@ -51,7 +52,8 @@ const OXYHEMOGLOBIN_SAMPLES: &[(u16, f64)] = &[
 ];
 
 /// Deoxyhemoglobin (Hb) molar extinction, M⁻¹·cm⁻¹ per hemoglobin molecule.
-/// The source and molecular/tetramer normalization are those of
+/// These values are transcribed from the source table's `lambda`/`Hb` columns;
+/// the source and molecular/tetramer normalization are those of
 /// [`OXYHEMOGLOBIN_SAMPLES`].
 const DEOXYHEMOGLOBIN_SAMPLES: &[(u16, f64)] = &[
     (450, 103_292.0),

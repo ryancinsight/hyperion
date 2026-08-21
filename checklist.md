@@ -1,5 +1,17 @@
 # Hyperion Phase 0 checklist
 
+## HYPERION-007 — Anchor chromophore source oracle — closed 2026-08-20
+
+- [x] Read the OMLC source rows independently and record the URL, retrieval
+      date, table columns, units, and tetramer normalization.
+- [x] Replace the retired Kwavers-only oracle description with the independent
+      source-knot fixture and retain value-semantic mutation coverage.
+- [x] Synchronize the API Rustdoc, provider chromophore guide, book chapter,
+      and ADR 0001 revision.
+- [x] Run exact-lane format, locked checks, Clippy, Nextest, doctests, and
+      Rustdoc for all features and no default features; record the unavailable
+      local cargo-deny command without claiming supply-chain coverage.
+
 ## ATLAS-HYPERION-AUDIT-074 — Isolated provider re-verification — closed 2026-08-16
 
 - Owner: current Atlas session.

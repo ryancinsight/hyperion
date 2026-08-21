@@ -2,15 +2,16 @@
 //!
 //! The source table is available at
 //! <https://omlc.org/spectra/hemoglobin/summary.html> (retrieved 2026-08-20).
-//! OMLC reports molar extinction per hemoglobin molecule using 64,500 g/mol;
-//! the provider knots below select source rows and therefore must not carry a
-//! second factor of four.
+//! Its preformatted `lambda`/`Hb02`/`Hb` columns report molar extinction per
+//! hemoglobin molecule using 64,500 g/mol. The fixture below is independently
+//! transcribed from those source rows rather than derived from the production
+//! slices; the provider knots therefore must not carry a second factor of four.
 
 use super::{DEOXYHEMOGLOBIN, OXYHEMOGLOBIN, hemoglobin_absorption};
 use crate::TransportError;
 
-/// (wavelength nm, `HbO2` epsilon, Hb epsilon) from the OMLC source table.
-const PRAHL_OMLC_TABLE: &[(u16, f64, f64)] = &[
+/// (wavelength nm, `HbO2` epsilon, Hb epsilon) from independently reread OMLC rows.
+const PRAHL_OMLC_SOURCE_SAMPLES: &[(u16, f64, f64)] = &[
     (450, 62_816.0, 103_292.0),
     (474, 30_113.6, 15_048.4),
     (500, 20_932.8, 20_862.0),
@@ -43,7 +44,7 @@ const PRAHL_OMLC_TABLE: &[(u16, f64, f64)] = &[
 // let a transcription error through, which is the only thing this guards.
 #[expect(clippy::float_cmp, reason = "source knots must be bit-exact")]
 fn every_tabulated_wavelength_matches_the_prahl_omlc_source() {
-    for &(wavelength, oxy, deoxy) in PRAHL_OMLC_TABLE {
+    for &(wavelength, oxy, deoxy) in PRAHL_OMLC_SOURCE_SAMPLES {
         let got_oxy = OXYHEMOGLOBIN
             .molar_extinction::<f64>(f64::from(wavelength))
             .expect("tabulated wavelength is in range");
