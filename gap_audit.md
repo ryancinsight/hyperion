@@ -141,10 +141,29 @@ solvers, dose deposition, GPU dispatch, or Maxwell/radiative-transfer solvers
 - Local planning trail completed at this audit with the missing `gap_audit.md`
   authored; `backlog.md` and `checklist.md` predate this audit.
 
+## HYPERION-007 — Anchor chromophore source oracle — closed 2026-08-20
+
+The chromophore source boundary is now independently traceable. The source
+record is Scott Prahl's 1999 OMLC compilation at
+<https://omlc.org/spectra/hemoglobin/summary.html>, retrieved 2026-08-20; the
+locator is its preformatted `lambda`/`Hb02`/`Hb` table columns. The source
+reports molar extinction using 64,500 g/mol hemoglobin, so the provider's
+tetramer-molar contract uses those values directly without a second factor of
+four.
+
+The source-knot fixture is separate from the production slices and was reread
+from representative OMLC rows. It catches a perturbed embedded sample. Exact
+lane gates pass at `4542bc8`: format, locked all-target checks, warning-denied
+Clippy, all-feature and no-default Nextest (23/23 each), doctests (1/1 each),
+and warning-denied Rustdoc. The local cargo-deny executable is unavailable;
+the existing hosted supply-chain evidence is not re-claimed by this local
+pass.
+
 ## Gap inventory
 
 | ID | Description | Status |
 |----|-------------|--------|
+| HYPERION-007 | Chromophore source citation and independent source-knot oracle | Closed — OMLC table locator, normalization, and mutation-backed checks recorded at `4542bc8` |
 | HYPERION-002 | Post-registration release residuals (crates.io identity decision) | Deferred — watchpoint only; no implementation claimed |
 | H-001 | Registry publication (`publish = false`, occupied crates.io name) | Open — owner-gated Git-first decision documented in `backlog.md` |
 | H-002 | Material identity / tissue presets / chromophore spectra beyond the coefficient layer | Open — consumer-gated; explicitly out of HYPERION-001 scope |
