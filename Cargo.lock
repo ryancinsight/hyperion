@@ -5,7 +5,7 @@ version = 4
 [[package]]
 name = "aequitas"
 version = "0.2.0"
-source = "git+https://github.com/ryancinsight/aequitas#260ad10dd5480eef8c82958d1d148199656db59e"
+source = "git+https://github.com/ryancinsight/aequitas#dc4bdefbbd679a732017886657bef2d54af9d9bb"
 dependencies = [
  "eunomia",
  "typenum",
@@ -77,7 +77,7 @@ dependencies = [
 [[package]]
 name = "eunomia"
 version = "0.8.0"
-source = "git+https://github.com/ryancinsight/eunomia#85e590b789505c66f5174043c2e7e851c20547a5"
+source = "git+https://github.com/ryancinsight/eunomia#35158d17d20160214519811b19167ce385215f3e"
 dependencies = [
  "bytemuck",
  "libm",
@@ -125,7 +125,7 @@ dependencies = [
  "aequitas",
  "eunomia",
  "proptest",
- "proteus",
+ "proteus-mat",
  "stats_alloc",
 ]
 
@@ -200,9 +200,9 @@ dependencies = [
 ]
 
 [[package]]
-name = "proteus"
+name = "proteus-mat"
 version = "0.1.0"
-source = "git+https://github.com/ryancinsight/proteus#f612c9981547d56021db3a1be7f75631fd78ff4c"
+source = "git+https://github.com/ryancinsight/proteus#cd93e67a82bb14f407c0bd07418cf7aa171f50ef"
 dependencies = [
  "aequitas",
  "eunomia",
