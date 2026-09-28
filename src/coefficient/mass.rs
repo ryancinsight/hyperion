@@ -1,5 +1,5 @@
 use aequitas::{
-    systems::si::{dimensions, quantities::AreaPerMass, quantities::ReciprocalLength},
+    systems::si::{dimensions, quantities::AreaPerMass},
     unit::LinearUnit,
 };
 use eunomia::{RealField, UnitScalar};
@@ -35,14 +35,12 @@ impl<T: RealField + UnitScalar> MassAttenuation<T> {
         self,
         density: MassDensity<T>,
     ) -> Result<InteractionCoefficient<T, LinearAttenuation>, TransportError<T>> {
-        let quantity: ReciprocalLength<T> = self.0 * density.into_quantity();
+        let quantity = self.0 * density.into_quantity();
         let value = validation::derived_finite(
             TransportLaw::MassToLinearAttenuation,
             quantity.into_base(),
         )?;
-        Ok(InteractionCoefficient::from_validated(
-            ReciprocalLength::from_base(value),
-        ))
+        Ok(InteractionCoefficient::from_base_value(value))
     }
 
     /// Return the value expressed in area-per-mass unit `U`.
