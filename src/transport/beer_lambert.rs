@@ -1,4 +1,4 @@
-use aequitas::systems::si::quantities::{Dimensionless, Length};
+use aequitas::systems::si::quantities::Dimensionless;
 use eunomia::{NumericElement, RealField, UnitScalar};
 
 use crate::{
@@ -38,9 +38,10 @@ impl<T: RealField> InteractionCoefficient<T, LinearAttenuation> {
         if coefficient == <T as NumericElement>::ZERO {
             return Ok(None);
         }
-        let length = T::LN_2 / coefficient;
-        let valid = validation::derived_finite(TransportLaw::HalfValueLayer, length)?;
-        Ok(Some(PathLength::from_validated(Length::from_base(valid))))
+        Ok(Some(validation::finite_reciprocal_path(
+            TransportLaw::HalfValueLayer,
+            T::LN_2 / coefficient,
+        )?))
     }
 }
 
@@ -58,9 +59,10 @@ impl<T: RealField> InteractionCoefficient<T, EffectiveAttenuation> {
         if coefficient == <T as NumericElement>::ZERO {
             return Ok(None);
         }
-        let length = coefficient.recip();
-        let valid = validation::derived_finite(TransportLaw::PenetrationDepth, length)?;
-        Ok(Some(PathLength::from_validated(Length::from_base(valid))))
+        Ok(Some(validation::finite_reciprocal_path(
+            TransportLaw::PenetrationDepth,
+            coefficient.recip(),
+        )?))
     }
 }
 

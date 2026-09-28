@@ -58,6 +58,11 @@ impl<T, Role> InteractionCoefficient<T, Role> {
             role: PhantomData,
         }
     }
+
+    /// Build a role-typed coefficient from a canonical-SI reciprocal length.
+    pub(crate) const fn from_base_value(value: T) -> Self {
+        Self::from_validated(ReciprocalLength::from_base(value))
+    }
 }
 
 const fn value_kind<Role: CoefficientRole>() -> ValueKind {

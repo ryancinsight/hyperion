@@ -6,6 +6,10 @@
 //! or radiation transport result becomes a source term for a thermal or damage
 //! model, so they belong to one owner rather than to each consumer.
 
+use aequitas::{
+    quantity::Quantity,
+    systems::si::quantities::{EnergyPerVolume, ReciprocalLength, VolumetricPowerDensity},
+};
 use eunomia::{RealField, UnitScalar};
 
 use crate::{
@@ -14,6 +18,23 @@ use crate::{
     quantity::{AbsorbedEnergyDensity, AbsorbedPowerDensity, EnergyFluence, FluenceRate},
     validation,
 };
+
+/// Product of an absorption coefficient and a fluence, validated once.
+///
+/// Generic over the source quantity's dimension and the product dimension, so
+/// the rate and time-integrated deposition laws share one body.
+fn absorbed_density<T, SourceDimension, ProductDimension>(
+    absorption: InteractionCoefficient<T, Absorption>,
+    source: Quantity<T, SourceDimension>,
+) -> Result<T, TransportError<T>>
+where
+    T: RealField + UnitScalar,
+    ReciprocalLength<T>:
+        core::ops::Mul<Quantity<T, SourceDimension>, Output = Quantity<T, ProductDimension>>,
+{
+    let product = *absorption.quantity() * source;
+    validation::derived_finite(TransportLaw::AbsorbedDeposition, product.into_base())
+}
 
 /// Absorbed power density `Q = μ_a φ`, in `W/m³`.
 ///
@@ -25,10 +46,9 @@ pub fn absorbed_power_density<T: RealField + UnitScalar>(
     absorption: InteractionCoefficient<T, Absorption>,
     fluence_rate: FluenceRate<T>,
 ) -> Result<AbsorbedPowerDensity<T>, TransportError<T>> {
-    let product = *absorption.quantity() * fluence_rate.into_quantity();
-    let value = validation::derived_finite(TransportLaw::AbsorbedDeposition, product.into_base())?;
+    let value = absorbed_density(absorption, fluence_rate.into_quantity())?;
     Ok(AbsorbedPowerDensity::from_validated(
-        aequitas::systems::si::quantities::VolumetricPowerDensity::from_base(value),
+        VolumetricPowerDensity::from_base(value),
     ))
 }
 
@@ -42,10 +62,9 @@ pub fn absorbed_energy_density<T: RealField + UnitScalar>(
     absorption: InteractionCoefficient<T, Absorption>,
     fluence: EnergyFluence<T>,
 ) -> Result<AbsorbedEnergyDensity<T>, TransportError<T>> {
-    let product = *absorption.quantity() * fluence.into_quantity();
-    let value = validation::derived_finite(TransportLaw::AbsorbedDeposition, product.into_base())?;
+    let value = absorbed_density(absorption, fluence.into_quantity())?;
     Ok(AbsorbedEnergyDensity::from_validated(
-        aequitas::systems::si::quantities::EnergyPerVolume::from_base(value),
+        EnergyPerVolume::from_base(value),
     ))
 }
 

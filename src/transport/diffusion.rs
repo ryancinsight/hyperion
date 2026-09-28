@@ -1,4 +1,4 @@
-use aequitas::systems::si::quantities::{Dimensionless, Length, ReciprocalLength};
+use aequitas::systems::si::quantities::{Dimensionless, Length};
 use eunomia::{NumericElement, RealField};
 
 use crate::{
@@ -97,8 +97,8 @@ impl<T: RealField> DiffusionCoefficients<T> {
     pub fn transport_coefficient(
         &self,
     ) -> Result<InteractionCoefficient<T, Transport>, TransportError<T>> {
-        Ok(InteractionCoefficient::from_validated(
-            ReciprocalLength::from_base(self.transport_value()?),
+        Ok(InteractionCoefficient::from_base_value(
+            self.transport_value()?,
         ))
     }
 
@@ -126,9 +126,10 @@ impl<T: RealField> DiffusionCoefficients<T> {
     /// Returns [`TransportError::DerivedNonFinite`] when the reciprocal is not
     /// finite.
     pub fn transport_mean_free_path(&self) -> Result<PathLength<T>, TransportError<T>> {
-        let value = self.transport_value()?.recip();
-        let valid = validation::derived_finite(TransportLaw::TransportMeanFreePath, value)?;
-        Ok(PathLength::from_validated(Length::from_base(valid)))
+        validation::finite_reciprocal_path(
+            TransportLaw::TransportMeanFreePath,
+            self.transport_value()?.recip(),
+        )
     }
 
     /// Return `mu_eff = sqrt(3 mu_a (mu_a + mu_s'))`.
@@ -146,9 +147,7 @@ impl<T: RealField> DiffusionCoefficients<T> {
             validation::derived_finite(TransportLaw::EffectiveAttenuation, radicand)?;
         let value = finite_radicand.sqrt();
         let valid = validation::derived_finite(TransportLaw::EffectiveAttenuation, value)?;
-        Ok(InteractionCoefficient::from_validated(
-            ReciprocalLength::from_base(valid),
-        ))
+        Ok(InteractionCoefficient::from_base_value(valid))
     }
 
     /// Return `mu_s' / (mu_a + mu_s')`.
@@ -159,8 +158,11 @@ impl<T: RealField> DiffusionCoefficients<T> {
     /// finite.
     pub fn transport_albedo(&self) -> Result<TransportAlbedo<T>, TransportError<T>> {
         let reduced = *self.reduced_scattering.quantity().as_base();
-        let value = reduced / self.transport_value()?;
-        let finite = validation::derived_finite(TransportLaw::TransportAlbedo, value)?;
+        let finite = validation::finite_ratio(
+            TransportLaw::TransportAlbedo,
+            reduced,
+            self.transport_value()?,
+        )?;
         Ok(TransportAlbedo::from_validated(Dimensionless::from_base(
             finite,
         )))
@@ -170,7 +172,7 @@ impl<T: RealField> DiffusionCoefficients<T> {
         let absorption = *self.absorption.quantity().as_base();
         let reduced = *self.reduced_scattering.quantity().as_base();
         let sum =
-            validation::derived_finite(TransportLaw::TransportCoefficient, absorption + reduced)?;
+            validation::finite_pair_sum(TransportLaw::TransportCoefficient, absorption, reduced)?;
         if sum == <T as NumericElement>::ZERO {
             Err(TransportError::DegenerateTransport)
         } else {
@@ -191,7 +193,5 @@ pub fn reduced_scattering<T: RealField>(
     let factor = <T as NumericElement>::ONE - anisotropy.into_quantity().into_base();
     let value = scattering.into_quantity().into_base() * factor;
     let valid = validation::derived_finite(TransportLaw::ReducedScattering, value)?;
-    Ok(InteractionCoefficient::from_validated(
-        ReciprocalLength::from_base(valid),
-    ))
+    Ok(InteractionCoefficient::from_base_value(valid))
 }

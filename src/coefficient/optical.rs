@@ -1,4 +1,4 @@
-use aequitas::systems::si::quantities::{Dimensionless, Length, ReciprocalLength};
+use aequitas::systems::si::quantities::Dimensionless;
 use eunomia::{NumericElement, RealField};
 
 use super::{Absorption, InteractionCoefficient, LinearAttenuation, Scattering};
@@ -57,9 +57,7 @@ impl<T: RealField> OpticalCoefficients<T> {
     pub fn total_attenuation(
         &self,
     ) -> Result<InteractionCoefficient<T, LinearAttenuation>, TransportError<T>> {
-        Ok(InteractionCoefficient::from_validated(
-            ReciprocalLength::from_base(self.total_value()?),
-        ))
+        Ok(InteractionCoefficient::from_base_value(self.total_value()?))
     }
 
     /// Return the ordinary mean free path `1 / (mu_a + mu_s)`.
@@ -75,8 +73,10 @@ impl<T: RealField> OpticalCoefficients<T> {
         if total == <T as NumericElement>::ZERO {
             return Ok(None);
         }
-        let value = validation::derived_finite(TransportLaw::MeanFreePath, total.recip())?;
-        Ok(Some(PathLength::from_validated(Length::from_base(value))))
+        Ok(Some(validation::finite_reciprocal_path(
+            TransportLaw::MeanFreePath,
+            total.recip(),
+        )?))
     }
 
     /// Return ordinary single-scattering albedo `mu_s / (mu_a + mu_s)`.
@@ -96,7 +96,7 @@ impl<T: RealField> OpticalCoefficients<T> {
         }
         let scattering = *self.scattering.quantity().as_base();
         let value =
-            validation::derived_finite(TransportLaw::SingleScatteringAlbedo, scattering / total)?;
+            validation::finite_ratio(TransportLaw::SingleScatteringAlbedo, scattering, total)?;
         Ok(Some(SingleScatteringAlbedo::from_validated(
             Dimensionless::from_base(value),
         )))
@@ -105,6 +105,6 @@ impl<T: RealField> OpticalCoefficients<T> {
     fn total_value(&self) -> Result<T, TransportError<T>> {
         let absorption = *self.absorption.quantity().as_base();
         let scattering = *self.scattering.quantity().as_base();
-        validation::derived_finite(TransportLaw::TotalAttenuation, absorption + scattering)
+        validation::finite_pair_sum(TransportLaw::TotalAttenuation, absorption, scattering)
     }
 }
