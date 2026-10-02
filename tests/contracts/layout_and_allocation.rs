@@ -1,6 +1,13 @@
 //! Representation and allocation invariants.
+//!
+//! Allocation windows count allocations made by the measuring thread only. A
+//! process-wide counter is invalid here: libtest runs each test body on a
+//! spawned thread while its main thread keeps inserting the running test into
+//! its bookkeeping collections, so a process-wide window can absorb those
+//! allocations and fail for reasons unrelated to the code under measurement.
 
 use core::mem::{align_of, size_of};
+use std::alloc::System;
 
 use crate::support::{coefficient, fluence, path};
 use aequitas::systems::si::quantities::{
@@ -14,10 +21,10 @@ use hyperion::{
     },
     transport::{DiffusionCoefficients, OpticalDiffusionCoefficient, planar_fluence_at_depth},
 };
-use stats_alloc::{INSTRUMENTED_SYSTEM, Region, StatsAlloc};
+use mnemosyne::counting::{AllocationDelta, CountingAllocator, measure};
 
 #[global_allocator]
-static ALLOCATOR: &StatsAlloc<std::alloc::System> = &INSTRUMENTED_SYSTEM;
+static ALLOCATOR: CountingAllocator<System> = CountingAllocator::new(System);
 
 #[test]
 fn transparent_domain_types_preserve_quantity_layout() {
@@ -73,18 +80,16 @@ fn representative_transport_path_allocates_nothing() {
     let surface = fluence(12.0);
     let depth = path(0.25);
 
-    let region = Region::new(ALLOCATOR);
-    let pair = DiffusionCoefficients::new(absorption, reduced)
-        .expect("fixture transport coefficient is positive");
-    let attenuation: InteractionCoefficient<f64, EffectiveAttenuation> = pair
-        .effective_attenuation()
-        .expect("fixture attenuation is finite");
-    let result = planar_fluence_at_depth(surface, attenuation, depth)
-        .expect("fixture fluence remains finite");
-    let change = region.change();
+    let (result, change) = measure(|| {
+        let pair = DiffusionCoefficients::new(absorption, reduced)
+            .expect("fixture transport coefficient is positive");
+        let attenuation: InteractionCoefficient<f64, EffectiveAttenuation> = pair
+            .effective_attenuation()
+            .expect("fixture attenuation is finite");
+        planar_fluence_at_depth(surface, attenuation, depth)
+            .expect("fixture fluence remains finite")
+    });
 
     assert!(result.into_quantity().into_base().is_finite());
-    assert_eq!(change.allocations, 0);
-    assert_eq!(change.reallocations, 0);
-    assert_eq!(change.deallocations, 0);
+    assert_eq!(change, AllocationDelta::default());
 }

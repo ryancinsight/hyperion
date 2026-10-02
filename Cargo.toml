@@ -18,8 +18,8 @@ eunomia = { version = "0.8.0", git = "https://github.com/ryancinsight/eunomia", 
 proteus = { package = "proteus-mat", version = "0.1.0", git = "https://github.com/ryancinsight/proteus", default-features = false }
 
 [dev-dependencies]
+mnemosyne = { package = "mnemosyne-memory", version = "0.8.0", git = "https://github.com/ryancinsight/Mnemosyne", default-features = false }
 proptest = "1.11.0"
-stats_alloc = "0.1.10"
 
 [features]
 default = ["std"]
