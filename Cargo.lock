@@ -448,7 +448,7 @@ dependencies = [
 [[package]]
 name = "proteus-mat"
 version = "0.1.0"
-source = "git+https://github.com/ryancinsight/proteus#b2bafcc949ddb54ffe12bfc13b42710309d8c1f2"
+source = "git+https://github.com/ryancinsight/proteus#6585fd7ec362d7296716ec3dd9f06f32762aee3c"
 dependencies = [
  "aequitas",
  "eunomia",
