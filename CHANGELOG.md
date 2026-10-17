@@ -2,6 +2,31 @@
 
 All externally observable changes are recorded here.
 
+## 0.1.1 — Unreleased
+
+### Fixed
+
+- Preserve positive finite optical diffusion coefficients when tripling the
+  transport coefficient would overflow, retaining the positive wrapper invariant.
+- Recover effective attenuation lost to radicand underflow with native binary
+  scaling; retain legitimate zero absorption and typed nonfinite-radicand errors.
+  Recovered attenuation feeds finite penetration and planar-fluence evaluation.
+
+### Changed
+
+- Construct the exact native minimum-normal threshold by IEEE encoding instead
+  of a constant scaling call. Preserve every branch/value/error decision for
+  the supported scalar cohort; retain corrected mixed-workload attribution.
+
+### Verification
+
+- Add330 threshold-neighbor rows and four-scalar encoding/zero/nonfinite policy
+  checks; document the complete constant-identity proof and measured cost limits.
+- Preserve the four original failures/four controls; add rational boundary
+  fixtures and actual downstream coverage. Source/ordinary-cost evidence and
+  limitations are documented in docs/verification/diffusion-range.md. Independent
+  review and resource acceptance remain required; Git-first publish=false stays.
+
 ## Unreleased
 
 ### Added

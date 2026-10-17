@@ -1,5 +1,24 @@
 # Hyperion Phase 0 checklist
 
+## Diffusion native-range repair — target 0.1.1 [patch]
+
+- [x] Preserve all four original failures/four controls and independent bits.
+- [x] Recover positive D without relaxing its constructor invariant.
+- [x] Recover finite small mu_eff and its real penetration/planar consumer.
+- [x] Preserve zero/nonfinite policy and typed errors; add 325 native fixtures
+      and 4,421 exact-rational cases per O2/O3/default/no-default mode.
+- [x] Finish source gates and representative performance/resource evidence.
+- [x] Open draft [#84](https://github.com/ryancinsight/hyperion/pull/84).
+- [x] Resolve independent P3 timing attribution with exact16/1024 populations
+      and separate absolute costs; preserve numerical source from reviewed head.
+- [x] Prove the exact threshold for all four supported scalars and every input
+      encoding; verify330 new boundary neighbors and public zero/nonfinite policy.
+- [x] Integrate constant construction and refresh36-test source/archive gates,
+      exact comparisons, corrected mixed timing, local frames and head review.
+- [ ] Independent exact-head review and performance/resource acceptance.
+- [ ] Preserve Git-first publication decision and all protected release holds.
+
+
 ## HYPERION-007 — Anchor chromophore source oracle — closed 2026-08-20
 
 - [x] Read the OMLC source rows independently and record the URL, retrieval

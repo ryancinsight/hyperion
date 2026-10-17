@@ -1,3 +1,37 @@
+# Native diffusion range continuation (2026-10-17) [patch]
+
+Two demonstrated findings at the current default are repaired for draft review:
+HYPERION-DIFFUSION-POSITIVE-RANGE and HYPERION-EFFECTIVE-UNDERFLOW. The original
+four failures/four controls and integer nearest-even reference bits remain.
+The repair preserves typed positive/nonnegative domains, signed zero and the
+nonfinite-radicand error policy. It introduces no widened arithmetic or provider
+changes. Nonnegative sums/products have no cancellation branch in this scope.
+
+Independent exact-head review and performance/resource acceptance remain open.
+The current Aequitas0.3/Eunomia0.10/Proteus0.1 default cohort stays byte-identical
+in external lock records; only Hyperion's own patch version advances to 0.1.1.
+Active PR82 is not resumed. Proteus's accepted correctness head and all release,
+authentication and service holds remain unchanged. Older audit sections below
+are preserved and are not claimed by this repair.
+
+## Independent timing-description finding — corrected 2026-10-17
+
+Independent review of draft [#84](https://github.com/ryancinsight/hyperion/pull/84)
+reports no numerical defect. P3: direct/opaque mixed callers use14 ordinary,
+1 small and1 large input of16; streaming uses1002/11/11 of1024. The verification
+note now states those fractions and the absolute/per-pair timing for each
+context. The previous combined98%/1%/1% interpretation is superseded.
+
+The threshold continuation now replaces the ordinary-path constant scalbn
+call with the exact IEEE one-XOR-half encoding. The full four-scalar proof
+covers every input encoding, not just oracle cases. Two encoding/public-policy
+tests and330 new transition neighbors pass with the previous implementation
+before integration; all24,458 comparisons retain identical values/errors.
+Fresh paired timing and local-frame evidence are recorded in the verification
+note. API, manifest and lock remain unchanged. Changed-head independent review,
+performance/resource acceptance and all release/authentication/service holds
+remain open; total peak stack/RSS remains unmeasured.
+
 # Hyperion ownership gap audit
 
 ## HYPERION-004 — Proteus constitutive consumer contract — closed 2026-08-16
