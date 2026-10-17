@@ -11,6 +11,8 @@ use crate::{
     validation,
 };
 
+mod range;
+
 /// Finite, positive diffuse-optics coefficient `D` with length dimension.
 #[derive(Clone, Copy, Debug, PartialEq, PartialOrd)]
 #[repr(transparent)]
@@ -111,8 +113,7 @@ impl<T: RealField> DiffusionCoefficients<T> {
     pub fn diffusion_coefficient(
         &self,
     ) -> Result<OpticalDiffusionCoefficient<T>, TransportError<T>> {
-        let denominator = T::from_f64(3.0) * self.transport_value()?;
-        let value = denominator.recip();
+        let value = range::diffusion(self.transport_value()?);
         let valid = validation::derived_finite(TransportLaw::DiffusionCoefficient, value)?;
         Ok(OpticalDiffusionCoefficient::from_validated(
             Length::from_base(valid),
@@ -142,10 +143,11 @@ impl<T: RealField> DiffusionCoefficients<T> {
         &self,
     ) -> Result<InteractionCoefficient<T, EffectiveAttenuation>, TransportError<T>> {
         let absorption = self.absorption.quantity().into_base();
-        let radicand = T::from_f64(3.0) * absorption * self.transport_value()?;
+        let transport = self.transport_value()?;
+        let radicand = T::from_f64(3.0) * absorption * transport;
         let finite_radicand =
             validation::derived_finite(TransportLaw::EffectiveAttenuation, radicand)?;
-        let value = finite_radicand.sqrt();
+        let value = range::effective(absorption, transport, finite_radicand);
         let valid = validation::derived_finite(TransportLaw::EffectiveAttenuation, value)?;
         Ok(InteractionCoefficient::from_base_value(valid))
     }

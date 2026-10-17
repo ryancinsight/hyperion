@@ -1,5 +1,41 @@
 # Hyperion backlog
 
+<a id="HYPERION-DIFFUSION-POSITIVE-RANGE"></a>
+## HYPERION-DIFFUSION-POSITIVE-RANGE — Preserve positive derived diffusion [patch]
+
+- Status: blocked; owner: Codex; target: 0.1.1; priority: correctness.
+- Baseline: current default returns Ok(D=0) for finite transport 2^127 or
+  2^1023, after3*transport overflows. The positive-only public constructor
+  rejects this returned quantity. Exact D rounds to positive subnormal values.
+- Repair: preserve1/(3s) for finite denominators; use(1/s)/3 only when3s
+  overflows. This avoids both premature reciprocal overflow and zero D.
+- Evidence: original two failures retained unchanged, native neighborhood and
+  rational-reference cases, public-constructor revalidation and typed errors.
+- Acceptance: normal source gates, explicit performance/resource acceptance and
+  independent exact-head review remain required. Git-first publish=false stays;
+  active PR82 provider lockfile work is preserved; no release is authorized.
+
+<a id="HYPERION-EFFECTIVE-UNDERFLOW"></a>
+## HYPERION-EFFECTIVE-UNDERFLOW — Recover finite effective attenuation [patch]
+
+- Status: blocked; owner: Codex; target: 0.1.1; priority: correctness.
+- Baseline: absorption 2^-80 or 2^-600, reduced scattering 0, yields mu_eff=0
+  after radicand underflow although sqrt(3)*absorption is positive and normal.
+  Penetration becomes None; planar fluence predicts full transmission at the
+  finite expected attenuation length instead of approximately exp(-1).
+- Repair: normalize positive operands with exact binary exponent shifts only
+  for subnormal/zero finite radicands, evaluate a bounded normal product/root,
+  then restore the exponent. All arithmetic stays in the native scalar.
+- Policy: retain legitimate signed-zero absorption and the documented typed
+  rejection of nonfinite radicands. Inputs remain nonnegative; no cancellation
+  condition or tolerance is introduced. Positive wrapper invariants stay.
+- Evidence: original two failures/four controls retained, 325 rational fixture
+  cases plus 4,421 expanded inputs/profile, native zero/subnormal/normal and
+  overflow edges, and actual penetration/planar-fluence regressions.
+- Acceptance: independent review and performance/resource acceptance remain
+  pending; no adoption, merge, publication or service action is included.
+
+
 ## HYPERION-007 — Anchor chromophore source oracle [patch] — done 2026-08-20
 
 - Owner: current Atlas session; scope is the chromophore source citation,

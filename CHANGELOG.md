@@ -2,6 +2,23 @@
 
 All externally observable changes are recorded here.
 
+## 0.1.1 — Unreleased
+
+### Fixed
+
+- Preserve positive finite optical diffusion coefficients when tripling the
+  transport coefficient would overflow, retaining the positive wrapper invariant.
+- Recover effective attenuation lost to radicand underflow with native binary
+  scaling; retain legitimate zero absorption and typed nonfinite-radicand errors.
+  Recovered attenuation feeds finite penetration and planar-fluence evaluation.
+
+### Verification
+
+- Preserve the four original failures/four controls; add rational boundary
+  fixtures and actual downstream coverage. Source/ordinary-cost evidence and
+  limitations are documented in docs/verification/diffusion-range.md. Independent
+  review and resource acceptance remain required; Git-first publish=false stays.
+
 ## Unreleased
 
 ### Added

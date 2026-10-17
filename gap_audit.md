@@ -1,3 +1,19 @@
+# Native diffusion range continuation (2026-10-17) [patch]
+
+Two demonstrated findings at the current default are repaired for draft review:
+HYPERION-DIFFUSION-POSITIVE-RANGE and HYPERION-EFFECTIVE-UNDERFLOW. The original
+four failures/four controls and integer nearest-even reference bits remain.
+The repair preserves typed positive/nonnegative domains, signed zero and the
+nonfinite-radicand error policy. It introduces no widened arithmetic or provider
+changes. Nonnegative sums/products have no cancellation branch in this scope.
+
+Independent exact-head review and performance/resource acceptance remain open.
+The current Aequitas0.3/Eunomia0.10/Proteus0.1 default cohort stays byte-identical
+in external lock records; only Hyperion's own patch version advances to 0.1.1.
+Active PR82 is not resumed. Proteus's accepted correctness head and all release,
+authentication and service holds remain unchanged. Older audit sections below
+are preserved and are not claimed by this repair.
+
 # Hyperion ownership gap audit
 
 ## HYPERION-004 — Proteus constitutive consumer contract — closed 2026-08-16

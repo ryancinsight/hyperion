@@ -1,5 +1,17 @@
 # Hyperion Phase 0 checklist
 
+## Diffusion native-range repair — target 0.1.1 [patch]
+
+- [x] Preserve all four original failures/four controls and independent bits.
+- [x] Recover positive D without relaxing its constructor invariant.
+- [x] Recover finite small mu_eff and its real penetration/planar consumer.
+- [x] Preserve zero/nonfinite policy and typed errors; add 325 native fixtures
+      and 4,421 exact-rational cases per O2/O3/default/no-default mode.
+- [x] Finish source gates and representative performance/resource evidence.
+- [ ] Draft PR and independent exact-head review/performance acceptance.
+- [ ] Preserve Git-first publication decision and all protected release holds.
+
+
 ## HYPERION-007 — Anchor chromophore source oracle — closed 2026-08-20
 
 - [x] Read the OMLC source rows independently and record the URL, retrieval
