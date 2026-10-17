@@ -1,5 +1,22 @@
 # Hyperion backlog
 
+<a id="HYPERION-DIFFUSION-TIMING-CONTEXTS"></a>
+## HYPERION-DIFFUSION-TIMING-CONTEXTS — Correct mixed workload attribution [patch]
+
+- Status: done; owner: Codex; target: 0.1.1; priority: documentation.
+- Independent review of [bb7217f](https://github.com/ryancinsight/hyperion/commit/bb7217ff54d36550b742b2942a14748d2b83af96)
+  finds no numerical issue and identifies the P3 mixed-population description.
+- Correction: direct/opaque populations are14/1/1 of16, while streaming is
+  1002/11/11 of1024. The verification note now separates absolute costs and
+  paired deltas by context; it makes no common98%-ordinary interpretation.
+- One isolated ordinary-path experiment replaces runtime construction of the
+  constant minimum-normal threshold with its exact IEEE one-XOR-half identity.
+  All24,128 independent input pairs retain bit-identical outputs in eight modes;
+  local timing and frame evidence support a narrow follow-up. The candidate is
+  unadopted: this correction changes no production, test, manifest or lock bytes.
+- Remaining: renewed exact-head review, explicit performance/resource acceptance
+  and all Git-first release holds. No merge or publication is authorized.
+
 <a id="HYPERION-DIFFUSION-POSITIVE-RANGE"></a>
 ## HYPERION-DIFFUSION-POSITIVE-RANGE — Preserve positive derived diffusion [patch]
 

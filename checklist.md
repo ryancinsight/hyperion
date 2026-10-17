@@ -9,6 +9,10 @@
       and 4,421 exact-rational cases per O2/O3/default/no-default mode.
 - [x] Finish source gates and representative performance/resource evidence.
 - [x] Open draft [#84](https://github.com/ryancinsight/hyperion/pull/84).
+- [x] Resolve independent P3 timing attribution with exact16/1024 populations
+      and separate absolute costs; preserve numerical source from reviewed head.
+- [x] Examine one isolated ordinary-threshold hypothesis with bit equivalence,
+      paired timing and local frames; leave its adoption for a separate decision.
 - [ ] Independent exact-head review and performance/resource acceptance.
 - [ ] Preserve Git-first publication decision and all protected release holds.
 

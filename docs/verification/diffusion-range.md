@@ -85,9 +85,24 @@ workflow, in direct/opaque-indirect/1024-input streaming contexts. Complete
 Results are blackboxed; setup and validation are outside timing. Native
 O2/O3 and unchanged overflow checks are used. Across4,200 sampled regions, heap requests/bytes are zero. State sizes remain
 8/16 bytes and Result sizes16/32 bytes for binary32/64. Ordinary/weak deltas
-span-0.254 to+1.767 ns/call. The mixed construct/derive workflow uses98% ordinary,
-1% small and1% large inputs: measured deltas span+0.374 to+2.206 ns/call, with
-candidate medians4.653–5.500 ns/call. Recovered workflows reach9.265 ns/call.
+span-0.254 to+1.767 ns/call. Mixed construct/derive populations differ by
+caller context. Direct and opaque-indirect calls cycle over16 inputs:14 ordinary,
+1 small and1 large (87.5%,6.25%,6.25%). Each1024-input streaming pass contains
+1002 ordinary,11 small and11 large (97.8515625%,1.07421875%,1.07421875%). The
+streaming population alone approximates98%/1%/1%; the combined timing range
+cannot be interpreted as an estimate for that population.
+
+The original author medians across native scalars and O2/O3 are:
+
+| Context | Baseline ns/call | Repaired ns/call | Paired delta ns/call |
+| --- | --- | --- | --- |
+| Direct,16 inputs |3.303–3.558|5.075–5.500|+1.638–2.109|
+| Opaque-indirect,16 inputs |2.879–3.554|5.085–5.302|+1.630–2.206|
+| Streaming,1024 inputs |3.742–4.402|4.653–4.777|+0.374–0.912|
+
+Ranges collect per-scalar/profile medians; paired deltas are calculated before
+aggregation. The heavier recovery weighting in the16-input populations must be
+retained when judging their absolute costs. Recovered workflows reach9.265 ns/call.
 Wrong baseline recovered results are not throughput targets. Peak stack/RSS,
 no_std timing, other platforms and solver-level effects remain unmeasured.
 These are author measurements, not performance/resource acceptance or a

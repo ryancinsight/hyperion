@@ -14,6 +14,21 @@ Active PR82 is not resumed. Proteus's accepted correctness head and all release,
 authentication and service holds remain unchanged. Older audit sections below
 are preserved and are not claimed by this repair.
 
+## Independent timing-description finding — corrected 2026-10-17
+
+Review of [bb7217f](https://github.com/ryancinsight/hyperion/commit/bb7217ff54d36550b742b2942a14748d2b83af96)
+reports no numerical defect. P3: direct/opaque mixed callers use14 ordinary,
+1 small and1 large input of16; streaming uses1002/11/11 of1024. The verification
+note now states those fractions and the absolute/per-pair timing for each
+context. The previous combined98%/1%/1% interpretation is superseded.
+
+One isolated threshold-construction experiment removes the ordinary-path
+constant scalbn call while preserving all24,128 independent input outputs in
+eight modes. It is a candidate for a narrow follow-up, not adopted source or
+performance/resource acceptance. This documentation correction leaves all
+production, test, manifest and lock bytes unchanged from the reviewed head.
+Changed-head review and all release/authentication/service holds remain open.
+
 # Hyperion ownership gap audit
 
 ## HYPERION-004 — Proteus constitutive consumer contract — closed 2026-08-16
