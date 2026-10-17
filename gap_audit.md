@@ -16,7 +16,7 @@ are preserved and are not claimed by this repair.
 
 ## Independent timing-description finding — corrected 2026-10-17
 
-Review of [bb7217f](https://github.com/ryancinsight/hyperion/commit/bb7217ff54d36550b742b2942a14748d2b83af96)
+Independent review of draft [#84](https://github.com/ryancinsight/hyperion/pull/84)
 reports no numerical defect. P3: direct/opaque mixed callers use14 ordinary,
 1 small and1 large input of16; streaming uses1002/11/11 of1024. The verification
 note now states those fractions and the absolute/per-pair timing for each
