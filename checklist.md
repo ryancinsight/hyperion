@@ -8,7 +8,8 @@
 - [x] Preserve zero/nonfinite policy and typed errors; add 325 native fixtures
       and 4,421 exact-rational cases per O2/O3/default/no-default mode.
 - [x] Finish source gates and representative performance/resource evidence.
-- [ ] Draft PR and independent exact-head review/performance acceptance.
+- [x] Open draft [#84](https://github.com/ryancinsight/hyperion/pull/84).
+- [ ] Independent exact-head review and performance/resource acceptance.
 - [ ] Preserve Git-first publication decision and all protected release holds.
 
 
