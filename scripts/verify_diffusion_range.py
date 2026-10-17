@@ -104,8 +104,9 @@ def reference(width, absorption, scattering):
 
 
 if __name__ == '__main__':
-    fixture = Path(__file__).resolve().parent.parent / 'tests/diffusion_range_cases.txt'
-    lines = fixture.read_text().splitlines()
+    tests = Path(__file__).resolve().parent.parent / 'tests'
+    lines = [line for name in ['diffusion_range_cases.txt', 'diffusion_threshold_cases.txt']
+             for line in (tests / name).read_text().splitlines()]
     for line in lines:
         fields = line.split()
         expected = reference(int(fields[0]), int(fields[1], 16), int(fields[2], 16))

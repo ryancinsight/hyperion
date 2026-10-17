@@ -41,7 +41,13 @@ fn pair<T: Native>(a: T, s: T) -> DiffusionCoefficients<T> {
 }
 fn neighborhoods<T: Native>() {
     let mut count = 0;
-    for line in include_str!("diffusion_range_cases.txt").lines() {
+    for line in [
+        include_str!("diffusion_range_cases.txt"),
+        include_str!("diffusion_threshold_cases.txt"),
+    ]
+    .into_iter()
+    .flat_map(str::lines)
+    {
         let fields: Vec<_> = line.split_whitespace().collect();
         if fields[0] != T::WIDTH {
             continue;
@@ -94,7 +100,7 @@ fn neighborhoods<T: Native>() {
         }
         count += 1;
     }
-    assert!(count > 100, "range fixture covers both native formats");
+    assert!(count > 300, "range fixture covers both native formats");
 }
 #[test]
 fn native_range_neighborhoods() {

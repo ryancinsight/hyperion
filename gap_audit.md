@@ -22,12 +22,15 @@ reports no numerical defect. P3: direct/opaque mixed callers use14 ordinary,
 note now states those fractions and the absolute/per-pair timing for each
 context. The previous combined98%/1%/1% interpretation is superseded.
 
-One isolated threshold-construction experiment removes the ordinary-path
-constant scalbn call while preserving all24,128 independent input outputs in
-eight modes. It is a candidate for a narrow follow-up, not adopted source or
-performance/resource acceptance. This documentation correction leaves all
-production, test, manifest and lock bytes unchanged from the reviewed head.
-Changed-head review and all release/authentication/service holds remain open.
+The threshold continuation now replaces the ordinary-path constant scalbn
+call with the exact IEEE one-XOR-half encoding. The full four-scalar proof
+covers every input encoding, not just oracle cases. Two encoding/public-policy
+tests and330 new transition neighbors pass with the previous implementation
+before integration; all24,458 comparisons retain identical values/errors.
+Fresh paired timing and local-frame evidence are recorded in the verification
+note. API, manifest and lock remain unchanged. Changed-head independent review,
+performance/resource acceptance and all release/authentication/service holds
+remain open; total peak stack/RSS remains unmeasured.
 
 # Hyperion ownership gap audit
 

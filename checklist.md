@@ -11,8 +11,10 @@
 - [x] Open draft [#84](https://github.com/ryancinsight/hyperion/pull/84).
 - [x] Resolve independent P3 timing attribution with exact16/1024 populations
       and separate absolute costs; preserve numerical source from reviewed head.
-- [x] Examine one isolated ordinary-threshold hypothesis with bit equivalence,
-      paired timing and local frames; leave its adoption for a separate decision.
+- [x] Prove the exact threshold for all four supported scalars and every input
+      encoding; verify330 new boundary neighbors and public zero/nonfinite policy.
+- [x] Integrate constant construction and refresh36-test source/archive gates,
+      exact comparisons, corrected mixed timing, local frames and head review.
 - [ ] Independent exact-head review and performance/resource acceptance.
 - [ ] Preserve Git-first publication decision and all protected release holds.
 

@@ -16,9 +16,12 @@
 - Review follow-up: the independent numerical pass reports no correctness
   finding. Its P3 timing attribution is corrected with exact16/1024 populations
   and separate per-context costs in the verification note.
-- One isolated exact-threshold experiment retains all24,128 input outputs in
-  eight modes and supports a narrow performance follow-up; it remains unadopted.
-  This documentation update changes no production, test, manifest or lock bytes.
+- Threshold continuation: integrate the proved IEEE one-XOR-half identity for
+  the full f32/f64/F32/F64 cohort. Two four-scalar encoding/policy tests and330
+  new consecutive boundary-neighbor cases pass before the production change.
+  All24,458 comparison inputs retain bit-identical values/errors; the corrected
+  workload populations and fresh absolute costs remain explicit in the note.
+  Manifest, lock, dependency work, tests and limits retain their prior contracts.
 - Acceptance: normal source gates, explicit performance/resource acceptance and
   independent exact-head review remain required. Git-first publish=false stays;
   active PR82 provider lockfile work is preserved; no release is authorized.

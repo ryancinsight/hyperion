@@ -25,13 +25,13 @@ fn large_diffusion<T: RealField>(transport: T) -> T {
     transport.recip() / three::<T>()
 }
 
-/// In the provider's IEEE binary encodings, infinity has exactly k set
-/// exponent bits. The minimum normal exponent is 2-2^(k-1). Both quantities
-/// specialize to constants; no scalar widening or per-width branch is used.
+/// In the provider's IEEE binary encodings, one and one-half have zero
+/// fraction/sign fields and adjacent exponent fields: bias and bias-1.
+/// The bias is odd, so their XOR isolates the least exponent bit, exactly
+/// the minimum normal value. No scaling call or scalar widening is needed.
 #[inline]
 fn minimum_normal<T: RealField>() -> T {
-    let exponent_bits = T::INFINITY.count_ones();
-    T::ONE.scale_binary(2 - (1_i32 << (exponent_bits - 1)))
+    T::ONE.bitxor(T::ONE / (T::ONE + T::ONE))
 }
 
 /// The caller retains the documented nonfinite-radicand rejection first.
@@ -67,3 +67,6 @@ fn small_effective<T: RealField>(absorption: T, transport: T) -> T {
     // Euclidean division also handles odd negative exponents correctly.
     product.sqrt().scale_binary(exponent.div_euclid(2))
 }
+
+#[cfg(test)]
+mod tests;

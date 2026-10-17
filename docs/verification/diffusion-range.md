@@ -39,10 +39,12 @@ coefficient, widened scalar or clamp is introduced.
 
 Effective attenuation first executes the existing native radicand and rejects
 nonfinite values exactly as before. Only a positive absorption and a subnormal
-or zero finite radicand enter the recovery path. The provider's IEEE infinity
-has k set exponent bits, so the minimum normal exponent is2-2^(k-1).
-That type-dependent bound specializes to a constant; it does not cast T or
-branch on a concrete scalar name.
+or zero finite radicand enter the recovery path. The normal threshold is the
+exact encoding ONE bitwise-XOR HALF: adjacent odd/even IEEE exponent fields
+isolate exponent bit1. HALF is computed exactly as ONE/(ONE+ONE). This removes
+the ordinary-path constant scaling call without changing the threshold. The
+[full scalar and policy proof](diffusion-threshold.md) covers all supported
+scalar implementations and every boundary neighbor, independently of sampling.
 
 Write a=A*2^ea and t=B*2^et using provider-native binary exponent/scale methods.
 The normalized A,B are exact in[1,2), even for subnormal source inputs.
@@ -66,12 +68,15 @@ consumer. The fixture includes least subnormals, normal/subnormal radicand
 transitions, tripled-denominator overflow, reciprocal-overflow midpoints,
 separated coefficient scales, signed zero and the documented overflow errors.
 
-Run python3 scripts/verify_diffusion_range.py to check every fixture reference
+Another330 previously unsampled threshold-neighbor cases and two four-scalar
+encoding/policy tests cover the constant-construction change.
+
+Run python3 scripts/verify_diffusion_range.py to check all655 fixture references
 with exact Fraction arithmetic, integer nearest-even division and square-root
 midpoint comparison. An expanded external corpus covers 4,421 input pairs per
 O2/O3/default/no-default mode. All four API outputs agree bit for bit; D differs
 from exact-input rounding by at most two ULP, effective attenuation by one ULP,
-with zero policy mismatches. All 34 native tests pass in debug, release and
+with zero policy mismatches. All 36 native tests pass in debug, release and
 no-default modes; all 24 original tests and their assertions remain unchanged.
 Format, strict Clippy/Rustdoc, doctests in both modes, all three examples and
 an explicit Rust 1.95 all-target/all-feature check pass.
@@ -107,6 +112,35 @@ Wrong baseline recovered results are not throughput targets. Peak stack/RSS,
 no_std timing, other platforms and solver-level effects remain unmeasured.
 These are author measurements, not performance/resource acceptance or a
 universal cost bound.
+
+### Integrated constant-construction comparison
+
+A fresh paired run compares the integrated threshold with the prior correct
+scaling implementation, using the same4200 timing regions and exact16/1024
+populations. Complete Results, native O2/O3, overflow checks and setup exclusions
+remain unchanged. These medians concern the complete construct/derive workflow:
+
+| Context | Prior correct ns/call | Integrated ns/call | Paired delta ns/call |
+| --- | --- | --- | --- |
+| Direct,16 inputs |5.038–5.284|4.219–4.946|-1.005 to-0.092|
+| Opaque-indirect,16 inputs |5.141–5.274|4.302–4.915|-0.843 to-0.359|
+| Streaming,1024 inputs |4.661–4.771|3.733–4.574|-0.940 to-0.198|
+
+Affected ordinary/weak attenuation, attenuation-plus-penetration and full
+workflow medians improve by0.260–1.501 ns/call. Across all APIs, ordinary/weak
+deltas span-1.501 to+0.245 ns/call; the positive endpoint is the unchanged D
+accessor. The largest positive delta across all regimes is+0.376 ns/call on an
+all-large workflow, where radicand rejection precedes threshold evaluation.
+These observations support removing the call, not a universal no-regression
+bound or independent performance/resource acceptance.
+
+Generated ARM64 O2/O3 code removes the constant scalbn call from all affected
+monomorphs. Local accessor frames shrink64 to32 bytes for binary32 and80 to48
+for binary64; full-workflow frames shrink144 to96 and208 to192 bytes. Cold
+recovery remains. All measured heap requests/bytes remain zero, and public
+state/Result sizes stay unchanged. Local CFI frames exclude total peak stack,
+foreign callees and RSS; those remain unmeasured. Other platforms and solver
+workloads still require their own assessment.
 
 Only Hyperion's own patch version advances. External Cargo.lock records and
 Git provider identities are unchanged. The active dependency PR is not resumed.
