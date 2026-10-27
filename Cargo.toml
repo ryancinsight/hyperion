@@ -14,7 +14,7 @@ publish = false
 
 [dependencies]
 aequitas = { version = "0.3.1", git = "https://github.com/ryancinsight/aequitas", default-features = false }
-eunomia = { version = "0.10.0", git = "https://github.com/ryancinsight/eunomia", default-features = false }
+eunomia = { version = "0.11.0", git = "https://github.com/ryancinsight/eunomia", default-features = false }
 proteus = { package = "proteus-mat", version = "0.1.0", git = "https://github.com/ryancinsight/proteus", default-features = false }
 
 [dev-dependencies]
@@ -62,3 +62,4 @@ overflow-checks = true
 debug = false
 strip = "symbols"
 overflow-checks = true
+
