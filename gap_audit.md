@@ -6,8 +6,12 @@ The planar-fluence public API loses a representable positive result when its
 intermediate transmission underflows. Both native precisions reproduce the
 failure. A four-factor native recovery passes the original failures and 740
 independent reference comparisons; [the range argument and retained limits](docs/verification/planar-fluence-range.md)
-define the scope. Full provider/gate/performance/review/hosted acceptance remains
-open. The prior diffusion and NIST work and publication identity are preserved.
+define the scope. Both feature modes pass all 42 native tests; strict Clippy,
+Rust 1.95, doctests, Rustdoc, examples, supply-chain and executable book pass.
+Locked-source API comparison passes; floating baseline generation cannot resolve
+old Eunomia 0.11 against current Git default 0.12. Final review, normal hooks and
+hosted acceptance remain open. Prior diffusion/NIST work and publication identity
+are preserved.
 
 ## Native diffusion range continuation (2026-10-17) [patch]
 

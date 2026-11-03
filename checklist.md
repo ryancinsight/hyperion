@@ -5,8 +5,10 @@
 - [x] Reproduce binary32/64 zero-output defects through the public API.
 - [x] Retain both red witnesses and 370 independently rounded oracle fixtures.
 - [x] Pass 740 comparisons across the four native scalar representations.
-- [ ] Qualify current provider compatibility and the complete normal gates.
-- [ ] Measure ordinary/recovery costs and obtain independent final-head review.
+- [x] Pass 136 final-underflow comparisons and zero-allocation recovery checks.
+- [x] Pass current-provider native, Rust 1.95, Clippy, docs, example and supply-chain gates.
+- [x] Measure ordinary/recovery costs and retain the final-underflow accuracy limit.
+- [ ] Complete normal hooks and independent final-head source/API review.
 - [ ] Verify hosted source and automatic documentation delivery.
 - [x] Preserve standalone transmission and Git-first publication policy.
 

@@ -3,7 +3,7 @@
 <a id="HYPERION-PLANAR-FLUENCE-RANGE"></a>
 ## HYPERION-PLANAR-FLUENCE-RANGE — Preserve representable planar fluence [patch]
 
-- Status: in progress; owner: codex:01a17995-4c0b-701d-8625-8650165230c2; target: 0.1.2.
+- Status: todo; priority: correctness; owner: codex:01a17995-4c0b-701d-8625-8650165230c2; target: 0.1.2.
 - Public baseline returns zero for finite binary32/64 products after the
   intermediate transmission underflows; both original failures are retained.
 - Recover the combined product with four native exponential factors while
