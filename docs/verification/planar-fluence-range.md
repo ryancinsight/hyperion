@@ -105,3 +105,9 @@ compatibility, complete normal gates, performance observations, independent
 final-revision review, hosted checks and documentation deployment remain
 required before a delivery is accepted. A successful focused run alone does
 not establish those results or qualify downstream consumers.
+
+The numerical repair is combined with a breaking pre-1.0 provider migration
+to Hyperion 0.2 / Eunomia 0.12. [ADR 0002](../adr/0002-eunomia-012-provider-boundary.md)
+records the old/mixed/current generic-client compile witness, which the locked
+Rustdoc checks did not detect. Current Hyperion 0.1 consumer requirements reject
+0.2, so their existing owners must establish coherent adoption before merge.

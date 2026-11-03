@@ -124,6 +124,12 @@ concentration-validation contract is documented in
 
 ## Verification
 
+Hyperion 0.2 uses the Eunomia 0.12 public scalar identity. Consumers must adopt
+both together with compatible Aequitas and Proteus sources; old generic
+`RealField + UnitScalar` bounds do not satisfy the new provider's bounds.
+[ADR 0002](docs/adr/0002-eunomia-012-provider-boundary.md) records the compiled
+compatibility witness, migration steps and consumer-cohort merge hold.
+
 The [planar-fluence range verification](docs/verification/planar-fluence-range.md)
 records independent numerical fixtures, preserved error contracts and the
 final-subnormal rounding limit of the combined attenuation product.

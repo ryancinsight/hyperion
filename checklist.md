@@ -1,6 +1,6 @@
 # Hyperion Phase 0 checklist
 
-## HYPERION-PLANAR-FLUENCE-RANGE [patch] — target 0.1.2
+## HYPERION-PLANAR-FLUENCE-RANGE [minor] — target 0.2.0 (breaking provider boundary)
 
 - [x] Reproduce binary32/64 zero-output defects through the public API.
 - [x] Retain both red witnesses and 370 independently rounded oracle fixtures.
@@ -8,8 +8,10 @@
 - [x] Pass 136 final-underflow comparisons and zero-allocation recovery checks.
 - [x] Pass current-provider native, Rust 1.95, Clippy, docs, example and supply-chain gates.
 - [x] Measure ordinary/recovery costs and retain the final-underflow accuracy limit.
+- [x] Reproduce old/mixed/migrated generic-client compatibility at compile time.
 - [ ] Complete normal hooks and independent final-head source/API review.
 - [ ] Verify hosted source and automatic documentation delivery.
+- [ ] Coordinate protected consumer requirements/locks before provider merge.
 - [x] Preserve standalone transmission and Git-first publication policy.
 
 ## Diffusion native-range repair — target 0.1.1 [patch]

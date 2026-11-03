@@ -10,3 +10,4 @@
 | ADR | Title | Status |
 | --- | ----- | ------ |
 | [0001](0001-photon-optical-interaction-boundary.md) | Own photon and optical interaction laws in Hyperion | Accepted |
+| [0002](0002-eunomia-012-provider-boundary.md) | Version the Eunomia 0.12 public scalar boundary | Proposed |

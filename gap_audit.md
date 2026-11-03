@@ -9,8 +9,12 @@ independent reference comparisons; [the range argument and retained limits](docs
 define the scope. Both feature modes pass all 42 native tests; strict Clippy,
 Rust 1.95, doctests, Rustdoc, examples, supply-chain and executable book pass.
 Locked-source API comparison passes; floating baseline generation cannot resolve
-old Eunomia 0.11 against current Git default 0.12. Final review, normal hooks and
-hosted acceptance remain open. Prior diffusion/NIST work and publication identity
+old Eunomia 0.11 against current Git default 0.12. A separate real generic-client
+compile exposes the public trait-identity break: old/old and current/current
+pass; mixed old-client/current-provider fails E0599. The change therefore targets
+0.2.0 with an explicit migration ADR, not a compatible patch. Final source review,
+normal hooks and hosted acceptance remain open; merge also requires protected
+consumer-cohort coordination. Prior diffusion/NIST work and publication identity
 are preserved.
 
 ## Native diffusion range continuation (2026-10-17) [patch]

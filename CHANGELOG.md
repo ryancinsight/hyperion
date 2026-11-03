@@ -2,7 +2,16 @@
 
 All externally observable changes are recorded here.
 
-## 0.1.2 — Unreleased
+## 0.2.0 — Unreleased
+
+### Breaking
+
+- Hyperion's public scalar bounds now use Eunomia 0.12. Generic clients using
+  Eunomia 0.11 `RealField` / `UnitScalar` bounds cannot call the new provider's
+  methods. Adopt Hyperion 0.2 and Eunomia 0.12 together, with compatible
+  Aequitas 0.3.2 and Proteus 0.1.1 sources, then regenerate the consumer lock
+  normally and qualify its generic and numerical callers. No adapter bridges
+  the old trait identity. See [ADR 0002](docs/adr/0002-eunomia-012-provider-boundary.md).
 
 ### Fixed
 
@@ -16,6 +25,8 @@ All externally observable changes are recorded here.
 
 - Align the Git dependency graph with Aequitas 0.3.2, Eunomia 0.12.0 and
   Proteus 0.1.1. The package retains its Git-first `publish = false` identity.
+  Merge requires a coordinated consumer migration; current Hyperion 0.1
+  requirements do not accept this pre-1.0 breaking boundary.
 
 ### Verification
 
