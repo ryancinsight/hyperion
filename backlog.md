@@ -1,5 +1,18 @@
 # Hyperion backlog
 
+<a id="HYPERION-PLANAR-FLUENCE-RANGE"></a>
+## HYPERION-PLANAR-FLUENCE-RANGE — Preserve representable planar fluence [patch]
+
+- Status: in progress; owner: codex:01a17995-4c0b-701d-8625-8650165230c2; target: 0.1.2.
+- Public baseline returns zero for finite binary32/64 products after the
+  intermediate transmission underflows; both original failures are retained.
+- Recover the combined product with four native exponential factors while
+  preserving ordinary values, standalone transmission and typed errors.
+- Evidence: [range proof and reference fixtures](docs/verification/planar-fluence-range.md).
+- Acceptance: latest coherent providers, normal gates, performance observations,
+  independent exact-head review and hosted source/docs checks remain required.
+- Preserve Git-first publication and all protected owner/release holds.
+
 <a id="HYPERION-DIFFUSION-POSITIVE-RANGE"></a>
 ## HYPERION-DIFFUSION-POSITIVE-RANGE — Preserve positive derived diffusion [patch]
 

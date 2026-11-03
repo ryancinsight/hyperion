@@ -2,6 +2,28 @@
 
 All externally observable changes are recorded here.
 
+## 0.1.2 — Unreleased
+
+### Fixed
+
+- Recover finite planar fluence when rounding the intermediate transmission
+  would erase a representable normal result. Keep ordinary values, signed
+  zeros, typed optical-depth errors and standalone transmission unchanged.
+  Final subnormal results retain floating-point rounding error, including at
+  the zero transition; correct rounding is not guaranteed.
+
+### Changed
+
+- Align the Git dependency graph with Aequitas 0.3.2, Eunomia 0.12.0 and
+  Proteus 0.1.1. The package retains its Git-first `publish = false` identity.
+
+### Verification
+
+- Retain the two public-API red witnesses, 740 high-precision range comparisons,
+  136 final-underflow comparisons and zero-allocation recovery checks. See
+  [the verification note](docs/verification/planar-fluence-range.md) for the
+  exponent-range argument, accuracy contract and measured performance limits.
+
 ## 0.1.1 — Unreleased
 
 ### Fixed

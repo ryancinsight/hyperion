@@ -93,3 +93,32 @@ fn representative_transport_path_allocates_nothing() {
     assert!(result.into_quantity().into_base().is_finite());
     assert_eq!(change, AllocationDelta::default());
 }
+
+#[test]
+fn subnormal_transmission_recovery_allocates_nothing() {
+    let single = EnergyFluence::new(EnergyPerArea::from_base(f32::from_bits(0x7b80_0000)))
+        .expect("finite incident single-precision fluence");
+    let double = EnergyFluence::new(EnergyPerArea::from_base(f64::from_bits(
+        0x7e70_0000_0000_0000,
+    )))
+    .expect("finite incident double-precision fluence");
+    let unit_single = coefficient::<f32, EffectiveAttenuation>(1.0);
+    let unit_double = coefficient::<f64, EffectiveAttenuation>(1.0);
+    let single_depth = path(128.0);
+    let double_depth = path(1024.0);
+
+    let ((single, double), change) = measure(|| {
+        (
+            planar_fluence_at_depth(single, unit_single, single_depth)
+                .expect("finite recovered single-precision fluence"),
+            planar_fluence_at_depth(double, unit_double, double_depth)
+                .expect("finite recovered double-precision fluence"),
+        )
+    });
+
+    let single_bits = single.into_quantity().into_base().to_bits();
+    let double_bits = double.into_quantity().into_base().to_bits();
+    assert!(single_bits.abs_diff(0x1f21_75d0) <= 16);
+    assert!(double_bits.abs_diff(0x2219_a3a1_32ee_86ba) <= 16);
+    assert_eq!(change, AllocationDelta::default());
+}

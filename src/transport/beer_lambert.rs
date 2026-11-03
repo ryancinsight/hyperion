@@ -1,4 +1,4 @@
-use aequitas::systems::si::quantities::Dimensionless;
+use aequitas::systems::si::quantities::{Dimensionless, EnergyPerArea};
 use eunomia::{NumericElement, RealField, UnitScalar};
 
 use crate::{
@@ -91,6 +91,13 @@ where
 
 /// Attenuate planar energy fluence at depth using `F(z) = F_0 exp(-mu_eff z)`.
 ///
+/// If the transmission is subnormal or zero, evaluate the combined product
+/// with four exponential factors to recover normal fluence lost by premature
+/// transmission underflow. Final subnormal rounding, including the zero
+/// transition, still carries floating-point error; correct rounding is not
+/// guaranteed. Ordinary transmission retains its native multiplication path;
+/// the standalone transmission API is unchanged.
+///
 /// # Errors
 ///
 /// Returns [`TransportError::DerivedNonFinite`] when optical depth or the
@@ -100,5 +107,32 @@ pub fn planar_fluence_at_depth<T: RealField + UnitScalar>(
     attenuation: InteractionCoefficient<T, EffectiveAttenuation>,
     depth: PathLength<T>,
 ) -> Result<EnergyFluence<T>, TransportError<T>> {
-    surface.attenuate(attenuation.optical_depth(depth)?.transmission())
+    let optical_depth = attenuation.optical_depth(depth)?;
+    let transmission = optical_depth.transmission();
+    let incident = surface.into_quantity().into_base();
+    if transmission.into_quantity().into_base() < validation::minimum_normal::<T>()
+        && incident > T::ZERO
+    {
+        let value = small_transmission_fluence(incident, optical_depth.into_quantity().into_base());
+        let valid = validation::derived_finite(TransportLaw::PlanarFluence, value)?;
+        Ok(EnergyFluence::from_validated(EnergyPerArea::from_base(
+            valid,
+        )))
+    } else {
+        surface.attenuate(transmission)
+    }
+}
+
+/// Split `exp(-tau)` into four normal factors whenever the final binary32/64
+/// product can round nonzero: `tau <= ln(max_finite / (min_subnormal/2))`.
+/// A quarter of that bound is below `-ln(min_normal)` in both formats. Division
+/// by four is exact in this range. Exact intermediate magnitudes are no smaller
+/// than the exact final product; native final-subnormal rounding is not assured.
+/// No logarithm of the incident fluence or cross-precision arithmetic is used.
+#[cold]
+#[inline(never)]
+fn small_transmission_fluence<T: RealField>(incident: T, optical_depth: T) -> T {
+    let two = T::ONE + T::ONE;
+    let factor = (-optical_depth / (two + two)).exp();
+    (((incident * factor) * factor) * factor) * factor
 }

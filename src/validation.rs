@@ -3,6 +3,15 @@ use eunomia::{NumericElement, RealField};
 
 use crate::{TransportError, TransportLaw, ValueConstraint, ValueKind, quantity::PathLength};
 
+/// In the provider's IEEE binary encodings, one and one-half have zero
+/// fraction/sign fields and adjacent exponent fields: bias and bias-1.
+/// The bias is odd, so their XOR isolates the least exponent bit, exactly
+/// the minimum normal value. No scaling call or scalar widening is needed.
+#[inline]
+pub(crate) fn minimum_normal<T: RealField>() -> T {
+    T::ONE.bitxor(T::ONE / (T::ONE + T::ONE))
+}
+
 #[inline]
 pub(crate) fn finite_non_negative<T: RealField>(
     field: ValueKind,

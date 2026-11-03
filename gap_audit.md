@@ -1,4 +1,15 @@
-# Native diffusion range continuation (2026-10-17) [patch]
+# Hyperion gap audit
+
+## HYPERION-PLANAR-FLUENCE-RANGE — in progress
+
+The planar-fluence public API loses a representable positive result when its
+intermediate transmission underflows. Both native precisions reproduce the
+failure. A four-factor native recovery passes the original failures and 740
+independent reference comparisons; [the range argument and retained limits](docs/verification/planar-fluence-range.md)
+define the scope. Full provider/gate/performance/review/hosted acceptance remains
+open. The prior diffusion and NIST work and publication identity are preserved.
+
+## Native diffusion range continuation (2026-10-17) [patch]
 
 Two demonstrated findings at the current default are repaired for draft review:
 HYPERION-DIFFUSION-POSITIVE-RANGE and HYPERION-EFFECTIVE-UNDERFLOW. The original

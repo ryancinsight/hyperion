@@ -30,6 +30,14 @@ let fluence = planar_fluence_at_depth(surface, attenuation, depth)?;
 println!("fluence at depth: {} J/m^2", fluence.in_unit::<JoulePerSquareMeter>());
 ```
 
+The combined planar-fluence evaluation recovers normal results even when
+the standalone transmission rounds to zero or a subnormal value. It splits
+the exponential into four native factors in that range; ordinary transmission
+uses the original multiplication. A separately computed transmission still has
+its own native rounding and cannot recover information it has already lost.
+The combined calculation is not guaranteed to be correctly rounded at the
+final zero/subnormal boundary; native floating-point error still applies.
+
 For `LinearAttenuation` coefficients, `half_value_layer` returns
 `ln(2) / mu`; for `EffectiveAttenuation` coefficients, `penetration_depth`
 returns `1 / mu_eff`. Both return `None` when the coefficient is zero because

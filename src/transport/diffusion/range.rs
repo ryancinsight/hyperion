@@ -1,6 +1,8 @@
 //! Native evaluation of the finite diffusion range identities.
 use eunomia::RealField;
 
+use crate::validation::minimum_normal;
+
 #[inline]
 fn three<T: RealField>() -> T {
     T::ONE + T::ONE + T::ONE
@@ -23,15 +25,6 @@ pub(super) fn diffusion<T: RealField>(transport: T) -> T {
 #[inline(never)]
 fn large_diffusion<T: RealField>(transport: T) -> T {
     transport.recip() / three::<T>()
-}
-
-/// In the provider's IEEE binary encodings, one and one-half have zero
-/// fraction/sign fields and adjacent exponent fields: bias and bias-1.
-/// The bias is odd, so their XOR isolates the least exponent bit, exactly
-/// the minimum normal value. No scaling call or scalar widening is needed.
-#[inline]
-fn minimum_normal<T: RealField>() -> T {
-    T::ONE.bitxor(T::ONE / (T::ONE + T::ONE))
 }
 
 /// The caller retains the documented nonfinite-radicand rejection first.

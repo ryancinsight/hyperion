@@ -1,6 +1,6 @@
 [package]
 name = "hyperion"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2024"
 rust-version = "1.95"
 authors = ["Ryan Clanton <ryanclanton@outlook.com>"]
@@ -13,9 +13,9 @@ categories = ["no-std", "science"]
 publish = false
 
 [dependencies]
-aequitas = { version = "0.3.1", git = "https://github.com/ryancinsight/aequitas", default-features = false }
-eunomia = { version = "0.11.0", git = "https://github.com/ryancinsight/eunomia", default-features = false }
-proteus = { package = "proteus-mat", version = "0.1.0", git = "https://github.com/ryancinsight/proteus", default-features = false }
+aequitas = { version = "0.3.2", git = "https://github.com/ryancinsight/aequitas", default-features = false }
+eunomia = { version = "0.12.0", git = "https://github.com/ryancinsight/eunomia", default-features = false }
+proteus = { package = "proteus-mat", version = "0.1.1", git = "https://github.com/ryancinsight/proteus", default-features = false }
 
 [dev-dependencies]
 mnemosyne = { package = "mnemosyne-memory", version = "0.10.0", git = "https://github.com/ryancinsight/Mnemosyne", default-features = false }

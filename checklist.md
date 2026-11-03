@@ -1,5 +1,15 @@
 # Hyperion Phase 0 checklist
 
+## HYPERION-PLANAR-FLUENCE-RANGE [patch] — target 0.1.2
+
+- [x] Reproduce binary32/64 zero-output defects through the public API.
+- [x] Retain both red witnesses and 370 independently rounded oracle fixtures.
+- [x] Pass 740 comparisons across the four native scalar representations.
+- [ ] Qualify current provider compatibility and the complete normal gates.
+- [ ] Measure ordinary/recovery costs and obtain independent final-head review.
+- [ ] Verify hosted source and automatic documentation delivery.
+- [x] Preserve standalone transmission and Git-first publication policy.
+
 ## Diffusion native-range repair — target 0.1.1 [patch]
 
 - [x] Preserve all four original failures/four controls and independent bits.

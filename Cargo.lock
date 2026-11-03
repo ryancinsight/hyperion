@@ -19,8 +19,8 @@ checksum = "320119579fcad9c21884f5c4861d16174d0e06250625266f50fe6898340abefa"
 
 [[package]]
 name = "aequitas"
-version = "0.3.1"
-source = "git+https://github.com/ryancinsight/aequitas#c636bb84efda17784b6b5ba0c03933292f37a8cf"
+version = "0.3.2"
+source = "git+https://github.com/ryancinsight/aequitas#4e35f41195e8866c6ccf83833f2eec4b5c9f1413"
 dependencies = [
  "eunomia",
  "typenum",
@@ -133,9 +133,9 @@ checksum = "fc652a48c352aef3ea3aed32080501cf3ef6ed5da78602a020c991775b0aff04"
 
 [[package]]
 name = "cc"
-version = "1.10.0"
+version = "1.11.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "86e055fa6e3e40ad6187ba25b6855eeb635d5271f8e0f0e1e9a5826b8d75bea0"
+checksum = "375989decec1a0fa424442bed520fa12ede43a48475ce8c7417d2c69b32b5f6b"
 dependencies = [
  "find-msvc-tools",
  "shlex",
@@ -197,8 +197,8 @@ dependencies = [
 
 [[package]]
 name = "eunomia"
-version = "0.11.0"
-source = "git+https://github.com/ryancinsight/eunomia#d8ee31abf9e10c3aaa4efd67ed5912a612086115"
+version = "0.12.0"
+source = "git+https://github.com/ryancinsight/eunomia#acb3f3a7fa37ae6e6b345dfa967674cf4dc34b7a"
 dependencies = [
  "bytemuck",
  "eunomia-derive",
@@ -207,8 +207,8 @@ dependencies = [
 
 [[package]]
 name = "eunomia-derive"
-version = "0.11.0"
-source = "git+https://github.com/ryancinsight/eunomia#d8ee31abf9e10c3aaa4efd67ed5912a612086115"
+version = "0.12.0"
+source = "git+https://github.com/ryancinsight/eunomia#acb3f3a7fa37ae6e6b345dfa967674cf4dc34b7a"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -274,7 +274,7 @@ checksum = "ed5909b6e89a2db4456e54cd5f673791d7eca6732202bbf2a9cc504fe2f9b84a"
 
 [[package]]
 name = "hyperion"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "aequitas",
  "eunomia",
@@ -319,9 +319,9 @@ checksum = "32a66949e030da00e8c7d4434b251670a91556f4144941d37452769c25d58a53"
 
 [[package]]
 name = "log"
-version = "0.4.34"
+version = "0.4.35"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f9f8bd3e56ce4dfc153cf470fffbfa98c7620958b312ca5c3a4b8d5181fd13c6"
+checksum = "5d15f86d12da44cd8d4ec3c73984537eb7f4cadcb9776a575a0a8a05ca11005c"
 
 [[package]]
 name = "loom"
@@ -368,7 +368,7 @@ dependencies = [
 [[package]]
 name = "mnemosyne-arena"
 version = "0.7.1"
-source = "git+https://github.com/ryancinsight/Mnemosyne#946af714edf8e90d2b48bdcaa2215270f8207436"
+source = "git+https://github.com/ryancinsight/Mnemosyne#2658ef2922223527d43971d8fdf2d92906474c61"
 dependencies = [
  "libc",
  "loom",
@@ -380,7 +380,7 @@ dependencies = [
 [[package]]
 name = "mnemosyne-backend"
 version = "0.6.0"
-source = "git+https://github.com/ryancinsight/Mnemosyne#946af714edf8e90d2b48bdcaa2215270f8207436"
+source = "git+https://github.com/ryancinsight/Mnemosyne#2658ef2922223527d43971d8fdf2d92906474c61"
 dependencies = [
  "mnemosyne-memory-core",
 ]
@@ -388,12 +388,12 @@ dependencies = [
 [[package]]
 name = "mnemosyne-build-util"
 version = "0.2.1"
-source = "git+https://github.com/ryancinsight/Mnemosyne#946af714edf8e90d2b48bdcaa2215270f8207436"
+source = "git+https://github.com/ryancinsight/Mnemosyne#2658ef2922223527d43971d8fdf2d92906474c61"
 
 [[package]]
 name = "mnemosyne-decay"
 version = "0.3.3"
-source = "git+https://github.com/ryancinsight/Mnemosyne#946af714edf8e90d2b48bdcaa2215270f8207436"
+source = "git+https://github.com/ryancinsight/Mnemosyne#2658ef2922223527d43971d8fdf2d92906474c61"
 dependencies = [
  "mnemosyne-arena",
  "mnemosyne-backend",
@@ -403,7 +403,7 @@ dependencies = [
 [[package]]
 name = "mnemosyne-local"
 version = "0.7.0"
-source = "git+https://github.com/ryancinsight/Mnemosyne#946af714edf8e90d2b48bdcaa2215270f8207436"
+source = "git+https://github.com/ryancinsight/Mnemosyne#2658ef2922223527d43971d8fdf2d92906474c61"
 dependencies = [
  "melinoe",
  "mnemosyne-arena",
@@ -418,7 +418,7 @@ dependencies = [
 [[package]]
 name = "mnemosyne-memory"
 version = "0.10.1"
-source = "git+https://github.com/ryancinsight/Mnemosyne#946af714edf8e90d2b48bdcaa2215270f8207436"
+source = "git+https://github.com/ryancinsight/Mnemosyne#2658ef2922223527d43971d8fdf2d92906474c61"
 dependencies = [
  "mnemosyne-arena",
  "mnemosyne-backend",
@@ -431,7 +431,7 @@ dependencies = [
 [[package]]
 name = "mnemosyne-memory-core"
 version = "0.3.0"
-source = "git+https://github.com/ryancinsight/Mnemosyne#946af714edf8e90d2b48bdcaa2215270f8207436"
+source = "git+https://github.com/ryancinsight/Mnemosyne#2658ef2922223527d43971d8fdf2d92906474c61"
 dependencies = [
  "loom",
 ]
@@ -439,7 +439,7 @@ dependencies = [
 [[package]]
 name = "mnemosyne-prof"
 version = "0.2.1"
-source = "git+https://github.com/ryancinsight/Mnemosyne#946af714edf8e90d2b48bdcaa2215270f8207436"
+source = "git+https://github.com/ryancinsight/Mnemosyne#2658ef2922223527d43971d8fdf2d92906474c61"
 dependencies = [
  "backtrace",
  "mnemosyne-build-util",
@@ -526,7 +526,7 @@ dependencies = [
 [[package]]
 name = "proteus-mat"
 version = "0.1.1"
-source = "git+https://github.com/ryancinsight/proteus#b5aa7352980231f4fb730182eb61848a3ddd559d"
+source = "git+https://github.com/ryancinsight/proteus#bf850b12e857f8d423117b322adfa73ec3e5c865"
 dependencies = [
  "aequitas",
  "eunomia",
@@ -726,8 +726,8 @@ dependencies = [
 
 [[package]]
 name = "themis-topology"
-version = "0.11.3"
-source = "git+https://github.com/ryancinsight/themis#a421be512bf93c459cc9e6047d7bda466c3beb6e"
+version = "0.11.4"
+source = "git+https://github.com/ryancinsight/themis#18490a597dc4f2d2a04ad9f66e8d125fa16e037c"
 dependencies = [
  "libc",
  "melinoe",

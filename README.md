@@ -124,6 +124,10 @@ concentration-validation contract is documented in
 
 ## Verification
 
+The [planar-fluence range verification](docs/verification/planar-fluence-range.md)
+records independent numerical fixtures, preserved error contracts and the
+final-subnormal rounding limit of the combined attenuation product.
+
 The committed gate is:
 
 ```sh
