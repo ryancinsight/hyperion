@@ -10,3 +10,4 @@
 | ADR | Title | Status |
 | --- | ----- | ------ |
 | [0001](0001-photon-optical-interaction-boundary.md) | Own photon and optical interaction laws in Hyperion | Accepted |
+| [0002](0002-release-scope-1-0.md) | Hyperion release scope for 1.0 | Accepted |

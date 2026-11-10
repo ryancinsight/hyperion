@@ -4,6 +4,7 @@
 ## HYPERION-DIFFUSION-POSITIVE-RANGE — Preserve positive derived diffusion [patch]
 
 - Status: blocked; owner: Codex; target: 0.1.1; priority: correctness.
+- milestone: M-correctness.
 - Implementation and evidence: draft [#84](https://github.com/ryancinsight/hyperion/pull/84);
   independent exact-head review and performance/resource acceptance remain open.
 - Baseline: current default returns Ok(D=0) for finite transport 2^127 or
@@ -30,6 +31,7 @@
 ## HYPERION-EFFECTIVE-UNDERFLOW — Recover finite effective attenuation [patch]
 
 - Status: blocked; owner: Codex; target: 0.1.1; priority: correctness.
+- milestone: M-correctness.
 - Implementation and evidence: draft [#84](https://github.com/ryancinsight/hyperion/pull/84);
   independent exact-head review and performance/resource acceptance remain open.
 - Baseline: absorption 2^-80 or 2^-600, reduced scattering 0, yields mu_eff=0
