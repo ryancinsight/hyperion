@@ -38,3 +38,10 @@ Adopt a three-milestone ladder to 1.0 recorded in `backlog/milestones.md`:
 - Milestone closure is evidenced by fetched-default commits satisfying each exit
   check; release authority remains explicit for 1.0.
 - This ADR is rewritten in place as scope evidence changes.
+
+## Revision notes
+
+- 2026-11-13: PR #84 had merged on 2026-10-17 (merge
+  `57dc43348b7f4a59a2dfbcc6db3f974f2d010aba`); both correctness items were
+  deleted from the board. The Context paragraph states the board as written
+  at acceptance, which still listed them.
