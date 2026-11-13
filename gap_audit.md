@@ -1,5 +1,12 @@
 # Hyperion ownership gap audit
 
+## Diffusion native-range resource acceptance — open
+
+`docs/verification/diffusion-range.md` records PR #84's timings as author
+measurements, not independent performance/resource acceptance; peak stack/RSS,
+no_std timing and other platforms are unmeasured. Re-open trigger: a consumer
+solver workload or resource-budget exit check names these paths.
+
 ## HYPERION-004 — Proteus constitutive consumer contract — closed 2026-08-16
 
 Hyperion now exercises the direct provider path rather than only constructing
