@@ -1,55 +1,52 @@
 # Hyperion backlog
 
-<a id="HYPERION-DIFFUSION-POSITIVE-RANGE"></a>
-## HYPERION-DIFFUSION-POSITIVE-RANGE — Preserve positive derived diffusion [patch]
+<a id="HYPERION-DIFFUSION-RANGE-RESOURCE"></a>
+## HYPERION-DIFFUSION-RANGE-RESOURCE — Accept diffusion range resource cost [patch] — todo
+- priority: verification; milestone: M-correctness; needs: none; basis: 8a1f7e3c8af2.
+- scope: `src/transport/diffusion/range.rs`, `docs/verification/diffusion-range.md`.
+- Outcome: resource acceptance of the repairs in [#84](https://github.com/ryancinsight/hyperion/pull/84)
+  (merge `57dc43348b7f`); the note holds author timings only, with peak stack,
+  RSS, no_std timing and other platforms unmeasured.
+- Oracle: stored paired comparison of head against `4a888e176199065c7f72731742d4b51af6e94a78`
+  on an isolated-core local host (ISA and cores recorded; aarch64 and x86-64),
+  O2/O3, f32/f64/F32/F64, the note's three call contexts: median ns/call delta
+  with confidence interval, upper edge at most +2.206 ns/call (the largest
+  delta the note records); peak stack with callees and RSS, neither above the
+  baseline; no_std timing. An excess is root-caused in production code.
+- Next step: commit a measurement harness for these metrics, output under the
+  run-output root, and record its result in the note.
 
-- Status: blocked; owner: Codex; target: 0.1.1; priority: correctness.
-- milestone: M-correctness.
-- Implementation and evidence: draft [#84](https://github.com/ryancinsight/hyperion/pull/84);
-  independent exact-head review and performance/resource acceptance remain open.
-- Baseline: current default returns Ok(D=0) for finite transport 2^127 or
-  2^1023, after3*transport overflows. The positive-only public constructor
-  rejects this returned quantity. Exact D rounds to positive subnormal values.
-- Repair: preserve1/(3s) for finite denominators; use(1/s)/3 only when3s
-  overflows. This avoids both premature reciprocal overflow and zero D.
-- Evidence: original two failures retained unchanged, native neighborhood and
-  rational-reference cases, public-constructor revalidation and typed errors.
-- Review follow-up: the independent numerical pass reports no correctness
-  finding. Its P3 timing attribution is corrected with exact16/1024 populations
-  and separate per-context costs in the verification note.
-- Threshold continuation: integrate the proved IEEE one-XOR-half identity for
-  the full f32/f64/F32/F64 cohort. Two four-scalar encoding/policy tests and330
-  new consecutive boundary-neighbor cases pass before the production change.
-  All24,458 comparison inputs retain bit-identical values/errors; the corrected
-  workload populations and fresh absolute costs remain explicit in the note.
-  Manifest, lock, dependency work, tests and limits retain their prior contracts.
-- Acceptance: normal source gates, explicit performance/resource acceptance and
-  independent exact-head review remain required. Git-first publish=false stays;
-  active PR82 provider lockfile work is preserved; no release is authorized.
+<a id="HYPERION-DIFFUSION-RANGE-TEST-HYGIENE"></a>
+## HYPERION-DIFFUSION-RANGE-TEST-HYGIENE — Close range review findings [patch] — todo
+- priority: verification; milestone: M-correctness; needs: none; basis: 8a1f7e3c8af2.
+- scope: `src/transport/diffusion/range.rs`, `tests/diffusion_range_boundaries.rs`.
+- Outcome: close the [#96](https://github.com/ryancinsight/hyperion/pull/96) review
+  findings no board item records: (1) `range.rs:54,57` `expect` messages lack the
+  `invariant:` prefix; (2) `diffusion_range_boundaries.rs:70,97` assert an
+  underived `<= 8` ULP literal; (3) `native_range_neighborhoods` (:105-108) runs
+  f32 and f64, while `Native` (`RealField + UnitScalar`) also holds for F32 and
+  F64 at locked eunomia `acb3f3a` (`impls/field.rs:12,31,59,80`).
+- Oracle: each message starts `invariant:` and names the guard that makes failure
+  unreachable; one named constant, its doc deriving the bound from the fixture
+  rounding model, replaces both literals, and a result perturbed by more than
+  the bound fails; `neighborhoods::<T>` passes for f32, f64, F32 and F64.
+- Next step: derive the bound, add the F32 and F64 `Native` impls, replace literals.
 
-<a id="HYPERION-EFFECTIVE-UNDERFLOW"></a>
-## HYPERION-EFFECTIVE-UNDERFLOW — Recover finite effective attenuation [patch]
-
-- Status: blocked; owner: Codex; target: 0.1.1; priority: correctness.
-- milestone: M-correctness.
-- Implementation and evidence: draft [#84](https://github.com/ryancinsight/hyperion/pull/84);
-  independent exact-head review and performance/resource acceptance remain open.
-- Baseline: absorption 2^-80 or 2^-600, reduced scattering 0, yields mu_eff=0
-  after radicand underflow although sqrt(3)*absorption is positive and normal.
-  Penetration becomes None; planar fluence predicts full transmission at the
-  finite expected attenuation length instead of approximately exp(-1).
-- Repair: normalize positive operands with exact binary exponent shifts only
-  for subnormal/zero finite radicands, evaluate a bounded normal product/root,
-  then restore the exponent. All arithmetic stays in the native scalar.
-- Policy: retain legitimate signed-zero absorption and the documented typed
-  rejection of nonfinite radicands. Inputs remain nonnegative; no cancellation
-  condition or tolerance is introduced. Positive wrapper invariants stay.
-- Evidence: original two failures/four controls retained, 325 rational fixture
-  cases plus 4,421 expanded inputs/profile, native zero/subnormal/normal and
-  overflow edges, and actual penetration/planar-fluence regressions.
-- Acceptance: independent review and performance/resource acceptance remain
-  pending; no adoption, merge, publication or service action is included.
-
+<a id="HYPERION-M-CORRECTNESS-EXIT-DRIFT"></a>
+## HYPERION-M-CORRECTNESS-EXIT-DRIFT — Restate M-correctness exit [patch] — todo
+- priority: verification; milestone: M-correctness; needs: none; basis: 8a1f7e3c8af2.
+- scope: `backlog/milestones.md`, `docs/adr/0002-release-scope-1-0.md`.
+- Outcome: the ladder and ADR match the board once the #84 items are closed:
+  `milestones.md:3` names `HYPERION-DIFFUSION-POSITIVE-RANGE` and
+  `HYPERION-EFFECTIVE-UNDERFLOW`, which no item carries; the open resource item
+  has priority verification, so "no open correctness items" reads met while
+  `HYPERION-DIFFUSION-RANGE-RESOURCE` is open; ADR 0002:20 ("open correctness
+  repairs") and :33-34 ("blocked correctness items") are stale.
+- Oracle: every ID in the exit resolves on the board or is replaced by its
+  runnable check; the exit states whether resource acceptance gates M-correctness;
+  the ADR lines agree; a dated ADR revision note names the exit change and its
+  evidence; a judge verdict covers the ladder edit (sprint: roadmap).
+- Next step: rewrite the exit and the ADR lines in one PR, apart from the item closeout.
 
 ## HYPERION-007 — Anchor chromophore source oracle [patch] — done 2026-08-20
 
