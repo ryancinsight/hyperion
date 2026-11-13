@@ -2,7 +2,6 @@
 
 <a id="HYPERION-DIFFUSION-RANGE-RESOURCE"></a>
 ## HYPERION-DIFFUSION-RANGE-RESOURCE — Accept diffusion range resource cost [patch] — todo
-
 - priority: verification; milestone: M-correctness; needs: none; basis: 8a1f7e3c8af2.
 - scope: `src/transport/diffusion/range.rs`, `docs/verification/diffusion-range.md`.
 - Outcome: resource acceptance of the repairs in [#84](https://github.com/ryancinsight/hyperion/pull/84)
@@ -16,6 +15,38 @@
   baseline; no_std timing. An excess is root-caused in production code.
 - Next step: commit a measurement harness for these metrics, output under the
   run-output root, and record its result in the note.
+
+<a id="HYPERION-DIFFUSION-RANGE-TEST-HYGIENE"></a>
+## HYPERION-DIFFUSION-RANGE-TEST-HYGIENE — Close range review findings [patch] — todo
+- priority: verification; milestone: M-correctness; needs: none; basis: 8a1f7e3c8af2.
+- scope: `src/transport/diffusion/range.rs`, `tests/diffusion_range_boundaries.rs`.
+- Outcome: close the [#96](https://github.com/ryancinsight/hyperion/pull/96) review
+  findings no board item records: (1) `range.rs:54,57` `expect` messages lack the
+  `invariant:` prefix; (2) `diffusion_range_boundaries.rs:70,97` assert an
+  underived `<= 8` ULP literal; (3) `native_range_neighborhoods` (:105-108) runs
+  f32 and f64, while `Native` (`RealField + UnitScalar`) also holds for F32 and
+  F64 at locked eunomia `acb3f3a` (`impls/field.rs:12,31,59,80`).
+- Oracle: each message starts `invariant:` and names the guard that makes failure
+  unreachable; one named constant, its doc deriving the bound from the fixture
+  rounding model, replaces both literals, and a result perturbed by more than
+  the bound fails; `neighborhoods::<T>` passes for f32, f64, F32 and F64.
+- Next step: derive the bound, add the F32 and F64 `Native` impls, replace literals.
+
+<a id="HYPERION-M-CORRECTNESS-EXIT-DRIFT"></a>
+## HYPERION-M-CORRECTNESS-EXIT-DRIFT — Restate M-correctness exit [patch] — todo
+- priority: verification; milestone: M-correctness; needs: none; basis: 8a1f7e3c8af2.
+- scope: `backlog/milestones.md`, `docs/adr/0002-release-scope-1-0.md`.
+- Outcome: the ladder and ADR match the board once the #84 items are closed:
+  `milestones.md:3` names `HYPERION-DIFFUSION-POSITIVE-RANGE` and
+  `HYPERION-EFFECTIVE-UNDERFLOW`, which no item carries; the open resource item
+  has priority verification, so "no open correctness items" reads met while
+  `HYPERION-DIFFUSION-RANGE-RESOURCE` is open; ADR 0002:20 ("open correctness
+  repairs") and :33-34 ("blocked correctness items") are stale.
+- Oracle: every ID in the exit resolves on the board or is replaced by its
+  runnable check; the exit states whether resource acceptance gates M-correctness;
+  the ADR lines agree; a dated ADR revision note names the exit change and its
+  evidence; a judge verdict covers the ladder edit (sprint: roadmap).
+- Next step: rewrite the exit and the ADR lines in one PR, apart from the item closeout.
 
 ## HYPERION-007 — Anchor chromophore source oracle [patch] — done 2026-08-20
 
