@@ -8,9 +8,10 @@
 
 Hyperion (`version = "0.1.1"`, `publish = false`, git-first provider) owns validated
 photon/optical interaction coefficients and transport laws for the Atlas stack. The
-backlog carries open correctness work (`HYPERION-DIFFUSION-POSITIVE-RANGE`,
-`HYPERION-EFFECTIVE-UNDERFLOW`) and deferred release residuals (`HYPERION-002`).
-The stack requires a milestone ladder to 1.0 with runnable exit checks.
+correctness repairs of PR #84 are landed (merge `57dc43348b7f`); the backlog
+carries their resource acceptance (`HYPERION-DIFFUSION-RANGE-RESOURCE`) and
+deferred release residuals (`HYPERION-002`). The stack requires a milestone
+ladder to 1.0 with runnable exit checks.
 
 ## Decision
 
@@ -38,3 +39,5 @@ Adopt a three-milestone ladder to 1.0 recorded in `backlog/milestones.md`:
 - Milestone closure is evidenced by fetched-default commits satisfying each exit
   check; release authority remains explicit for 1.0.
 - This ADR is rewritten in place as scope evidence changes.
+
+Revised 2026-11-13: Context states the board after PR #84 landed; the board and merge `57dc43348b7f` are the evidence.
