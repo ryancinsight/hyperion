@@ -32,7 +32,7 @@ in this subsystem; the existing anisotropy endpoint tests remain unchanged.
 
 For D, retain 1/(3s) when 3s is finite. Taking 1/s first in this range would
 prematurely overflow near the lower admitted inputs. If 3s overflows, s is large;
-1/s is a positive subnormal, and(1/s)/3 stays far above half the least subnormal
+1/s is a positive subnormal, and (1/s)/3 stays far above half the least subnormal
 in the provider's binary32/64 formats. Thus the recovered finite D is positive,
 without weakening its wrapper. Both operations run in T; no rounded 1/3
 coefficient, widened scalar or clamp is introduced.
@@ -120,7 +120,7 @@ universal cost bound.
 ### Integrated constant-construction comparison
 
 A fresh paired run compares the integrated threshold with the prior correct
-scaling implementation, using the same4200 timing regions and exact16/1024
+scaling implementation, using the same 4200 timing regions and exact 16/1024
 populations. Complete Results, native O2/O3, overflow checks and setup exclusions
 remain unchanged. These medians concern the complete construct/derive workflow:
 
@@ -133,15 +133,15 @@ remain unchanged. These medians concern the complete construct/derive workflow:
 Affected ordinary/weak attenuation, attenuation-plus-penetration and full
 workflow medians improve by 0.260–1.501 ns/call. Across all APIs, ordinary/weak
 deltas span -1.501 to +0.245 ns/call; the positive endpoint is the unchanged D
-accessor. The largest positive delta across all regimes is+0.376 ns/call on an
+accessor. The largest positive delta across all regimes is +0.376 ns/call on an
 all-large workflow, where radicand rejection precedes threshold evaluation.
 These observations support removing the call, not a universal no-regression
 bound or independent performance/resource acceptance.
 
 Generated ARM64 O2/O3 code removes the constant scalbn call from all affected
-monomorphs. Local accessor frames shrink64 to32 bytes for binary32 and80 to48
-for binary64; full-workflow frames shrink144 to96 and208 to192 bytes. Cold
-recovery remains. All measured heap requests/bytes remain zero, and public
+monomorphs. Local accessor frames shrink 64 to 32 bytes for binary32 and 80 to
+48 for binary64; full-workflow frames shrink 144 to 96 and 208 to 192 bytes.
+Cold recovery remains. All measured heap requests/bytes remain zero, and public
 state/Result sizes stay unchanged. Local CFI frames exclude total peak stack,
 foreign callees and RSS; those remain unmeasured. Other platforms and solver
 workloads still require their own assessment.
