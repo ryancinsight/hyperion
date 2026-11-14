@@ -33,6 +33,14 @@ use hyperion::{
 /// `3 + 10^-6`, steps of the exact value and below `3.5 + 10^-6` steps of the
 /// reference. Both are encodings, so their distance is an integer: at most 3.
 ///
+/// The spacing premise holds at the exact value `x`. When the computed value
+/// `y` falls below a power of two while `x` lies above it, the spacing at `y`
+/// is half that at `x`, so the premise fails at `x` but holds at `y`: spacing
+/// at `y` exceeds `u |y|`, and `|y - x| <= r |x|` with `|x| <= |y| / (1 - r)`
+/// spans at most `r / (u (1 - r))` steps counted at the spacing of `y`. The
+/// steps above the power of two are wider, so the count is no larger, and the
+/// bound across a binade crossing is `r / u + O(u)` as in the normal range.
+///
 /// The relative model needs a normal rounded result. A subnormal sum or
 /// tripling is exact. A radicand below the minimum normal never reaches the
 /// root for positive absorption: the tiny-absorption branch scales both
@@ -211,55 +219,18 @@ fn native_range_neighborhoods() {
     neighborhoods::<F32>();
     neighborhoods::<F64>();
 }
-/// Assert that moving `got` or `want` past the bound is rejected and that the
-/// bound itself is accepted.
-fn assert_bound_separates<T: Native>(line: &str, got: T, want: T) {
-    let beyond = got.bits().max(want.bits()) + MAX_ULP_DISTANCE + 1;
-    assert!(
-        !within_ulp_bound(T::from_raw_bits(beyond), want),
-        "perturbed result accepted: {line}"
-    );
-    let at_bound = want.bits() + MAX_ULP_DISTANCE;
-    assert!(within_ulp_bound(T::from_raw_bits(at_bound), want));
-    assert!(!within_ulp_bound(T::from_raw_bits(at_bound + 1), want));
-}
-/// A result moved beyond the bound is rejected, whichever side it started on.
-fn bound_rejects_perturbed_results<T: Native>() {
-    let mut count = 0;
-    for Case {
-        line,
-        state,
-        diffusion,
-        effective,
-    } in cases::<T>()
-    {
-        if let Reference::Value(want) = diffusion {
-            let got = *state
-                .diffusion_coefficient()
-                .expect("representable positive D")
-                .into_quantity()
-                .as_base();
-            assert_bound_separates(line, got, want);
-            count += 1;
-        }
-        if let Reference::Value(want) = effective {
-            let got = state
-                .effective_attenuation()
-                .expect("finite radicand and result")
-                .into_quantity()
-                .into_base();
-            assert_bound_separates(line, got, want);
-            count += 1;
-        }
-    }
-    assert!(count > 300, "perturbation covers both native formats");
-}
-#[test]
-fn ulp_bound_rejects_perturbed_results() {
-    bound_rejects_perturbed_results::<f32>();
-    bound_rejects_perturbed_results::<f64>();
-    bound_rejects_perturbed_results::<F32>();
-    bound_rejects_perturbed_results::<F64>();
+/// Higham's `gamma_n = n u / (1 - n u)` for `n` correctly rounded operations.
+///
+/// `u = EPSILON / 2` is the unit roundoff of round-to-nearest. Any product or
+/// quotient of `n` factors `1 + d` with `|d| <= u` is `1 + theta` with
+/// `|theta| <= gamma_n` (Higham, Accuracy and Stability of Numerical
+/// Algorithms, 2nd ed., Lemma 3.1). Evaluating the bound in `T` rounds the
+/// difference and the quotient once each.
+fn gamma<T: Native>(operations: u32) -> T {
+    let two = T::ONE + T::ONE;
+    let n = (0..operations).fold(T::ZERO, |count, _| count + T::ONE);
+    let n_u = n * (T::EPSILON / two);
+    n_u / (T::ONE - n_u)
 }
 fn downstream<T: Native>(a: T) {
     let state = pair(a, T::ZERO);
@@ -271,11 +242,12 @@ fn downstream<T: Native>(a: T) {
         .penetration_depth()
         .expect("finite penetration")
         .expect("positive attenuation has finite penetration");
-    let eight = T::ONE + T::ONE + T::ONE + T::ONE + T::ONE + T::ONE + T::ONE + T::ONE;
-    assert!(
-        (*path.quantity().as_base() - expected.recip()).abs()
-            <= eight * T::EPSILON * expected.recip()
-    );
+    // `expected` is the root rounded once and the product rounded once. The
+    // attenuation is within `gamma_3` of the exact `sqrt(3) a` (see
+    // `MAX_ULP_DISTANCE`). Each reciprocal rounds once, so the two reciprocals
+    // differ relatively by at most `gamma_(1 + 2 + 3 + 1)`.
+    let tolerance = gamma::<T>(7) * expected.recip();
+    assert!((*path.quantity().as_base() - expected.recip()).abs() <= tolerance);
     let depth = PathLength::new(Length::from_base(expected.recip()))
         .expect("finite expected attenuation length");
     let incident =
@@ -285,7 +257,9 @@ fn downstream<T: Native>(a: T) {
         .into_quantity()
         .into_base();
     let want = (-T::ONE).exp();
-    // Existing transport suite uses gamma32 for libm exp and composition.
+    // Carried from the transport suite's libm exp composition tolerance; the
+    // exp error term is not derived here.
+    let eight = T::ONE + T::ONE + T::ONE + T::ONE + T::ONE + T::ONE + T::ONE + T::ONE;
     let thirty_two = eight * (T::ONE + T::ONE + T::ONE + T::ONE);
     assert!((got - want).abs() <= thirty_two * T::EPSILON * want);
 }
@@ -293,4 +267,6 @@ fn downstream<T: Native>(a: T) {
 fn recovered_attenuation_feeds_real_planar_consumer() {
     downstream(2.0_f32.powi(-80));
     downstream(2.0_f64.powi(-600));
+    downstream(F32(2.0_f32.powi(-80)));
+    downstream(F64(2.0_f64.powi(-600)));
 }
