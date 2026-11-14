@@ -219,33 +219,48 @@ fn native_range_neighborhoods() {
     neighborhoods::<F32>();
     neighborhoods::<F64>();
 }
-/// Higham's `gamma_n = n u / (1 - n u)` for `n` correctly rounded operations.
+/// Higham's `gamma_n = n u / (1 - n u)` for a product of `n` factors.
 ///
-/// `u = EPSILON / 2` is the unit roundoff of round-to-nearest. Any product or
-/// quotient of `n` factors `1 + d` with `|d| <= u` is `1 + theta` with
+/// `u = EPSILON / 2` is the unit roundoff of round-to-nearest. A product or
+/// quotient of `n` factors `(1 + d)^(+-1)` with `|d| <= u` is `1 + theta` with
 /// `|theta| <= gamma_n` (Higham, Accuracy and Stability of Numerical
-/// Algorithms, 2nd ed., Lemma 3.1). Evaluating the bound in `T` rounds the
-/// difference and the quotient once each.
-fn gamma<T: Native>(operations: u32) -> T {
-    let two = T::ONE + T::ONE;
-    let n = (0..operations).fold(T::ZERO, |count, _| count + T::ONE);
-    let n_u = n * (T::EPSILON / two);
+/// Algorithms, 2nd ed., Lemma 3.1). For the small counts used here `n u` is
+/// `n` scaled by a power of two and `1 - n u = (2^p - n) / 2^p` has `p`
+/// significant bits, so both are exact in `T`; the quotient rounds once, and
+/// the product with the expected length at the assertion site rounds once
+/// more.
+fn gamma<T: Native>(operations: usize) -> T {
+    let n_u = T::from_count(operations) * (T::EPSILON / (T::ONE + T::ONE));
     n_u / (T::ONE - n_u)
 }
-fn downstream<T: Native>(a: T) {
+/// Feed `a` through `effective_attenuation`, the reciprocal path and the real
+/// planar consumer, returning whether the computed attenuation differs from
+/// `expected = fl(fl(sqrt(3)) a)`.
+fn downstream<T: Native>(a: T) -> bool {
     let state = pair(a, T::ZERO);
     let expected = (T::ONE + T::ONE + T::ONE).sqrt() * a;
     let attenuation = state
         .effective_attenuation()
         .expect("finite positive effective attenuation");
+    let differs = *attenuation.quantity().as_base() != expected;
     let path = attenuation
         .penetration_depth()
         .expect("finite penetration")
         .expect("positive attenuation has finite penetration");
-    // `expected` is the root rounded once and the product rounded once. The
-    // attenuation is within `gamma_3` of the exact `sqrt(3) a` (see
-    // `MAX_ULP_DISTANCE`). Each reciprocal rounds once, so the two reciprocals
-    // differ relatively by at most `gamma_(1 + 2 + 3 + 1)`.
+    // Factor form for Lemma 3.1, `(1 + d)^(+-1)` with `|d| <= u`. The radicand
+    // `3 a (a + 0)` rounds three times (sum `d1`, tripling `d2`, product
+    // `d3`) and the root once (`d4`). The root halves the radicand factors:
+    // `((1 + d1)(1 + d2))^(1/2)` and `(1 + d3)^(1/2)` each lie in
+    // `[1 - u, 1 + u]`, so `mu_eff` carries 3 factors with its own rounding.
+    // `path` is its reciprocal, rounded once (1 more). `expected` rounds the
+    // root and the product (2), and `expected.recip()` once more (1). The
+    // ratio `path / expected.recip()` is a product of 3 + 1 + 2 + 1 = 7
+    // factors, so it is `1 + theta` with `|theta| <= gamma_7` and
+    // `|path - expected.recip()| <= gamma_7 expected.recip()`. Evaluating the
+    // tolerance in `T` rounds the quotient inside `gamma` and the final
+    // product, lowering it by about `2 u` relative (`14 u^2` of `E` for
+    // `gamma_7`); `gamma_7` exceeds the worst 7-factor error `(1 - u)^-7 - 1`
+    // by `21 u^2` relative, which absorbs that.
     let tolerance = gamma::<T>(7) * expected.recip();
     assert!((*path.quantity().as_base() - expected.recip()).abs() <= tolerance);
     let depth = PathLength::new(Length::from_base(expected.recip()))
@@ -262,11 +277,27 @@ fn downstream<T: Native>(a: T) {
     let eight = T::ONE + T::ONE + T::ONE + T::ONE + T::ONE + T::ONE + T::ONE + T::ONE;
     let thirty_two = eight * (T::ONE + T::ONE + T::ONE + T::ONE);
     assert!((got - want).abs() <= thirty_two * T::EPSILON * want);
+    differs
+}
+/// A normal-range input whose radicand does not underflow, so the computed
+/// attenuation follows the square-root path rather than the exact-scaling
+/// recovery. For `5` the root of the rounded radicand differs from
+/// `fl(fl(sqrt(3)) a)` in all four formats (checked in the assertions below).
+fn five<T: Native>() -> T {
+    T::from_count(5)
 }
 #[test]
 fn recovered_attenuation_feeds_real_planar_consumer() {
-    downstream(2.0_f32.powi(-80));
-    downstream(2.0_f64.powi(-600));
-    downstream(F32(2.0_f32.powi(-80)));
-    downstream(F64(2.0_f64.powi(-600)));
+    // The subnormal-radicand inputs recover `fl(sqrt(3)) a` exactly, so the
+    // path assertion sees a zero difference there.
+    assert!(!downstream(2.0_f32.powi(-80)));
+    assert!(!downstream(2.0_f64.powi(-600)));
+    assert!(!downstream(F32(2.0_f32.powi(-80))));
+    assert!(!downstream(F64(2.0_f64.powi(-600))));
+    // On the normal path the computed attenuation differs from `expected`,
+    // so the `gamma_7` assertion bounds a nonzero difference.
+    assert!(downstream(five::<f32>()));
+    assert!(downstream(five::<f64>()));
+    assert!(downstream(five::<F32>()));
+    assert!(downstream(five::<F64>()));
 }
