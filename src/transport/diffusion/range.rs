@@ -49,12 +49,15 @@ pub(super) fn effective<T: RealField>(absorption: T, transport: T, radicand: T) 
 #[cold]
 #[inline(never)]
 fn small_effective<T: RealField>(absorption: T, transport: T) -> T {
-    let a_exponent = absorption
-        .binary_exponent()
-        .expect("positive finite absorption");
-    let t_exponent = transport
-        .binary_exponent()
-        .expect("positive finite transport");
+    let a_exponent = absorption.binary_exponent().expect(
+        "invariant: absorption is finite and positive; `effective` runs only \
+         for `absorption > 0` with a finite radicand, which an infinite \
+         absorption cannot give",
+    );
+    let t_exponent = transport.binary_exponent().expect(
+        "invariant: transport is finite and nonzero; `transport_value` \
+         rejects nonfinite and zero sums before `effective` runs",
+    );
     let a = absorption.scale_binary(-a_exponent);
     let t = transport.scale_binary(-t_exponent);
     let exponent = a_exponent + t_exponent;
