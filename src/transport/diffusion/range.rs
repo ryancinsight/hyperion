@@ -6,7 +6,7 @@ fn three<T: RealField>() -> T {
     T::ONE + T::ONE + T::ONE
 }
 
-/// When 3s overflows, 1/s is a positive subnormal and dividing it by3
+/// When 3s overflows, 1/s is a positive subnormal and dividing it by 3
 /// cannot underflow to zero for the provider's binary32/64 formats. Keep
 /// 1/(3s) otherwise: taking 1/s first can overflow for small admitted s.
 #[inline]
@@ -50,9 +50,9 @@ pub(super) fn effective<T: RealField>(absorption: T, transport: T, radicand: T) 
 #[inline(never)]
 fn small_effective<T: RealField>(absorption: T, transport: T) -> T {
     let a_exponent = absorption.binary_exponent().expect(
-        "invariant: absorption is finite and positive; `effective` runs only \
-         for `absorption > 0` with a finite radicand, which an infinite \
-         absorption cannot give",
+        "invariant: absorption is finite and positive; `small_effective` runs \
+         only under `absorption > 0`, and the caller's `derived_finite` check \
+         makes the radicand finite, which an infinite absorption cannot give",
     );
     let t_exponent = transport.binary_exponent().expect(
         "invariant: transport is finite and nonzero; `transport_value` \
@@ -62,7 +62,7 @@ fn small_effective<T: RealField>(absorption: T, transport: T) -> T {
     let t = transport.scale_binary(-t_exponent);
     let exponent = a_exponent + t_exponent;
     // a,t are exact in [1,2). The product is in [3,12); an odd exponent
-    // contributes another2, giving [6,24). All root intermediates are normal.
+    // contributes another 2, giving [6,24). All root intermediates are normal.
     let mut product = three::<T>() * a * t;
     if exponent & 1 != 0 {
         product *= T::ONE + T::ONE;

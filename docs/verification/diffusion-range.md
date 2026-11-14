@@ -30,26 +30,26 @@ in this subsystem; the existing anisotropy endpoint tests remain unchanged.
 
 ## Arithmetic argument
 
-For D, retain 1/(3s) when3s is finite. Taking1/s first in this range would
-prematurely overflow near the lower admitted inputs. If3s overflows, s is large;
-1/s is a positive subnormal, and(1/s)/3 stays far above half the least subnormal
+For D, retain 1/(3s) when 3s is finite. Taking 1/s first in this range would
+prematurely overflow near the lower admitted inputs. If 3s overflows, s is large;
+1/s is a positive subnormal, and (1/s)/3 stays far above half the least subnormal
 in the provider's binary32/64 formats. Thus the recovered finite D is positive,
-without weakening its wrapper. Both operations run in T; no rounded1/3
+without weakening its wrapper. Both operations run in T; no rounded 1/3
 coefficient, widened scalar or clamp is introduced.
 
 Effective attenuation first executes the existing native radicand and rejects
 nonfinite values exactly as before. Only a positive absorption and a subnormal
 or zero finite radicand enter the recovery path. The normal threshold is the
 exact encoding ONE bitwise-XOR HALF: adjacent odd/even IEEE exponent fields
-isolate exponent bit1. HALF is computed exactly as ONE/(ONE+ONE). This removes
+isolate exponent bit 1. HALF is computed exactly as ONE/(ONE+ONE). This removes
 the ordinary-path constant scaling call without changing the threshold. The
 [full scalar and policy proof](diffusion-threshold.md) covers all supported
 scalar implementations and every boundary neighbor, independently of sampling.
 
 Write a=A*2^ea and t=B*2^et using provider-native binary exponent/scale methods.
-The normalized A,B are exact in[1,2), even for subnormal source inputs.
-Evaluate3*A*B in[3,12). For odd ea+et, multiply that product by2 and use the
-floor half exponent, so all root intermediates remain in[3,24). One native
+The normalized A,B are exact in [1,2), even for subnormal source inputs.
+Evaluate 3*A*B in [3,12). For odd ea+et, multiply that product by 2 and use the
+floor half exponent, so all root intermediates remain in [3,24). One native
 square root and final binary scaling restore the result. The final scaling
 alone can round to a subnormal; intermediate product underflow is avoided.
 Since t>=a>=the least positive scalar, sqrt(3at)>=sqrt(3) times that scalar;
@@ -66,16 +66,16 @@ correct-rounding claim.
 ## Verification
 
 The original four failures/four controls are retained byte for byte. They first
-reproduce against the unchanged baseline. Two added tests cover325 committed
+reproduce against the unchanged baseline. Two added tests cover 325 committed
 native neighborhood cases and the actual recovered penetration/planar-fluence
-consumer. The fixture includes least subnormals, normal/subnormal radicand
+consumer, each instantiated for f32, f64, F32 and F64. The fixture includes least subnormals, normal/subnormal radicand
 transitions, tripled-denominator overflow, reciprocal-overflow midpoints,
 separated coefficient scales, signed zero and the documented overflow errors.
 
-Another330 previously unsampled threshold-neighbor cases and two four-scalar
+Another 330 previously unsampled threshold-neighbor cases and two four-scalar
 encoding/policy tests cover the constant-construction change.
 
-Run python3 scripts/verify_diffusion_range.py to check all655 fixture references
+Run python3 scripts/verify_diffusion_range.py to check all 655 fixture references
 with exact Fraction arithmetic, integer nearest-even division and square-root
 midpoint comparison. An expanded external corpus covers 4,421 input pairs per
 O2/O3/default/no-default mode. All four API outputs agree bit for bit; D differs
@@ -92,26 +92,26 @@ recovered-small, large and mixed input streams; constructor, each repaired
 accessor, effective attenuation plus penetration, and a construct/derive
 workflow, in direct/opaque-indirect/1024-input streaming contexts. Complete
 Results are blackboxed; setup and validation are outside timing. Native
-O2/O3 and unchanged overflow checks are used. Across4,200 sampled regions, heap requests/bytes are zero. State sizes remain
-8/16 bytes and Result sizes16/32 bytes for binary32/64. Ordinary/weak deltas
-span-0.254 to+1.767 ns/call. Mixed construct/derive populations differ by
-caller context. Direct and opaque-indirect calls cycle over16 inputs:14 ordinary,
-1 small and1 large (87.5%,6.25%,6.25%). Each1024-input streaming pass contains
-1002 ordinary,11 small and11 large (97.8515625%,1.07421875%,1.07421875%). The
-streaming population alone approximates98%/1%/1%; the combined timing range
+O2/O3 and unchanged overflow checks are used. Across 4,200 sampled regions, heap requests/bytes are zero. State sizes remain
+8/16 bytes and Result sizes 16/32 bytes for binary32/64. Ordinary/weak deltas
+span -0.254 to +1.767 ns/call. Mixed construct/derive populations differ by
+caller context. Direct and opaque-indirect calls cycle over 16 inputs: 14 ordinary,
+1 small and 1 large (87.5%, 6.25%, 6.25%). Each 1024-input streaming pass contains
+1002 ordinary, 11 small and 11 large (97.8515625%, 1.07421875%, 1.07421875%). The
+streaming population alone approximates 98%/1%/1%; the combined timing range
 cannot be interpreted as an estimate for that population.
 
 The original author medians across native scalars and O2/O3 are:
 
 | Context | Baseline ns/call | Repaired ns/call | Paired delta ns/call |
 | --- | --- | --- | --- |
-| Direct,16 inputs |3.303–3.558|5.075–5.500|+1.638–2.109|
-| Opaque-indirect,16 inputs |2.879–3.554|5.085–5.302|+1.630–2.206|
-| Streaming,1024 inputs |3.742–4.402|4.653–4.777|+0.374–0.912|
+| Direct, 16 inputs |3.303–3.558|5.075–5.500|+1.638–2.109|
+| Opaque-indirect, 16 inputs |2.879–3.554|5.085–5.302|+1.630–2.206|
+| Streaming, 1024 inputs |3.742–4.402|4.653–4.777|+0.374–0.912|
 
 Ranges collect per-scalar/profile medians; paired deltas are calculated before
-aggregation. The heavier recovery weighting in the16-input populations must be
-retained when judging their absolute costs. Recovered workflows reach9.265 ns/call.
+aggregation. The heavier recovery weighting in the 16-input populations must be
+retained when judging their absolute costs. Recovered workflows reach 9.265 ns/call.
 Wrong baseline recovered results are not throughput targets. Peak stack/RSS,
 no_std timing, other platforms and solver-level effects remain unmeasured.
 These are author measurements, not performance/resource acceptance or a
@@ -120,28 +120,28 @@ universal cost bound.
 ### Integrated constant-construction comparison
 
 A fresh paired run compares the integrated threshold with the prior correct
-scaling implementation, using the same4200 timing regions and exact16/1024
+scaling implementation, using the same 4200 timing regions and exact 16/1024
 populations. Complete Results, native O2/O3, overflow checks and setup exclusions
 remain unchanged. These medians concern the complete construct/derive workflow:
 
 | Context | Prior correct ns/call | Integrated ns/call | Paired delta ns/call |
 | --- | --- | --- | --- |
-| Direct,16 inputs |5.038–5.284|4.219–4.946|-1.005 to-0.092|
-| Opaque-indirect,16 inputs |5.141–5.274|4.302–4.915|-0.843 to-0.359|
-| Streaming,1024 inputs |4.661–4.771|3.733–4.574|-0.940 to-0.198|
+| Direct, 16 inputs |5.038–5.284|4.219–4.946|-1.005 to -0.092|
+| Opaque-indirect, 16 inputs |5.141–5.274|4.302–4.915|-0.843 to -0.359|
+| Streaming, 1024 inputs |4.661–4.771|3.733–4.574|-0.940 to -0.198|
 
 Affected ordinary/weak attenuation, attenuation-plus-penetration and full
-workflow medians improve by0.260–1.501 ns/call. Across all APIs, ordinary/weak
-deltas span-1.501 to+0.245 ns/call; the positive endpoint is the unchanged D
-accessor. The largest positive delta across all regimes is+0.376 ns/call on an
+workflow medians improve by 0.260–1.501 ns/call. Across all APIs, ordinary/weak
+deltas span -1.501 to +0.245 ns/call; the positive endpoint is the unchanged D
+accessor. The largest positive delta across all regimes is +0.376 ns/call on an
 all-large workflow, where radicand rejection precedes threshold evaluation.
 These observations support removing the call, not a universal no-regression
 bound or independent performance/resource acceptance.
 
 Generated ARM64 O2/O3 code removes the constant scalbn call from all affected
-monomorphs. Local accessor frames shrink64 to32 bytes for binary32 and80 to48
-for binary64; full-workflow frames shrink144 to96 and208 to192 bytes. Cold
-recovery remains. All measured heap requests/bytes remain zero, and public
+monomorphs. Local accessor frames shrink 64 to 32 bytes for binary32 and 80 to
+48 for binary64; full-workflow frames shrink 144 to 96 and 208 to 192 bytes.
+Cold recovery remains. All measured heap requests/bytes remain zero, and public
 state/Result sizes stay unchanged. Local CFI frames exclude total peak stack,
 foreign callees and RSS; those remain unmeasured. Other platforms and solver
 workloads still require their own assessment.
