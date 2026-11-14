@@ -68,9 +68,10 @@ correct-rounding claim.
 The original four failures/four controls are retained byte for byte. They first
 reproduce against the unchanged baseline. Two added tests cover 325 committed
 native neighborhood cases and the actual recovered penetration/planar-fluence
-consumer, each instantiated for f32, f64, F32 and F64. The fixture includes least subnormals, normal/subnormal radicand
-transitions, tripled-denominator overflow, reciprocal-overflow midpoints,
-separated coefficient scales, signed zero and the documented overflow errors.
+consumer, each instantiated for f32, f64, F32 and F64. The fixture includes
+least subnormals, normal/subnormal radicand transitions, tripled-denominator
+overflow, reciprocal-overflow midpoints, separated coefficient scales, signed
+zero and the documented overflow errors.
 
 Another 330 previously unsampled threshold-neighbor cases and two four-scalar
 encoding/policy tests cover the constant-construction change.
@@ -80,8 +81,9 @@ with exact Fraction arithmetic, integer nearest-even division and square-root
 midpoint comparison. An expanded external corpus covers 4,421 input pairs per
 O2/O3/default/no-default mode. All four API outputs agree bit for bit; D differs
 from exact-input rounding by at most two ULP, effective attenuation by one ULP,
-with zero policy mismatches. All 36 native tests pass in debug, release and
-no-default modes; all 24 original tests and their assertions remain unchanged.
+with zero policy mismatches. All 36 tests of the package pass in debug,
+release and no-default modes (nextest on rustc 1.97.0); all 24 original tests
+and their assertions remain unchanged.
 Format, strict Clippy/Rustdoc, doctests in both modes, all three examples and
 an explicit Rust 1.95 all-target/all-feature check pass.
 
