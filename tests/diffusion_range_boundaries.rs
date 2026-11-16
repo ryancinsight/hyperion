@@ -264,8 +264,8 @@ fn exp_binade_ulp<T: Native>() -> T {
 /// is below `1e-11` units in the last place in binary32 and far below in
 /// binary64. `got - hi` is exact (two values of one binade), and the six
 /// roundings of the remaining evaluation are each at most `u` times a
-/// magnitude below `1e-6`, so below `2e-5` units in total, against the `0.25`
-/// unit margin that `exp_error_over_planar_interval` leaves.
+/// magnitude below `1e-6`, so below `2e-5` units in total, which
+/// `exp_error_over_planar_interval` charges as `ulp / 2^15`.
 fn exp_error<T: Native>(y: T) -> T {
     let (hi, lo) = T::exp_neg_one_split();
     let two = T::ONE + T::ONE;
@@ -321,14 +321,28 @@ fn worst_exp_error<T: Native>() -> T {
 /// polynomial (`src/math/expf.rs:23-24`) and no end-to-end ulp bound, so
 /// `exp_error_over_planar_interval` measures both over every encoding the
 /// exponent can take (eunomia `acb3f3a7` routes `f32` through `expf` and `f64`
-/// through `exp`): maxima `0.75` and `0.66` units in binary32 and binary64,
-/// and the test requires `E = 1` unit. The evaluated expression falls short of
-/// the exact bound by `want` differing from `e^-1`, by `gamma_7^2` and by its
-/// own roundings: below `1e-13` in binary32 and `1e-30` in binary64, against
-/// the `2 (1 - 0.75)` unit of slack, `1.5e-8` and `2.8e-17`, that the measured
-/// maxima leave.
+/// through `exp`). It measured maxima of `0.75` unit in binary32 and `0.66` in
+/// binary64 and enforces the margin the bound needs: the evaluated expression
+/// falls short of the exact bound by [`tolerance_shortfall`], which the two
+/// `E` terms must absorb.
+///
+/// The reference value is the analytical Beer-Lambert decay
+/// `F(z) = F_0 exp(-mu_eff z)` (`docs/book/beer_lambert.md:22-23`), which at
+/// `z = 1 / mu_eff` is `F_0 / e` (`docs/adr/0001-photon-optical-interaction-boundary.md:146`).
 fn planar_fluence_tolerance<T: Native>(want: T) -> T {
     want * gamma::<T>(7) + exp_binade_ulp::<T>() * (T::ONE + T::ONE)
+}
+/// Amount by which [`planar_fluence_tolerance`] can fall below its exact
+/// expression `e^-1 (e^gamma_7 - 1) + 2 E`, at most `6 EPSILON^2`.
+///
+/// With `gamma_7 <= 3.5 EPSILON (1 + 4 EPSILON)` and `u = EPSILON / 2`, in
+/// units of `EPSILON^2`: `want` differs from `e^-1` by at most one unit in the
+/// last place `EPSILON / 4`, giving `0.875`; the dropped `e^-1 gamma_7^2 / 2`
+/// gives `2.26`; rounding the quotient in `gamma`, the product with `want` and
+/// the sum with the `E` terms each cost `u` of their value, `0.644`, `0.644`
+/// and `0.9`. The total `5.32` is below `6`.
+fn tolerance_shortfall<T: Native>() -> T {
+    T::from_count(6) * T::EPSILON * T::EPSILON
 }
 /// Feed `a` through `effective_attenuation`, the reciprocal path and the real
 /// planar consumer, returning whether the computed attenuation differs from
@@ -398,11 +412,19 @@ fn recovered_attenuation_feeds_real_planar_consumer() {
 fn exp_error_over_planar_interval() {
     fn within_one_unit<T: Native>() {
         let worst = worst_exp_error::<T>();
+        let ulp = exp_binade_ulp::<T>();
+        // `exp_error` evaluates below `2e-5` unit (below `ulp / 2^15`), and
+        // the tolerance needs half of its shortfall from each `E` term.
+        let measurement = ulp / T::from_count(1 << 15);
+        let half_shortfall = tolerance_shortfall::<T>() / (T::ONE + T::ONE);
         assert!(
             worst > T::ZERO,
             "the sweep measures a nonzero rounding error"
         );
-        assert!(worst < exp_binade_ulp::<T>(), "exp error exceeds one unit");
+        assert!(
+            worst + measurement + half_shortfall <= ulp,
+            "exp error leaves no margin under one unit"
+        );
     }
     within_one_unit::<f32>();
     within_one_unit::<f64>();
