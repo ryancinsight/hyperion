@@ -67,6 +67,22 @@ trait Native: RealField + UnitScalar {
     fn parse_bits(s: &str) -> Self {
         Self::from_raw_bits(u64::from_str_radix(s, 16).expect("hex bits"))
     }
+    /// `e^-1` as `(hi, lo)`: `hi` is the nearest value of the format and `lo`
+    /// the nearest value to `e^-1 - hi`, so `hi + lo` carries about twice the
+    /// precision of `T`.
+    ///
+    /// Evaluated with mpmath 1.3.0 at 300 bits from
+    /// `e^-1 = 0.36787944117144232159552377016146086744581113103176783450783...`;
+    /// what `lo` leaves unrepresented is `4.3e-16` in binary32 and `5.8e-34` in
+    /// binary64, both far below one unit in the last place of `e^-1`.
+    fn exp_neg_one_split() -> (Self, Self) {
+        let (hi, lo) = if Self::WIDTH == "32" {
+            ("3ebc5ab2", "b21d310d")
+        } else {
+            ("3fd78b56362cef38", "bc6ca8a4270fadf5")
+        };
+        (Self::parse_bits(hi), Self::parse_bits(lo))
+    }
 }
 impl Native for f32 {
     const WIDTH: &'static str = "32";
@@ -233,6 +249,87 @@ fn gamma<T: Native>(operations: usize) -> T {
     let n_u = T::from_count(operations) * (T::EPSILON / (T::ONE + T::ONE));
     n_u / (T::ONE - n_u)
 }
+/// One unit in the last place of the binade `[1/4, 1/2)`, `EPSILON / 4`.
+///
+/// `exp(-1) = 0.3679` and `exp(-y)` for `|y - 1| <= 2 gamma_7` (below `1e-6`)
+/// all lie in that binade.
+fn exp_binade_ulp<T: Native>() -> T {
+    T::EPSILON / T::from_count(4)
+}
+/// `|exp(-y) - e^-y|` for the scalar's `exp`, with `e^-y` evaluated beyond `T`.
+///
+/// With `d = y - 1`, exact in `T` for `y` in `[1/2, 2]` (Sterbenz), the
+/// reference is `e^-y = (hi + lo)(1 + s)` for `s = e^-d - 1 = d^2 / 2 - d + r`
+/// and `|r| <= |d|^3 / 6 (1 + |d|)`. For `|d| < 1e-6` the dropped `|r| e^-1`
+/// is below `1e-11` units in the last place in binary32 and far below in
+/// binary64. `got - hi` is exact (two values of one binade), and the six
+/// roundings of the remaining evaluation are each at most `u` times a
+/// magnitude below `1e-6`, so below `2e-5` units in total, against the `0.25`
+/// unit margin that `exp_error_over_planar_interval` leaves.
+fn exp_error<T: Native>(y: T) -> T {
+    let (hi, lo) = T::exp_neg_one_split();
+    let two = T::ONE + T::ONE;
+    let d = y - T::ONE;
+    let s = d * d / two - d;
+    let got = (-y).exp();
+    (got - hi - hi * s - lo - lo * s).abs()
+}
+/// Largest [`exp_error`] over every value `y` of `T` with `|y - 1| <= 2
+/// gamma_7`.
+///
+/// `|y - 1| <= gamma_7` is the domain of the planar fluence exponent (see
+/// [`planar_fluence_tolerance`]). Twice that radius covers it with room for
+/// the one rounding in the computed `gamma_7`. The sweep visits each encoding
+/// of `T` in the interval, so the maximum is exact for the domain rather than
+/// sampled.
+fn worst_exp_error<T: Native>() -> T {
+    let one = T::ONE;
+    let radius = gamma::<T>(7) * (one + one);
+    let below = (1..)
+        .map(|step| T::from_raw_bits(one.bits() - step))
+        .take_while(|y| one - *y <= radius);
+    let above = (0..)
+        .map(|step| T::from_raw_bits(one.bits() + step))
+        .take_while(|y| *y - one <= radius);
+    below.chain(above).map(exp_error).fold(
+        T::ZERO,
+        |worst, error| if error > worst { error } else { worst },
+    )
+}
+/// Bound on `|fluence - want|` for the planar consumer at one mean free path
+/// of unit incident fluence, with `want = fl(exp(-1))`.
+///
+/// The exponent is `x = fl(mu_eff r)` for the depth `r = fl(1 / expected)`.
+/// `mu_eff` carries 3 rounding factors and `expected` 2 (the count in
+/// [`downstream`]), `r` one and the product one, so `x = 1 + theta` with
+/// `|theta| <= gamma_7` (Higham, Accuracy and Stability of Numerical
+/// Algorithms, 2nd ed., Lemma 3.1). The product of attenuation and depth is a
+/// single multiplication (aequitas `aa9e89f`,
+/// `src/quantity/arithmetic/multiplicative.rs:9-20`) and the unit incident
+/// fluence multiplies the transmission exactly. With `E` the error of the
+/// scalar's `exp` on this interval,
+///
+/// `|fl(exp(-x)) - want| <= E + e^-1 (e^gamma_7 - 1) + E`
+///
+/// where the middle term is the conditioning of `exp` at 1, the derivative
+/// `-e^-1` times the displacement, with `e^gamma - 1 <= gamma (1 + gamma)`;
+/// the outer terms are the `exp` errors at `-x` and at `-1`.
+///
+/// `E` is one unit in the last place of the binade of `e^-1`
+/// ([`exp_binade_ulp`]). libm 0.2.16 `exp` states "less than 1 ulp"
+/// (`src/math/exp.rs:59-60`); its `expf` states only the minimax bound of its
+/// polynomial (`src/math/expf.rs:23-24`) and no end-to-end ulp bound, so
+/// `exp_error_over_planar_interval` measures both over every encoding the
+/// exponent can take (eunomia `acb3f3a7` routes `f32` through `expf` and `f64`
+/// through `exp`): maxima `0.75` and `0.66` units in binary32 and binary64,
+/// and the test requires `E = 1` unit. The evaluated expression falls short of
+/// the exact bound by `want` differing from `e^-1`, by `gamma_7^2` and by its
+/// own roundings: below `1e-13` in binary32 and `1e-30` in binary64, against
+/// the `2 (1 - 0.75)` unit of slack, `1.5e-8` and `2.8e-17`, that the measured
+/// maxima leave.
+fn planar_fluence_tolerance<T: Native>(want: T) -> T {
+    want * gamma::<T>(7) + exp_binade_ulp::<T>() * (T::ONE + T::ONE)
+}
 /// Feed `a` through `effective_attenuation`, the reciprocal path and the real
 /// planar consumer, returning whether the computed attenuation differs from
 /// `expected = fl(fl(sqrt(3)) a)`.
@@ -272,11 +369,7 @@ fn downstream<T: Native>(a: T) -> bool {
         .into_quantity()
         .into_base();
     let want = (-T::ONE).exp();
-    // Carried from the transport suite's libm exp composition tolerance; the
-    // exp error term is not derived here.
-    let eight = T::ONE + T::ONE + T::ONE + T::ONE + T::ONE + T::ONE + T::ONE + T::ONE;
-    let thirty_two = eight * (T::ONE + T::ONE + T::ONE + T::ONE);
-    assert!((got - want).abs() <= thirty_two * T::EPSILON * want);
+    assert!((got - want).abs() <= planar_fluence_tolerance(want));
     differs
 }
 /// A normal-range input whose radicand does not underflow, so the computed
@@ -300,4 +393,19 @@ fn recovered_attenuation_feeds_real_planar_consumer() {
     assert!(downstream(five::<f64>()));
     assert!(downstream(five::<F32>()));
     assert!(downstream(five::<F64>()));
+}
+#[test]
+fn exp_error_over_planar_interval() {
+    fn within_one_unit<T: Native>() {
+        let worst = worst_exp_error::<T>();
+        assert!(
+            worst > T::ZERO,
+            "the sweep measures a nonzero rounding error"
+        );
+        assert!(worst < exp_binade_ulp::<T>(), "exp error exceeds one unit");
+    }
+    within_one_unit::<f32>();
+    within_one_unit::<f64>();
+    within_one_unit::<F32>();
+    within_one_unit::<F64>();
 }

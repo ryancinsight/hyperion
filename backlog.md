@@ -1,24 +1,5 @@
 # Hyperion backlog
 
-<a id="HYPERION-PLANAR-FLUENCE-TOLERANCE"></a>
-## HYPERION-PLANAR-FLUENCE-TOLERANCE — Derive the planar fluence tolerance [patch] — todo
-- priority: verification; milestone: M-correctness; needs: none; basis: 61968b1c5f26.
-- scope: `tests/diffusion_range_boundaries.rs`.
-- Outcome: the fluence assertion of `recovered_attenuation_feeds_real_planar_consumer`
-  bounds `got - exp(-1)` by a tolerance derived from `gamma_7` and each
-  scalar's `exp` error, each term cited, replacing the underived
-  `32 * EPSILON`; the path assertion already derives `gamma_7`.
-- Gap: libm 0.2.16 `exp` states "less than 1 ulp" (`src/math/exp.rs:59-60`).
-  `expf` states only the minimax bound `|x (e^x + 1) / (e^x - 1) - p(x)| <
-  2^-27.74` on `[-0.34568, 0.34568]` (`src/math/expf.rs:23-24`), not an
-  end-to-end ulp bound; F32 routes through it (eunomia acb3f3a7,
-  `traits/float.rs:195-196`).
-- Oracle: the tolerance is a named expression of `gamma_7` and the per-scalar
-  `exp` error, each term cited; the `expf` term rests on a measured maximum-ulp
-  sweep over `[-1 - gamma_7, -1 + gamma_7]` or an eunomia accuracy contract; a
-  mutant moving the fluence by twice the bound fails.
-- Next step: sweep `expf` against exact references over that interval.
-
 <a id="HYPERION-RANGE-ULP-BOUND-STRENGTH"></a>
 ## HYPERION-RANGE-ULP-BOUND-STRENGTH — Pin the range ulp bound's strength [patch] — todo
 - priority: verification; milestone: M-correctness; needs: none; basis: da98bfa9d4d7.
