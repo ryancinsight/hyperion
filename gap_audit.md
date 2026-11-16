@@ -139,7 +139,9 @@ solvers, dose deposition, GPU dispatch, or Maxwell/radiative-transfer solvers
 - ADR index: the generated index records ADR 0001's existing canonical
   `Accepted` status.
 - Local planning trail completed at this audit with the missing `gap_audit.md`
-  authored; `backlog.md` and `checklist.md` predate this audit.
+  authored; `backlog.md` predates this audit. The `checklist.md` that also
+  predated it is deleted: every entry was closed, its items are on `backlog.md`
+  and its audit record is in this file.
 
 ## HYPERION-007 — Anchor chromophore source oracle — closed 2026-08-20
 
