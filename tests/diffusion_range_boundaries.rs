@@ -73,8 +73,9 @@ trait Native: RealField + UnitScalar {
     ///
     /// Evaluated with mpmath 1.3.0 at 300 bits from
     /// `e^-1 = 0.36787944117144232159552377016146086744581113103176783450783...`;
-    /// what `lo` leaves unrepresented is `4.3e-16` in binary32 and `5.8e-34` in
-    /// binary64, both far below one unit in the last place of `e^-1`.
+    /// what `lo` leaves unrepresented has magnitude `4.3166e-16` in binary32
+    /// and `5.8300e-34` in binary64, both far below one unit in the last place
+    /// of `e^-1`.
     fn exp_neg_one_split() -> (Self, Self) {
         let (hi, lo) = if Self::WIDTH == "32" {
             ("3ebc5ab2", "b21d310d")
@@ -262,10 +263,12 @@ fn exp_binade_ulp<T: Native>() -> T {
 /// reference is `e^-y = (hi + lo)(1 + s)` for `s = e^-d - 1 = d^2 / 2 - d + r`
 /// and `|r| <= |d|^3 / 6 (1 + |d|)`. For `|d| < 1e-6` the dropped `|r| e^-1`
 /// is below `1e-11` units in the last place in binary32 and far below in
-/// binary64. `got - hi` is exact (two values of one binade), and the six
-/// roundings of the remaining evaluation are each at most `u` times a
-/// magnitude below `1e-6`, so below `2e-5` units in total, which
-/// `exp_error_over_planar_interval` charges as `ulp / 2^15`.
+/// binary64. `got - hi` is exact (two values of one binade), and the seven
+/// roundings of the remaining evaluation (`d * d`, `- d`, `hi * s`, its
+/// subtraction, `- lo`, `lo * s`, its subtraction; the halving is exact) are
+/// each at most `u` times a magnitude below `1e-6`, which is `2e-6` units, so
+/// below `1.4e-5` units in total, which `exp_error_over_planar_interval`
+/// charges as `ulp / 2^15`.
 fn exp_error<T: Native>(y: T) -> T {
     let (hi, lo) = T::exp_neg_one_split();
     let two = T::ONE + T::ONE;
@@ -291,13 +294,20 @@ fn worst_exp_error<T: Native>() -> T {
     let above = (0..)
         .map(|step| T::from_raw_bits(one.bits() + step))
         .take_while(|y| *y - one <= radius);
-    below.chain(above).map(exp_error).fold(
-        T::ZERO,
-        |worst, error| if error > worst { error } else { worst },
-    )
+    below
+        .chain(above)
+        .map(|y| {
+            let error = exp_error(y);
+            assert!(error.is_finite(), "exp error is finite over the interval");
+            error
+        })
+        .fold(
+            T::ZERO,
+            |worst, error| if error > worst { error } else { worst },
+        )
 }
-/// Bound on `|fluence - want|` for the planar consumer at one mean free path
-/// of unit incident fluence, with `want = fl(exp(-1))`.
+/// Bound on `|fluence - want|` for the planar consumer at one penetration
+/// depth `1 / mu_eff` of unit incident fluence, with `want = fl(exp(-1))`.
 ///
 /// The exponent is `x = fl(mu_eff r)` for the depth `r = fl(1 / expected)`.
 /// `mu_eff` carries 3 rounding factors and `expected` 2 (the count in
@@ -305,7 +315,7 @@ fn worst_exp_error<T: Native>() -> T {
 /// `|theta| <= gamma_7` (Higham, Accuracy and Stability of Numerical
 /// Algorithms, 2nd ed., Lemma 3.1). The product of attenuation and depth is a
 /// single multiplication (aequitas `aa9e89f`,
-/// `src/quantity/arithmetic/multiplicative.rs:9-20`) and the unit incident
+/// `src/quantity/arithmetic/multiplicative.rs:8-19`) and the unit incident
 /// fluence multiplies the transmission exactly. With `E` the error of the
 /// scalar's `exp` on this interval,
 ///
