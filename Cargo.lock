@@ -19,8 +19,9 @@ checksum = "320119579fcad9c21884f5c4861d16174d0e06250625266f50fe6898340abefa"
 
 [[package]]
 name = "aequitas"
-version = "0.3.2"
-source = "git+https://github.com/ryancinsight/aequitas#aa9e89fb317f1e2e734a34c173e3b5135351a4bc"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "469b307baf5d2068d8f2952692ab1398aecfb9eb09503c17e111ce88eb527a8f"
 dependencies = [
  "eunomia",
  "typenum",
@@ -198,7 +199,8 @@ dependencies = [
 [[package]]
 name = "eunomia"
 version = "0.12.0"
-source = "git+https://github.com/ryancinsight/eunomia#acb3f3a7fa37ae6e6b345dfa967674cf4dc34b7a"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ed06ed5a98e33ab7e70cd371717d70a87b13a3fef566bfe6e947f62df0775352"
 dependencies = [
  "bytemuck",
  "eunomia-derive",
@@ -208,7 +210,8 @@ dependencies = [
 [[package]]
 name = "eunomia-derive"
 version = "0.12.0"
-source = "git+https://github.com/ryancinsight/eunomia#acb3f3a7fa37ae6e6b345dfa967674cf4dc34b7a"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5806836edadeaadb15655c7c831debf6750af746808a6c50f7969dc8c3ddd990"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -525,7 +528,7 @@ dependencies = [
 [[package]]
 name = "proteus-mat"
 version = "0.1.1"
-source = "git+https://github.com/ryancinsight/proteus#17945f405b62a30d6f7bc981e20075663581eafa"
+source = "git+https://github.com/ryancinsight/proteus#a780c7087764db0921dd930388c393f614409d25"
 dependencies = [
  "aequitas",
  "eunomia",
