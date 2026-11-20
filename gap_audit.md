@@ -1,5 +1,10 @@
 # Hyperion ownership gap audit
 
+## Registry provider release 0.2.0
+
+- The package name is hyperion-transport and the Rust library name is hyperion. Use the renamed registry package in Cargo manifests and keep hyperion imports. Runtime dependencies use the Aequitas 0.4, Eunomia 0.12 and Proteus 0.2 registry identities.
+- The release gate verifies the typed API, archived dependency baseline, and fresh consumer graph.
+
 ## HYPERION-004 — Proteus constitutive consumer contract — closed 2026-08-16
 
 Hyperion now exercises the direct provider path rather than only constructing

@@ -1,6 +1,6 @@
 [package]
-name = "hyperion"
-version = "0.1.1"
+name = "hyperion-transport"
+version = "0.2.0"
 edition = "2024"
 rust-version = "1.95"
 authors = ["Ryan Clanton <ryanclanton@outlook.com>"]
@@ -10,12 +10,15 @@ license = "MIT OR Apache-2.0"
 readme = "README.md"
 keywords = ["photon", "optics", "attenuation", "multiphysics"]
 categories = ["no-std", "science"]
-publish = false
+publish = true
+
+[lib]
+name = "hyperion"
 
 [dependencies]
 aequitas = { version = "0.4.0", default-features = false }
 eunomia = { version = "0.12.1", default-features = false }
-proteus = { package = "proteus-mat", version = "0.1.0", git = "https://github.com/ryancinsight/proteus", default-features = false }
+proteus = { package = "proteus-mat", version = "0.2.0", default-features = false }
 
 [dev-dependencies]
 mnemosyne = { package = "mnemosyne-memory", version = "0.10.0", git = "https://github.com/ryancinsight/Mnemosyne", default-features = false }

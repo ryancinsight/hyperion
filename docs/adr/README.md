@@ -11,3 +11,4 @@
 | --- | ----- | ------ |
 | [0001](0001-photon-optical-interaction-boundary.md) | Own photon and optical interaction laws in Hyperion | Accepted |
 | [0002](0002-release-scope-1-0.md) | Hyperion release scope for 1.0 | Accepted |
+| [0003](0003-registry-provider-release.md) | Publish Hyperion under its own registry identity | Accepted |

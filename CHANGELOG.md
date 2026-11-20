@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.0
+
+### Breaking
+
+- [major] The package name is hyperion-transport and the Rust library name is hyperion. Use the renamed registry package in Cargo manifests and keep hyperion imports. Runtime dependencies use the Aequitas 0.4, Eunomia 0.12 and Proteus 0.2 registry identities.
+
 All externally observable changes are recorded here.
 
 ## 0.1.1 — Unreleased
