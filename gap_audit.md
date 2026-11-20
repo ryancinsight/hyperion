@@ -1,5 +1,12 @@
 # Hyperion ownership gap audit
 
+## hyperion-transport 0.3.0 provider release [major]
+
+The published 0.2.0 archive selects Aequitas 0.4. Release 0.3.0 uses
+Aequitas 0.5. Its Cargo package and consumer must agree on that source and
+version for the shared Rust types. The registry check covers the archive
+checksum, its Git revision, and the typed boundary.
+
 ## HYPERION-004 — Proteus constitutive consumer contract — closed 2026-08-16
 
 Hyperion now exercises the direct provider path rather than only constructing

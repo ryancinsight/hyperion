@@ -1,5 +1,11 @@
 # Hyperion backlog
 
+## hyperion-transport 0.3.0 public quantity provider [major]
+
+- Publish for the Aequitas 0.5 cohort using the approved registry name.
+- Acceptance requires one Aequitas 0.5 and one Eunomia 0.12.1 in a fresh
+  registry lock and actual values exchanged across the public boundary.
+
 <a id="HYPERION-RANGE-ULP-BOUND-STRENGTH"></a>
 ## HYPERION-RANGE-ULP-BOUND-STRENGTH — Pin the range ulp bound's strength [patch] — todo
 - priority: verification; milestone: M-correctness; needs: none; basis: da98bfa9d4d7.

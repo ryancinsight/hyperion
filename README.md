@@ -9,11 +9,10 @@ The name refers to Hyperion, the Titan associated with heavenly light.
 
 ## Distribution
 
-Hyperion is a public Git-first provider at
-`https://github.com/ryancinsight/hyperion`. The unrelated crates.io name is
-already occupied, so this package is intentionally `publish = false`. Atlas
-consumers pin reviewed Git revisions and their lockfiles provide reproducible
-source identity.
+Hyperion publishes as `hyperion-transport` and keeps `hyperion` as the Rust
+import path. Version 0.3 uses the published Aequitas 0.5 and Proteus 0.3
+quantity providers. Choose those same versions when sharing values with
+Hyperion. [Crates.io package](https://crates.io/crates/hyperion-transport)
 
 ## Boundary
 

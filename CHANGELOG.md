@@ -2,6 +2,20 @@
 
 All externally observable changes are recorded here.
 
+## [0.3.0] - 2026-11-20
+
+### Breaking
+
+- [major] Upgrade the public Aequitas provider from 0.4 to 0.5.
+  Use Proteus Mat 0.3 with the same Aequitas 0.5 quantity source. Keep the hyperion Rust import.
+  See [ADR 0003](docs/adr/0003-registry-provider-release.md).
+
+## [0.2.0] - 2026-11-20
+
+### Breaking
+
+- [major] Release the previous public quantity boundary against Aequitas 0.4.
+
 ## 0.1.1 — Unreleased
 
 ### Fixed
