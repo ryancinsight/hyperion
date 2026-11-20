@@ -1,5 +1,13 @@
 # Hyperion ownership gap audit
 
+## hyperion-transport 0.2.0 registry verification
+
+The crates.io archive matches source `b5e1bec8e0322df96ac38c4d871c35d284b811c4`
+at tag `v0.2.0`. Its SHA-256 matches the registry index.
+The published transport and material providers share one Aequitas 0.4
+quantity identity. The independent attenuation test obtains exactly 8 m⁻¹.
+
+
 ## Registry provider release 0.2.0
 
 - The package name is hyperion-transport and the Rust library name is hyperion. Use the renamed registry package in Cargo manifests and keep hyperion imports. Runtime dependencies use the Aequitas 0.4, Eunomia 0.12 and Proteus 0.2 registry identities.
