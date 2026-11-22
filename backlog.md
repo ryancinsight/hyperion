@@ -1,5 +1,15 @@
 # Hyperion backlog
 
+<a id="hyperion-stable-qualification"></a>
+## HYPERION-STABLE-QUALIFICATION — hyperion stable-release qualification [patch] — todo
+- priority: verification; milestone: M-correctness; basis: `19a8c90b19dd`.
+- Outcome: Derive per-quantity bounds for the diffusion-range tests. Follow the [release scope](docs/adr/0002-release-scope-1-0.md) and [milestone exits](backlog/milestones.md).
+- Representative manifest `hyperion 0.1.1`. Target 1.0.0. The current Cargo manifest disables publication.
+- [ ] [patch] Reconcile HYPERION-RANGE-ULP-BOUND-STRENGTH with the implementation. Derive the bounds for D and effective attenuation and show that an over-bound displacement fails for each.
+- [ ] [patch] Exercise representability near underflow and the positive-range boundaries with Proteus inputs. Record the measured resource cost and the exact-revision review for the consumer contract.
+- [ ] [major] Verify the documented Git-first package through a fresh pinned Git consumer, Rustdoc and the M-1.0 value suite. Keep the distribution decision in ADR 0002.
+- [ ] [patch] Attach exact-revision evidence for the local exits and this member’s [Atlas qualification criteria](https://github.com/ryancinsight/atlas/blob/17b0124a7548ad81e817284afc5cb115c1d1bc78/docs/parity/repositories.json).
+
 <a id="HYPERION-RANGE-ULP-BOUND-STRENGTH"></a>
 ## HYPERION-RANGE-ULP-BOUND-STRENGTH — Pin the range ulp bound's strength [patch] — todo
 - priority: verification; milestone: M-correctness; needs: none; basis: da98bfa9d4d7.
