@@ -15,7 +15,7 @@ publish = false
 [dependencies]
 aequitas = { version = "0.5.0", default-features = false }
 eunomia = { version = "0.12.1", default-features = false }
-proteus = { package = "proteus-mat", version = "0.1.0", git = "https://github.com/ryancinsight/proteus", default-features = false }
+proteus = { package = "proteus-mat", version = "0.3.0", default-features = false }
 
 [dev-dependencies]
 mnemosyne = { package = "mnemosyne-memory", version = "0.10.0", git = "https://github.com/ryancinsight/Mnemosyne", default-features = false }

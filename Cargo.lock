@@ -527,8 +527,9 @@ dependencies = [
 
 [[package]]
 name = "proteus-mat"
-version = "0.1.1"
-source = "git+https://github.com/ryancinsight/proteus#c685acfb1ed6e8fd2d4e600d16f79004e252d015"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "057668fe75d0ac7e85085309149e90e36de1747d6eba7435aa37f551b4dfb85b"
 dependencies = [
  "aequitas",
  "eunomia",
