@@ -1,5 +1,13 @@
 # Hyperion ownership gap audit
 
+## Incremental release baseline
+
+Reviewed [hyperion 0.1.1](Cargo.toml) at [e4dbb88fef35](https://github.com/ryancinsight/hyperion/tree/e4dbb88fef35ab85eb71ccfdf7931465353c8cf0). The manifest disables Cargo publication. Verify the pinned Git distribution.
+
+The next [patch] checkpoint uses [tests](src/transport/diffusion/range/tests.rs). [Target version and acceptance criteria](backlog.md#hyperion-stable-qualification).
+
+The Atlas board check reports 8 existing schema findings, including `HYPERION-007`. Verify each item against its delivery evidence, archive completed work and rerun the board check before the freeze.
+
 ## HYPERION-004 — Proteus constitutive consumer contract — closed 2026-08-16
 
 Hyperion now exercises the direct provider path rather than only constructing
