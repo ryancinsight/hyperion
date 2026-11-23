@@ -1,5 +1,9 @@
 # Hyperion ownership gap audit
 
+## Verified downstream provider migration
+
+A new external Cargo project resolved the consuming package without a pre-existing lock or provider overrides. Its registry graph includes `proteus-mat 0.3.0`. The committed lock passes 37 executed tests covering material properties, diffusion range boundaries and reference values (0 tests excluded or skipped in that run).
+
 ## Incremental release baseline
 
 Reviewed [hyperion 0.1.1](Cargo.toml) at [e4dbb88fef35](https://github.com/ryancinsight/hyperion/tree/e4dbb88fef35ab85eb71ccfdf7931465353c8cf0). The manifest disables Cargo publication. Verify the pinned Git distribution.
