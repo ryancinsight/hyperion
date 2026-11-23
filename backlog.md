@@ -2,13 +2,15 @@
 
 <a id="hyperion-stable-qualification"></a>
 ## HYPERION-STABLE-QUALIFICATION — hyperion stable-release qualification [patch] — todo
-- priority: verification; milestone: M-correctness; basis: `19a8c90b19dd`.
-- Outcome: Derive per-quantity bounds for the diffusion-range tests. Follow the [release scope](docs/adr/0002-release-scope-1-0.md) and [milestone exits](backlog/milestones.md).
+- priority: verification; milestone: M-correctness; basis: `e4dbb88fef35`.
+- Outcome: Derive per-quantity bounds for the diffusion-range tests. Follow the [release scope](docs/adr/0002-release-scope-1-0.md) and [milestone exits](backlog/milestones.md). Planning targets for `hyperion` are 0.1.2, then 0.2.0, then 1.0.0. Verification alone can advance the current version.
 - Representative manifest `hyperion 0.1.1`. Target 1.0.0. The current Cargo manifest disables publication.
 - [ ] [patch] Reconcile HYPERION-RANGE-ULP-BOUND-STRENGTH with the implementation. Derive the bounds for D and effective attenuation and show that an over-bound displacement fails for each.
 - [ ] [patch] Exercise representability near underflow and the positive-range boundaries with Proteus inputs. Record the measured resource cost and the exact-revision review for the consumer contract.
 - [ ] [major] Verify the documented Git-first package through a fresh pinned Git consumer, Rustdoc and the M-1.0 value suite. Keep the distribution decision in ADR 0002.
-- [ ] [patch] Attach exact-revision evidence for the local exits and this member’s [Atlas qualification criteria](https://github.com/ryancinsight/atlas/blob/17b0124a7548ad81e817284afc5cb115c1d1bc78/docs/parity/repositories.json).
+- [ ] [patch] **0.1.2.** For diffusion and effective attenuation, derive the error bound for each quantity and exercise the nearest admissible and first out-of-bound value. Retain both rejection witnesses. [Source and baseline](gap_audit.md#incremental-release-baseline).
+- [ ] [minor] **0.2.0.** Compare constitutive outputs with the reference tables through the public Git consumer. Pin the provider commit and record table provenance, units and domain exclusions.
+- [ ] [major] **1.0.0-beta.1 → 1.0.0-rc.1 → 1.0.0.** Freeze the supported surface at beta. Rebuild the Git distribution and consumer at exact revisions and repeat both range and reference-table checks. Repeat the applicable exits on the exact RC before stable promotion. Attach exact-revision evidence for the local exits and this member’s [Atlas qualification criteria](https://github.com/ryancinsight/atlas/blob/17b0124a7548ad81e817284afc5cb115c1d1bc78/docs/parity/repositories.json).
 
 <a id="HYPERION-RANGE-ULP-BOUND-STRENGTH"></a>
 ## HYPERION-RANGE-ULP-BOUND-STRENGTH — Pin the range ulp bound's strength [patch] — todo
