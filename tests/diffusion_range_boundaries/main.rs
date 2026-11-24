@@ -100,6 +100,10 @@ impl Quantity {
 
     /// Largest admitted distance in encoding steps, from the derivation on
     /// [`Quantity`].
+    #[expect(
+        clippy::match_same_arms,
+        reason = "the two bounds come from separate derivations that agree at 2; the                   mu_eff bound may tighten while the D bound is attained"
+    )]
     const fn max_steps(self) -> u64 {
         match self {
             Self::Diffusion => 2,
