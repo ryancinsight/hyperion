@@ -55,11 +55,14 @@ alone can round to a subnormal; intermediate product underflow is avoided.
 Since t>=a>=the least positive scalar, sqrt(3at)>=sqrt(3) times that scalar;
 its rounded result remains positive. Legitimate zero absorption never enters
 this branch. Positive sums have no cancellation, and standard relative-error
-bounds cover their rounding plus the bounded products/root. Counting three
-roundings for D and the equivalent of two and a half for effective attenuation,
-and half a step for the correctly rounded reference, bounds the corpus distance
-at three ULP; the derivation is the documentation of `MAX_ULP_DISTANCE` in
-`tests/diffusion_range_boundaries.rs`. The corpus has zero error-policy or
+bounds cover their rounding plus the bounded products/root. Rounding the
+sum and the tripling ahead of the final reciprocal bounds the distance of D from
+the correctly rounded reference at three steps; rounding the radicand's sum,
+tripling and product ahead of the root, which halves their relative error,
+bounds effective attenuation at two. The derivation is the documentation of
+`Quantity` in `tests/diffusion_range_boundaries/main.rs`, which also moves every
+computed value of each quantity past its bound, in both directions, and
+requires the corpus to reject it. The corpus has zero error-policy or
 zero-value mismatches. This is bounded verification, not an exhaustive
 correct-rounding claim.
 
