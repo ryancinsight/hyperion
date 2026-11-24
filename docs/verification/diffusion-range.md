@@ -57,19 +57,25 @@ its rounded result remains positive. Legitimate zero absorption never enters
 this branch. Positive sums have no cancellation, and standard relative-error
 bounds cover their rounding plus the bounded products/root. Rounding the
 sum and the tripling ahead of the final reciprocal bounds the distance of D from
-the correctly rounded reference at three steps; rounding the radicand's sum,
-tripling and product ahead of the root, which halves their relative error,
-bounds effective attenuation at two. The derivation is the documentation of
-`Quantity` in `tests/diffusion_range_boundaries/main.rs`, which also moves every
-computed value of each quantity past its bound, in both directions, and
-requires the corpus to reject it. The corpus has zero error-policy or
-zero-value mismatches. This is bounded verification, not an exhaustive
-correct-rounding claim.
+the correctly rounded reference at two steps: the two roundings are coupled
+through the binade of the tripled sum, where independent bounds would allow
+three. Rounding the radicand's sum, tripling and product ahead of the root,
+which halves their relative error, bounds effective attenuation at two; no
+corpus row exceeds one step, so whether it attains two is open. The derivation
+is the documentation of `Quantity` in
+`tests/diffusion_range_boundaries/main.rs`. Its displacement test moves every
+computed value of each quantity by one step more than the corpus leaves under
+the bound, in both directions, and requires exactly the rows at the extreme to
+be rejected, so it pins the comparator to the bound; only those rows cross it.
+Four rows of D lie two steps from the reference, one above and one below in
+each format, so a bound loosened by one step fails a test. The corpus has zero
+error-policy or zero-value mismatches. This is bounded verification, not an
+exhaustive correct-rounding claim.
 
 ## Verification
 
 The original four failures/four controls are retained byte for byte. They first
-reproduce against the unchanged baseline. Two added tests cover 325 committed
+reproduce against the unchanged baseline. Two added tests cover 329 committed
 native neighborhood cases and the actual recovered penetration/planar-fluence
 consumer, each instantiated for f32, f64, F32 and F64. The fixture includes
 least subnormals, normal/subnormal radicand transitions, tripled-denominator
@@ -79,7 +85,7 @@ zero and the documented overflow errors.
 Another 330 previously unsampled threshold-neighbor cases and two four-scalar
 encoding/policy tests cover the constant-construction change.
 
-Run python3 scripts/verify_diffusion_range.py to check all 655 fixture references
+Run python3 scripts/verify_diffusion_range.py to check all 659 fixture references
 with exact Fraction arithmetic, integer nearest-even division and square-root
 midpoint comparison. An expanded external corpus covers 4,421 input pairs per
 O2/O3/default/no-default mode. All four API outputs agree bit for bit; D differs
