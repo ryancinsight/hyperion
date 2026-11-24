@@ -20,47 +20,75 @@ mod downstream;
 ///
 /// The computed value is the nearest rounding of `E' = E (1 + theta)`, the
 /// exact result of the final IEEE operation on its rounded operands, where
-/// `|theta| <= rho` collects every earlier rounding. Addition, multiplication,
-/// division and square root round to nearest: each earlier rounding multiplies
-/// by `1 + d` with `|d| <= u = 2^-p`, for significand precision `p` of 24 or
-/// 53.
+/// `theta` collects every earlier rounding. Addition, multiplication, division
+/// and square root round to nearest: each earlier rounding multiplies by
+/// `1 + d` with `|d| <= u = 2^-p`, for significand precision `p` of 24 or 53,
+/// and is exact when its result is subnormal. `recip` is the division `1 / x`.
 ///
 /// Let `I` send a value to its fractional encoding index, piecewise linear with
 /// slope `1 / spacing` and integers at the encodable values. Rounding to
 /// nearest rounds `I` to the nearest integer, so two roundings of reals at
-/// index distance `delta` differ by a whole number of steps `n < delta + 1`.
-/// A normal value `x` has spacing `2^(e + 1) u` with `|x| < 2^(e + 1)`, so
-/// spacing exceeds `u |x|`, and `delta <= rho / u` to a factor `1 + O(u)`.
-/// When `E'` and `E` straddle a power of two the integral of `1 / spacing`
-/// between them takes the smaller spacing of the lower endpoint `y`, with
-/// `|E' - E| <= rho |y| / (1 - rho)`, so the factor stays `1 + O(u)` and the
-/// wider steps above the power of two only shrink the count.
+/// index distance `delta` differ by a whole number of steps `n <= delta + 1`
+/// (equality at ties), hence `n <= floor(delta) + 1`: `delta < 2` gives
+/// `n <= 2` and `delta < 1` gives `n <= 1`. A normal value `x` has spacing
+/// `2^(e + 1) u` with `|x| < 2^(e + 1)`, so spacing exceeds `u |x|`. When `E'`
+/// and `E` straddle a power of two the integral of `1 / spacing` between them
+/// takes the smaller spacing of the lower endpoint, and the wider steps above
+/// the power of two only shrink the count. Every bound below holds to a factor
+/// `1 + O(u)` on `delta`, below `2^-20` for both precisions, and every `delta`
+/// bound lies at least `1/8` below the integer that gives its stated count.
 ///
-/// `D = 1 / (3 (a + s))` rounds the sum and the tripling ahead of the
-/// reciprocal, `rho = (1 - u)^-2 - 1 = 2u + O(u^2)`, so `n < 3 + O(u)` and
-/// `n <= 3`.
+/// `D = 1 / (3 (a + s))` evaluates `t = fl(a + s)`, `den = fl(3 t)` and
+/// `D = fl(1 / den)`, so `E' = E / ((1 + d1) (1 + d2))` with `d1` the sum's
+/// rounding and `d2` the tripling's. Independent bounds `|d1|, |d2| <= u` give
+/// `delta <= 2` and `n <= 3`; the roundings are coupled through the binade of
+/// `3 t = m 2^k`, `1 <= m < 2`, so `n <= 2`:
+///
+/// - The tripling errs by at most half the spacing `2^k 2u` of its binade,
+///   `|d2| <= u / m`.
+/// - `t = 3 t / 3` has significand `4m/3` for `m < 3/2` and `2m/3` otherwise,
+///   and the sum errs by at most `u` times its binade, so `|d1| <= 3u / (4m)`
+///   for `m < 3/2` and `|d1| <= 3u / (2m)` otherwise.
+/// - `E'` lies in `[2^(-k-1), 2^-k]`, a binade of spacing `2^-k u`, and `E`
+///   within `O(u)` of it, so `delta <= |d1 + d2| / (m u)`: at most
+///   `7 / (4 m^2) <= 7/4` for `m < 3/2` and `5 / (2 m^2) <= 10/9` otherwise.
+/// - When the tripling rounds up to `2^(k+1)` and `E` lies below `2^(-k-1)`,
+///   where the spacing halves, `m >= 2 - O(u)`, `|d1 + d2| <= 5u/4` and
+///   `delta <= 5/4`.
+/// - A subnormal sum or tripling is exact, which only removes a term: with
+///   `d1 = 0`, `delta <= 1 / m^2 <= 1`, and with both exact `n = 0`.
+///
+/// So `delta <= 7/4 + O(u) < 2` and `n <= 2` on the normal path. The other
+/// branches stay below it:
+///
+/// - A subnormal reciprocal has constant spacing `q = 2^emin 2u` and
+///   `E' < 2^emin`, so `delta <= E' |d1 + d2| / q < |d1 + d2| / (2u)`
+///   `<= 7/8` and `n <= 1`.
+/// - When `3 t` overflows, `D = fl(fl(1 / t) / 3)`. Then
+///   `t >= 2^(emax - 1) 4/3 (1 - u)`, so `1 / t` is subnormal, below
+///   `3 * 2^(p - 3)` steps `q`, and the sum's rounding moves `E` by at most
+///   `u 3 * 2^(p - 3) / 3 = 1/8` step after the division. The reciprocal's
+///   rounding is at most half a step, `1/6` after it. `delta < 1/3` and
+///   `n <= 1`.
 ///
 /// `mu_eff = sqrt(3 a (a + s))` rounds the sum, the tripling of `a` and the
 /// product ahead of the root. The root halves the relative error of the
-/// radicand, `rho = (1 - u)^(-3/2) - 1 = 3u/2 + O(u^2)`, so `n < 5/2 + O(u)`
-/// and `n <= 2`.
+/// radicand, `|theta| <= (1 - u)^(-3/2) - 1 = 3u/2 + O(u^2)`, so
+/// `delta <= 3/2 + O(u)`, `n <= 5/2 + O(u)` and `n <= 2`. The derivation
+/// takes the three radicand roundings as independent and makes no coupling
+/// argument, so 2 may be unattained: no fixture row exceeds one step and an
+/// exhaustive search of every pair in `[1/4, 4)` at 7 and 8 significand bits
+/// finds at most one. A coupled derivation of `delta < 1`, or an input pair at
+/// two steps, settles it.
 ///
-/// The relative model needs a normal rounded result. A subnormal sum or
-/// tripling is exact. A radicand below the minimum normal never reaches the
-/// root for positive absorption: the tiny-absorption branch scales both
-/// operands by exact powers of two into `[1, 2)`, where every product and the
-/// root are normal; only its final scaling can round into the subnormal range.
-/// The reciprocal and the large-transport quotient can also round there.
-///
-/// A subnormal result has constant spacing and magnitude below `2^(p - 1)`
-/// steps, so a relative `rho` spans below `rho 2^(p - 1) = rho / (2 u)` steps.
-/// `D` with a subnormal reciprocal: `rho = 2u` spans below 1 step ahead of the
-/// final reciprocal, `n < 2`. `D` when tripling overflows divides the
-/// reciprocal of the sum by 3 last: the sum spans below 1/6 step after the
-/// division, the reciprocal's rounding 1/6 more, `n < 4/3`. `mu_eff` from the
-/// tiny-absorption branch: the radicand spans below `3/4` step and the root's
-/// own rounding below `1/2` ahead of the final scaling, `n < 9/4`, `n <= 2`.
-/// Every case stays within the bound of the normal range.
+/// A radicand below the minimum normal never reaches the root for positive
+/// absorption: the tiny-absorption branch scales both operands by exact powers
+/// of two into `[1, 2)`, where every product and the root are normal; only its
+/// final scaling can round into the subnormal range, where the spacing is
+/// constant and a result is below `2^(p - 1)` steps, so a relative `theta`
+/// spans below `theta / (2u)` steps. The radicand's `3u/2` then spans below
+/// `3/4` step and the root's own rounding below `1/2` ahead of the scaling,
+/// `n <= 9/4` and `n <= 2`.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 enum Quantity {
     Diffusion,
@@ -74,7 +102,7 @@ impl Quantity {
     /// [`Quantity`].
     const fn max_steps(self) -> u64 {
         match self {
-            Self::Diffusion => 3,
+            Self::Diffusion => 2,
             Self::Effective => 2,
         }
     }
@@ -84,6 +112,14 @@ trait Native: RealField + UnitScalar {
     const WIDTH: &'static str;
     fn from_raw_bits(bits: u64) -> Self;
     fn bits(self) -> u64;
+    /// The encoding of the sign bit.
+    fn sign_bit() -> u64 {
+        if Self::WIDTH == "32" {
+            1 << 31
+        } else {
+            1 << 63
+        }
+    }
     fn parse_bits(s: &str) -> Self {
         Self::from_raw_bits(u64::from_str_radix(s, 16).expect("hex bits"))
     }
@@ -145,7 +181,8 @@ impl Native for F64 {
 fn within_ulp_bound<T: Native>(quantity: Quantity, got: T, want: T) -> bool {
     got.bits().abs_diff(want.bits()) <= quantity.max_steps()
 }
-/// A computed value and its fixture reference, both nonnegative.
+/// A computed value and its fixture reference. Only the negative zero of a
+/// signed-zero input has its sign bit set.
 struct Observation<T> {
     quantity: Quantity,
     line: &'static str,
@@ -157,12 +194,13 @@ impl<T: Native> Observation<T> {
     fn excess(&self) -> i128 {
         i128::from(self.got.bits()) - i128::from(self.want.bits())
     }
-    /// The computed value moved by `steps` encodings, absent when no encoding
-    /// exists there.
+    /// The computed value moved by `steps` encodings, absent when it has its
+    /// sign bit set, where encodings move away from zero, or when no
+    /// sign-clear encoding exists there.
     fn displaced(&self, steps: i64) -> Option<T> {
-        self.got
-            .bits()
-            .checked_add_signed(steps)
+        let bits = self.got.bits();
+        bits.checked_add_signed(steps)
+            .filter(|moved| (bits | moved) & T::sign_bit() == 0)
             .map(T::from_raw_bits)
     }
     /// Whether that displaced value exists and lies beyond the bound.
@@ -317,9 +355,13 @@ fn native_range_neighborhoods() {
 /// `extreme`, so the bound leaves `slack = bound - extreme`. Every row passes
 /// at `slack` steps, and exactly the rows lying at `extreme` fail at
 /// `slack + 1`: a row at `e` steps lands at `e + slack + 1`, beyond the bound
-/// exactly when `e >= extreme`. A bound loosened by one step passes the
-/// displacement at `slack + 1`, so the count of failing rows is zero where
-/// at least one is required.
+/// exactly when `e >= extreme`.
+///
+/// This pins `within_ulp_bound` to `Quantity::max_steps`: a comparator loosened
+/// by one step accepts the displacement at `slack + 1`, so no row fails where
+/// at least one must. It does not pin the `max_steps` values, because `slack`
+/// follows them; `diffusion_witnesses_attain_the_bound` pins the bound of `D`
+/// and the value for `mu_eff` rests on the derivation alone.
 fn over_bound_displacement_fails<T: Native>() {
     let observations = observe::<T>();
     for quantity in Quantity::ALL {
@@ -363,4 +405,93 @@ fn over_bound_displacement_is_rejected_per_quantity() {
     over_bound_displacement_fails::<f64>();
     over_bound_displacement_fails::<F32>();
     over_bound_displacement_fails::<F64>();
+}
+
+/// Fixture rows at which `D` lies two steps from its reference, with the
+/// computed bits and the signed step count, one above and one below the
+/// reference in each format. Their references are verified by
+/// `scripts/verify_diffusion_range.py`.
+const DIFFUSION_WITNESSES: [(&str, u64, i128); 4] = [
+    ("32 31000000 3d2aaaae 40fffffa 37800001", 0x40ff_fffc, 2),
+    ("32 405b5879 3400375c 3dc72fba 40bdf578", 0x3dc7_2fb8, -2),
+    (
+        "64 3c50000000000000 3fa5555555555556 401ffffffffffffe 3e06a09e667f3bcd",
+        0x4020_0000_0000_0000,
+        2,
+    ),
+    (
+        "64 3ffcd00826e2dae6 40109c6ab5004d58 3facaa9a6dc82591 4016af5f2fe6621d",
+        0x3fac_aa9a_6dc8_258f,
+        -2,
+    ),
+];
+
+/// `D` attains its bound in both directions, so the bound is no looser than
+/// the corpus requires.
+///
+/// Each witness of `T`'s width computes the recorded bits at the recorded
+/// distance from its reference, and the largest distance toward each
+/// direction over every `D` row equals `Quantity::max_steps`. A bound loosened
+/// by one step leaves that extreme short of it, and one tightened by one step
+/// rejects the witnesses.
+fn diffusion_witnesses_attain_the_bound<T: Native>() {
+    let rows: Vec<_> = observe::<T>()
+        .into_iter()
+        .filter(|row| row.quantity == Quantity::Diffusion)
+        .collect();
+    let mut found = 0;
+    for (line, computed, excess) in DIFFUSION_WITNESSES {
+        if line.split_whitespace().next() != Some(T::WIDTH) {
+            continue;
+        }
+        let matching: Vec<_> = rows.iter().filter(|row| row.line == line).collect();
+        assert_eq!(matching.len(), 1, "witness row is in the fixture: {line}");
+        assert_eq!(matching[0].got.bits(), computed, "computed bits: {line}");
+        assert_eq!(matching[0].excess(), excess, "distance: {line}");
+        found += 1;
+    }
+    assert_eq!(found, 2, "one witness per direction at width {}", T::WIDTH);
+    for direction in [1_i128, -1] {
+        let extreme = rows
+            .iter()
+            .map(|row| direction * row.excess())
+            .max()
+            .expect("D rows");
+        assert_eq!(
+            extreme,
+            i128::from(Quantity::Diffusion.max_steps()),
+            "D rows reach the bound toward {direction}"
+        );
+    }
+}
+#[test]
+fn diffusion_witnesses_attain_the_bound_for_every_scalar() {
+    diffusion_witnesses_attain_the_bound::<f32>();
+    diffusion_witnesses_attain_the_bound::<f64>();
+    diffusion_witnesses_attain_the_bound::<F32>();
+    diffusion_witnesses_attain_the_bound::<F64>();
+}
+
+/// A negative zero has no displaced encoding, since encodings move away from
+/// zero on the negative side and below it reach the NaN encodings.
+fn negative_zero_rows_are_not_displaced<T: Native>() {
+    let rows: Vec<_> = observe::<T>()
+        .into_iter()
+        .filter(|row| row.got.bits() & T::sign_bit() != 0)
+        .collect();
+    assert!(!rows.is_empty(), "the fixture has signed-zero rows");
+    for row in rows {
+        assert_eq!(row.got.bits(), T::sign_bit(), "negative zero: {}", row.line);
+        assert_eq!(row.want.bits(), T::sign_bit(), "reference: {}", row.line);
+        for steps in [-2_i64, -1, 1, 2] {
+            assert!(row.displaced(steps).is_none(), "{steps}: {}", row.line);
+        }
+    }
+}
+#[test]
+fn negative_zero_is_not_displaced_for_every_scalar() {
+    negative_zero_rows_are_not_displaced::<f32>();
+    negative_zero_rows_are_not_displaced::<f64>();
+    negative_zero_rows_are_not_displaced::<F32>();
+    negative_zero_rows_are_not_displaced::<F64>();
 }

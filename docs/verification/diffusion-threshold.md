@@ -68,7 +68,7 @@ native width. Sixteen consecutive scattering neighbors on each side supply
 contains16 subnormal,2 minimum-normal and15 greater-normal radicands. Absorption
 covers subnormal and normal values with widely separated coefficient scales.
 The existing public range test verifies both this fixture and all325 original
-rows. The rational checker verifies all655 expected rows without host floating
+rows. The rational checker verifies all659 expected rows without host floating
 point. Existing8ULP and zero policy/zero-value mismatch limits are unchanged.
 
 Generated code and paired timing assess the removal of constant libm::scalbn
