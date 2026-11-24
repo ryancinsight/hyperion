@@ -24,7 +24,13 @@ mod fixture_rows;
 /// `theta` collects every earlier rounding. Addition, multiplication, division
 /// and square root round to nearest: each earlier rounding multiplies by
 /// `1 + d` with `|d| <= u = 2^-p`, for significand precision `p` of 24 or 53,
-/// and is exact when its result is subnormal. `recip` is the division `1 / x`.
+/// except that the sum and the tripling are exact when their result is
+/// subnormal: their operands are multiples of the least subnormal, so the
+/// result is one, and below the minimum normal it is representable. A
+/// subnormal reciprocal, product or root rounds with the constant spacing of
+/// the subnormal range. `recip` is the division `1 / x`. The roundings are to
+/// nearest, ties to even, and the square root is correctly rounded (IEEE 754
+/// defaults, recalled).
 ///
 /// Let `I` send a value to its fractional encoding index, piecewise linear with
 /// slope `1 / spacing` and integers at the encodable values. Rounding to
@@ -53,9 +59,16 @@ mod fixture_rows;
 /// - `E'` lies in `[2^(-k-1), 2^-k]`, a binade of spacing `2^-k u`, and `E`
 ///   within `O(u)` of it, so `delta <= |d1 + d2| / (m u)`: at most
 ///   `7 / (4 m^2) <= 7/4` for `m < 3/2` and `5 / (2 m^2) <= 10/9` otherwise.
-/// - When the tripling rounds up to `2^(k+1)` and `E` lies below `2^(-k-1)`,
-///   where the spacing halves, `m >= 2 - O(u)`, `|d1 + d2| <= 5u/4` and
-///   `delta <= 5/4`.
+/// - `E` below `2^(-k-1)` needs the tripling to round up to `2^(k+1)`. Let
+///   `h` be the spacing of `t`. The sum errs by at most `h/2`, so `E` below
+///   `2^(-k-1)` puts `3 (a + s)` above `2^(k+1)` while `3 t < 2^(k+1)` and
+///   `3 t + 3h/2 > 2^(k+1)`. Both `3 t` and `2^(k+1)` are multiples of `h`, so
+///   `3 t >= 2^(k+1) - h`. A normal `t` has at least `2^(p-1)` steps `h`, so
+///   `3 t > 2^p h` and the spacing of `3 t`'s binade is at least `2h`: `3 t`
+///   lies within half a spacing of `2^(k+1)`, and at exactly half the
+///   neighbour below has the odd significand `2^p - 1`, so ties to even also
+///   rounds up. Then the spacing of `E'` halves, `m >= 2 - O(u)`,
+///   `|d1 + d2| <= 5u/4` and `delta <= 5/4`.
 /// - A subnormal sum or tripling is exact, which only removes a term: with
 ///   `d1 = 0`, `delta <= 1 / m^2 <= 1`, and with both exact `n = 0`.
 ///
@@ -77,10 +90,10 @@ mod fixture_rows;
 /// radicand, `|theta| <= (1 - u)^(-3/2) - 1 = 3u/2 + O(u^2)`, so
 /// `delta <= 3/2 + O(u)`, `n <= 5/2 + O(u)` and `n <= 2`. The derivation
 /// takes the three radicand roundings as independent and makes no coupling
-/// argument, so 2 may be unattained: no fixture row exceeds one step and an
-/// exhaustive search of every pair in `[1/4, 4)` at 7 and 8 significand bits
-/// finds at most one. A coupled derivation of `delta < 1`, or an input pair at
-/// two steps, settles it.
+/// argument, and 2 is attained: `WITNESSES` records rows two steps from the
+/// reference, above and below in binary32 and above in binary64. No binary64
+/// row two steps below is known, so the bound there rests on the derivation
+/// toward that direction alone.
 ///
 /// A radicand below the minimum normal never reaches the root for positive
 /// absorption: the tiny-absorption branch scales both operands by exact powers
@@ -103,7 +116,7 @@ impl Quantity {
     /// [`Quantity`].
     #[expect(
         clippy::match_same_arms,
-        reason = "the two bounds come from separate derivations that agree at 2; the                   mu_eff bound may tighten while the D bound is attained"
+        reason = "the two bounds come from separate derivations that agree at 2, and `WITNESSES` attains each"
     )]
     const fn max_steps(self) -> u64 {
         match self {
@@ -365,8 +378,8 @@ fn native_range_neighborhoods() {
 /// This pins `within_ulp_bound` to `Quantity::max_steps`: a comparator loosened
 /// by one step accepts the displacement at `slack + 1`, so no row fails where
 /// at least one must. It does not pin the `max_steps` values, because `slack`
-/// follows them; `diffusion_witnesses_attain_the_bound` pins the bound of `D`
-/// and the value for `mu_eff` rests on the derivation alone.
+/// follows them; `witnesses_attain_the_bound` pins the bound of each
+/// quantity where a witness attains it.
 fn over_bound_displacement_fails<T: Native>() {
     let observations = observe::<T>();
     for quantity in Quantity::ALL {

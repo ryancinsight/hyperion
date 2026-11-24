@@ -68,12 +68,15 @@ native width. Sixteen consecutive scattering neighbors on each side supply
 contains16 subnormal,2 minimum-normal and15 greater-normal radicands. Absorption
 covers subnormal and normal values with widely separated coefficient scales.
 The existing public range test verifies both this fixture and all 325 original
-rows. The rational checker verifies all 659 expected rows without host floating
+rows. The rational checker verifies all 664 expected rows without host floating
 point. Existing8ULP and zero policy/zero-value mismatch limits are unchanged.
-The 659 rows are the 325 original range rows, four two-step rows of D added to
+The 664 rows are the 325 original range rows, four two-step rows of D added to
 the range fixture (width, absorption, scattering: `32 31000000 3d2aaaae`,
 `32 405b5879 3400375c`, `64 3c50000000000000 3fa5555555555556`,
-`64 3ffcd00826e2dae6 40109c6ab5004d58`) and the 330 rows here.
+`64 3ffcd00826e2dae6 40109c6ab5004d58`), five two-step rows of effective
+attenuation added there too (`32 447fffb6 5080062f`, `32 03000001 0f0002be`,
+`32 10ffffb6 1d000397`, `64 3fb000000000036d 3c8c00000000001f`,
+`64 38a000000000094d 357c000000000011`) and the 330 rows here.
 
 Generated code and paired timing assess the removal of constant libm::scalbn
 calls separately from numerical equivalence. Local frame/heap observations are
