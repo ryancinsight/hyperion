@@ -7,10 +7,23 @@
 - Representative manifest `hyperion 0.1.1`. Target 1.0.0. The current Cargo manifest disables publication.
 - [ ] [patch] Exercise representability near underflow and the positive-range boundaries with Proteus inputs. Record the measured resource cost and the exact-revision review for the consumer contract.
 - [ ] [major] Verify the documented Git-first package through a fresh pinned Git consumer, Rustdoc and the M-1.0 value suite. Keep the distribution decision in ADR 0002.
-- [ ] [patch] **0.1.2.** Settle whether effective attenuation attains its two-step bound: derive that its coupled roundings stay within one step and tighten the bound, or add an input at two steps to the corpus. Diffusion's bound, witnesses and rejection tests are in place. [Source and baseline](gap_audit.md#incremental-release-baseline).
+- [ ] [patch] **0.1.2.** Effective attenuation attains its two-step bound in both formats by emulation; its witness rows and corrected texts are owed by [HYPERION-MU-EFF-ATTAINMENT](#HYPERION-MU-EFF-ATTAINMENT). Diffusion's bound, witnesses and rejection tests are in place. [Source and baseline](gap_audit.md#incremental-release-baseline).
 - [ ] [minor] **0.2.0.** Compare constitutive outputs with the reference tables through the public Git consumer. Pin the provider commit and record table provenance, units and domain exclusions.
 - [x] [patch] Verify Proteus Mat 0.3.0 through the real consumer and independent dependency resolution. [Executed coverage](gap_audit.md#verified-downstream-provider-migration).
 - [ ] [major] **1.0.0-beta.1 → 1.0.0-rc.1 → 1.0.0.** Freeze the supported surface at beta. Rebuild the Git distribution and consumer at exact revisions and repeat both range and reference-table checks. Repeat the applicable exits on the exact RC before stable promotion. Attach exact-revision evidence for the local exits and this member’s [Atlas qualification criteria](https://github.com/ryancinsight/atlas/blob/17b0124a7548ad81e817284afc5cb115c1d1bc78/docs/parity/repositories.json). Require complete implementations and passing product-path acceptance for all critical features.
+
+<a id="HYPERION-MU-EFF-ATTAINMENT"></a>
+## HYPERION-MU-EFF-ATTAINMENT — Add effective-attenuation attainment witnesses [patch] — todo
+- priority: verification; milestone: M-correctness; needs: none; basis: 47c3ad9cefcc.
+- scope: `tests/diffusion_range_cases.txt`, `tests/diffusion_range_boundaries/`, `docs/verification/diffusion-range.md`.
+- Outcome: effective attenuation (mu_eff) attains its bound of 2 steps (binary32 above and below the reference, binary64 above), so the bound stays 2. The rows below join the corpus, the attainment test covers mu_eff, and the texts that say it "may tighten", "may be unattained" or awaits a coupled derivation (test doc, the `#[expect]` reason with its broken line continuation, the note) are corrected. Fold in: subnormal exactness holds only for the sum and the tripling, the reason E below 2^(-k-1) needs the tripling to round up is stated, and the note's "All 36 tests" is restated (CI at 47c3ad9cefcc runs 40).
+- Rows (width a s D mu; the `0x` prefix keeps the hash scan off bit patterns), found by emulation, the reference script and hardware floats, not through the crate:
+  `32 0x447fffb6 0x5080062f 0x2daaa26c 0x4addb913` (computed mu -2 steps from the reference); `32 0x03000001 0x0f0002be 0x6f2aa702 0x095db638` (+2);
+  `32 0x10ffffb6 0x1d000397 0x612aa5e1 0x175db6d4` (-2); `64 0x3fb000000000036d 0x3c8c00000000001f 0x40155555555550bf 0x3fbbb67ae858529c` (+2);
+  `64 0x38a000000000094d 0x357c000000000011 0x47255555555548ea 0x38abb67ae8585cc9` (+2).
+- Oracle: `python scripts/verify_diffusion_range.py` reproduces every reference; the attainment test (`fixture_rows::diffusion_witnesses_attain_the_bound_for_every_scalar`, extended to mu_eff) passes at each attained extreme and `native_range_neighborhoods` still passes with the new rows; a mu bound of 1 fails the attainment test. At basis it fails because the corpus maximum |n| for mu_eff is 1.
+- Next step: append the rows, extend the test, correct the texts; run the script, nextest and the bound-1 mutant. No binary64 -2 witness is known; a correctly rounded square root is assumed (IEEE 754, recalled).
+- Source: judge review of [#118](https://github.com/ryancinsight/hyperion/pull/118) at head `df82e85e5b0e`.
 
 <a id="HYPERION-DIFFUSION-RANGE-RESOURCE"></a>
 ## HYPERION-DIFFUSION-RANGE-RESOURCE — Accept diffusion range resource cost [patch] — todo
