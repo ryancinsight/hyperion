@@ -5,26 +5,12 @@
 - priority: verification; milestone: M-correctness; basis: `e4dbb88fef35`.
 - Outcome: Derive per-quantity bounds for the diffusion-range tests. Follow the [release scope](docs/adr/0002-release-scope-1-0.md) and [milestone exits](backlog/milestones.md). Planning targets for `hyperion` are 0.1.2, then 0.2.0, then 1.0.0. Verification alone can advance the current version. Use Proteus Mat 0.3.0 for the [verified downstream contract](gap_audit.md#verified-downstream-provider-migration).
 - Representative manifest `hyperion 0.1.1`. Target 1.0.0. The current Cargo manifest disables publication.
-- [ ] [patch] Reconcile HYPERION-RANGE-ULP-BOUND-STRENGTH with the implementation. Derive the bounds for D and effective attenuation and show that an over-bound displacement fails for each.
 - [ ] [patch] Exercise representability near underflow and the positive-range boundaries with Proteus inputs. Record the measured resource cost and the exact-revision review for the consumer contract.
 - [ ] [major] Verify the documented Git-first package through a fresh pinned Git consumer, Rustdoc and the M-1.0 value suite. Keep the distribution decision in ADR 0002.
 - [ ] [patch] **0.1.2.** For diffusion and effective attenuation, derive the error bound for each quantity and exercise the nearest admissible and first out-of-bound value. Retain both rejection witnesses. [Source and baseline](gap_audit.md#incremental-release-baseline).
 - [ ] [minor] **0.2.0.** Compare constitutive outputs with the reference tables through the public Git consumer. Pin the provider commit and record table provenance, units and domain exclusions.
 - [x] [patch] Verify Proteus Mat 0.3.0 through the real consumer and independent dependency resolution. [Executed coverage](gap_audit.md#verified-downstream-provider-migration).
 - [ ] [major] **1.0.0-beta.1 → 1.0.0-rc.1 → 1.0.0.** Freeze the supported surface at beta. Rebuild the Git distribution and consumer at exact revisions and repeat both range and reference-table checks. Repeat the applicable exits on the exact RC before stable promotion. Attach exact-revision evidence for the local exits and this member’s [Atlas qualification criteria](https://github.com/ryancinsight/atlas/blob/17b0124a7548ad81e817284afc5cb115c1d1bc78/docs/parity/repositories.json). Require complete implementations and passing product-path acceptance for all critical features.
-
-<a id="HYPERION-RANGE-ULP-BOUND-STRENGTH"></a>
-## HYPERION-RANGE-ULP-BOUND-STRENGTH — Pin the range ulp bound's strength [patch] — todo
-- priority: verification; milestone: M-correctness; needs: none; basis: da98bfa9d4d7.
-- scope: `tests/diffusion_range_boundaries.rs`.
-- Outcome: loosening `within_ulp_bound` to `<= MAX_ULP_DISTANCE + 1` fails a
-  test; today it passes every test, since no fixture result lies beyond 3 steps.
-- Oracle: per-quantity bounds derived from each formula's rounding count (`D`,
-  `mu_eff`) replace the one uniform bound, and a production mutant displacing
-  either quantity by one step more than its measured slack fails; no bound is
-  fitted to observed output.
-- Next step: measure the maximum observed distance per quantity over the
-  fixture and compare it with the derived per-quantity bound.
 
 <a id="HYPERION-DIFFUSION-RANGE-RESOURCE"></a>
 ## HYPERION-DIFFUSION-RANGE-RESOURCE — Accept diffusion range resource cost [patch] — todo
