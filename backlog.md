@@ -57,14 +57,6 @@
   evidence; a judge verdict covers the ladder edit (sprint: roadmap).
 - Next step: rewrite the exit and the ADR lines in one PR, apart from the item closeout.
 
-<a id="HYPERION-CI-NEXTEST-PIN"></a>
-## HYPERION-CI-NEXTEST-PIN — Pin cargo-nextest in CI [patch] — todo
-- priority: tightening; milestone: M-correctness; needs: none; basis: 47c3ad9cefcc.
-- scope: `.github/workflows/ci.yml`.
-- Outcome: the SHA-pinned `taiki-e/install-action` step has no `with:` block and installs `cargo-nextest@latest` (0.9.143 in run 45355383051 on 47c3ad9cefcc), so the test runner moves with each upstream release. Pin one exact version in the step.
-- Oracle: the next run's install line reads `installing cargo-nextest@<pinned version>` and the Native tests step passes; the workflow lint passes. At basis the line reads `@latest`.
-- Next step: pin the version through the action's documented input (its exact syntax is unverified here) to the version of the last green run.
-
 ## HYPERION-007 — Anchor chromophore source oracle [patch] — done 2026-08-20
 
 - Owner: current Atlas session; scope is the chromophore source citation,
