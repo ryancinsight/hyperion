@@ -46,28 +46,79 @@
 
 <a id="HYPERION-THRESHOLD-NOTE-DRIFT"></a>
 ## HYPERION-THRESHOLD-NOTE-DRIFT — Correct the threshold note's stale text [patch] — todo
-- priority: verification; milestone: M-correctness; needs: none; basis: d5655158f11d.
+- priority: verification; milestone: M-correctness; needs: none; basis: b840f71cabb398bd43c8ab5e93e5646380f3c065.
 - scope: `docs/verification/diffusion-threshold.md`.
 - Outcome: the note states the step limit as `Quantity::max_steps` (two steps)
   instead of "8ULP", names the eunomia version `Cargo.lock` resolves or none,
-  and restores the spaces dropped before numbers.
-- Oracle: `git grep -nE "8[- ]?ULP|Existing8|earlier24128|contains16|versus1024|are00800000|sign0|fraction0|Eunomia0|exponent2-|field1|subnormal,2|and15|0\.10" -- docs/verification/diffusion-threshold.md`
-  prints nothing (10 lines at the basis); any eunomia version the note names
+  and restores the spaces dropped before numbers (line 85's `owner PR82`
+  included).
+- Oracle: `git grep -nE "8[- ]?ULP|Existing8|earlier24128|contains16|versus1024|are00800000|sign0|fraction0|Eunomia0|exponent2-|field1|subnormal,2|and15|0\.10|PR82" -- docs/verification/diffusion-threshold.md`
+  prints nothing (11 lines at the basis); any eunomia version the note names
   equals the `version` of `eunomia` in `Cargo.lock`.
-- Next step: edit lines 10, 21-26, 67-68, 72 and 84 of the note.
+- Next step: edit lines 10, 21-26, 67-68, 72, 84 and 85 of the note.
+- Source: [post-merge review of #120](https://github.com/ryancinsight/hyperion/pull/120#issuecomment-7228806850).
 
 <a id="HYPERION-RADICAND-THREE"></a>
 ## HYPERION-RADICAND-THREE — Build the radicand's three without from_f64 [patch] — todo
-- priority: tightening; milestone: M-correctness; needs: none; basis: d5655158f11d.
+- priority: tightening; milestone: M-correctness; needs: none; basis: b840f71cabb398bd43c8ab5e93e5646380f3c065.
 - scope: `src/transport/diffusion.rs`, `src/transport/diffusion/range.rs`.
 - Outcome: `effective_attenuation` takes its tripling from `three::<T>()`
   (`range.rs:5`, private today, so it becomes `pub(super)`) instead of
   converting a literal inside the generic body.
-- Oracle: `git grep -n "from_f64" -- src/transport/diffusion.rs` prints nothing
-  (prints line 147 at the basis); `python scripts/verify_diffusion_range.py`
-  and `cargo nextest run -p hyperion --all-features` pass with the witness
-  bits of the attainment test unchanged.
+- Oracle: `git grep -n "from_f64" -- src/transport/diffusion.rs src/transport/diffusion/`
+  prints nothing (prints `diffusion.rs:147` at the basis; the directory is in
+  the path so the conversion cannot move into `range.rs`);
+  `python scripts/verify_diffusion_range.py` and
+  `cargo nextest run -p hyperion --all-features` pass with the witness bits of
+  the attainment test unchanged.
 - Next step: widen `three`, call it at `diffusion.rs:147`, keep `(3*a)*t` order.
+- Source: [post-merge review of #120](https://github.com/ryancinsight/hyperion/pull/120#issuecomment-7228806850).
+
+<a id="HYPERION-LITERAL-CONVERSIONS"></a>
+## HYPERION-LITERAL-CONVERSIONS — Build exact constants in T without from_f64 [patch] — todo
+- priority: tightening; milestone: M-correctness; needs: none; basis: b840f71cabb398bd43c8ab5e93e5646380f3c065.
+- scope: `src/coefficient/chromophore.rs`, `src/reference/nist.rs`.
+- Outcome: no generic body in these files converts a numeric literal through
+  `from_f64`: `100.0` (`chromophore.rs:186`), `6.0` (`nist.rs:136`) and `0.0`
+  (`nist.rs:273-274`, test code) are produced from the scalar trait's
+  constants or a unit conversion instead, as `three::<T>()` does in
+  `range.rs`. Tables and fixture data converted at their boundary stay.
+  `LN_10` is its own item.
+- Oracle: `git grep -nE "from_f64\((-?[0-9])" -- src/coefficient src/reference`
+  prints nothing (4 lines at the basis); `cargo nextest run -p hyperion --all-features`
+  passes with unchanged expected values.
+- Next step: replace the four sites (6 and 100 are exact in every format; derived).
+- Source: [post-merge review of #120](https://github.com/ryancinsight/hyperion/pull/120#issuecomment-7228806850) (finding F2).
+
+<a id="HYPERION-LN10-CONSTANT"></a>
+## HYPERION-LN10-CONSTANT — Take ln 10 from the scalar trait [patch] — blocked
+- priority: tightening; milestone: M-correctness; needs: none; basis: b840f71cabb398bd43c8ab5e93e5646380f3c065.
+- scope: `src/coefficient/chromophore.rs`.
+- Blocker: the locked eunomia 0.12.1 `RealField` carries `PI`, `TAU`,
+  `FRAC_PI_2`, `E`, `LN_2`, `SQRT_2` and `EPSILON` but no `LN_10`
+  (`src/traits/field.rs:19-31` of the crate); eunomia's board at its fetched
+  default has no such item. Re-open: a eunomia release whose `RealField` has `LN_10`
+  and a hyperion lock resolving it, or a recorded decision to derive it in `T`.
+- Outcome: `hemoglobin_absorption` takes ln 10 from that constant instead of
+  `T::from_f64(core::f64::consts::LN_10)` (`chromophore.rs:185`).
+- Oracle: `git grep -nE "f64::consts" -- src` prints nothing (the one line
+  above at the basis, `chromophore.rs:185`); `cargo nextest run -p hyperion --all-features` passes.
+- Source: [post-merge review of #120](https://github.com/ryancinsight/hyperion/pull/120#issuecomment-7228806850) (finding F2).
+
+<a id="HYPERION-ATTAINMENT-DOC-WORDING"></a>
+## HYPERION-ATTAINMENT-DOC-WORDING — Fix two attainment wordings [patch] — todo
+- priority: verification; milestone: M-correctness; needs: none; basis: b840f71cabb398bd43c8ab5e93e5646380f3c065.
+- scope: `docs/verification/diffusion-range.md`, `tests/diffusion_range_boundaries/main.rs`.
+- Outcome: `diffusion-range.md:99` no longer reads "(two at the five witness
+  rows above)" as part of the bound on the external 4,421-pair corpus; the
+  corpus bound and the committed witness rows are stated apart (the corpus
+  is external; `4,421` appears only in this note). The round-up bullet of the
+  `Quantity` doc (`main.rs`, from "`E` below `2^(-k-1)`") says it needs odd
+  precision: binary64 (p = 53) reaches it, binary32 (p = 24) does not.
+- Oracle (textual): `git grep -nF "(two at the five witness rows above)" -- docs/verification/diffusion-range.md`
+  prints nothing (one line at the basis); `git grep -nE "odd (precision|p)|p is odd|precision is odd" -- tests/diffusion_range_boundaries/main.rs`
+  prints a line (nothing at the basis).
+- Source: [post-merge review of #120](https://github.com/ryancinsight/hyperion/pull/120#issuecomment-7228806850) (findings F3, F4).
 
 ## HYPERION-007 — Anchor chromophore source oracle [patch] — done 2026-08-20
 
