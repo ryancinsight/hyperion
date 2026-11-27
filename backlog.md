@@ -50,13 +50,14 @@
 - scope: `docs/verification/diffusion-threshold.md`.
 - Outcome: the note states the step limit as `Quantity::max_steps` (two steps)
   instead of "8ULP", names the eunomia version `Cargo.lock` resolves or none,
-  restores the spaces dropped before numbers, and deletes or corrects the
-  clause "owner PR82" on line 85: hyperion#82 was closed unmerged, so the
-  clause is stale and restoring its space would keep it.
+  restores the spaces dropped before numbers, and removes the stale clause
+  "owner PR82" on line 85 (hyperion#82 was closed unmerged; respacing keeps it).
 - Oracle: `git grep -nE "8[- ]?ULP|Existing8|earlier24128|contains16|versus1024|are00800000|sign0|fraction0|Eunomia0|exponent2-|field1|subnormal,2|and15|0\.10|PR ?#?82" -- docs/verification/diffusion-threshold.md`
-  prints nothing (11 lines at the basis); any eunomia version the note names
+  prints nothing (11 lines at the basis); `git grep -n "max_steps" -- docs/verification/diffusion-threshold.md`
+  prints a line (nothing at the basis); any eunomia version the note names
   equals the `version` of `eunomia` in `Cargo.lock`.
-- Next step: edit lines 10, 21-26, 67-68, 72 and 84; delete "owner PR82 and" on line 85.
+- Next step: edit lines 10, 21-26, 67-68, 72 and 84; on line 85 replace
+  "publish=false, owner PR82 and every" with "publish=false and every".
 - Source: [post-merge review of #120](https://github.com/ryancinsight/hyperion/pull/120#issuecomment-7228806850).
 
 <a id="HYPERION-RADICAND-THREE"></a>
@@ -66,7 +67,7 @@
 - Outcome: `effective_attenuation` takes its tripling from `three::<T>()`
   (`range.rs:5`, private today, so it becomes `pub(super)`) instead of
   converting a literal inside the generic body.
-- Oracle: `git grep -nE "from_f(32|64)\((-?[0-9]|[a-z_]*::)|consts::" -- src/transport/diffusion.rs src/transport/diffusion/`
+- Oracle: `git grep -nE "from_f(32|64)" -- src/transport/diffusion.rs src/transport/diffusion/`
   prints nothing (prints `diffusion.rs:147` at the basis; the directory is in
   the path so the conversion cannot move into `range.rs`);
   `python scripts/verify_diffusion_range.py` and
@@ -79,24 +80,23 @@
 ## HYPERION-LITERAL-CONVERSIONS — Build exact constants in T without from_f64 [patch] — todo
 - priority: tightening; milestone: M-correctness; needs: none; basis: b840f71cabb398bd43c8ab5e93e5646380f3c065.
 - scope: `src/coefficient/chromophore.rs`, `src/reference/nist.rs` (`nist.rs:273-274` is test code in `mod tests`).
-- Outcome: no generic body in these files converts a numeric literal through
+- Outcome: no generic body in these files converts a literal through
   `from_f64`: `100.0` (`chromophore.rs:186`), `6.0` (`nist.rs:136`) and `0.0`
   (`nist.rs:273-274`) come from the scalar trait's constants or a unit
-  conversion, as `three::<T>()` does in `range.rs`. Tables and fixture data
-  converted at their boundary stay. `LN_10` is its own item. `tests/contracts`
-  (26 lines of the same literal grep) is outside: it builds inputs and expected
-  values, including decimals such as `5.329` that have no trait constant.
-- Oracle: `git grep -nE "from_f(32|64)\((-?[0-9]|[a-z_]*::)|consts::" -- src/coefficient src/reference | grep -v LN_10`
-  prints nothing (4 lines at the basis); `cargo nextest run -p hyperion --all-features` passes.
+  conversion, as `three::<T>()` does in `range.rs`. Table and fixture data stay;
+  `LN_10` is its own item; `tests/contracts` (26 lines of the literal grep:
+  inputs, expected values, decimals such as `5.329`) is outside.
+- Oracle: `git grep -cE "from_f(32|64)" -- src/coefficient/chromophore.rs src/reference/nist.rs`
+  prints at most 9 and 21 (10 and 24 at the basis; chromophore.rs keeps the `LN_10`
+  line until HYPERION-LN10-CONSTANT lands); `cargo nextest run -p hyperion --all-features` passes.
 - Next step: replace the four sites (6 and 100 are exact in every format; derived).
-- Source: [#123 re-judge](https://github.com/ryancinsight/hyperion/pull/123#issuecomment-7229000290) (F2), [#123 re-judge](https://github.com/ryancinsight/hyperion/pull/123#issuecomment-7229061714) (R2).
+- Source: [#123 judge verdict 1](https://github.com/ryancinsight/hyperion/pull/123#issuecomment-7229000290) (F2), [#123 re-judge](https://github.com/ryancinsight/hyperion/pull/123#issuecomment-7229061714) (R2).
 
 <a id="HYPERION-LN10-CONSTANT"></a>
 ## HYPERION-LN10-CONSTANT — Take ln 10 from the scalar trait [patch] — blocked
 - priority: tightening; milestone: M-correctness; needs: none; basis: b840f71cabb398bd43c8ab5e93e5646380f3c065.
 - scope: `src/coefficient/chromophore.rs`.
-- Blocker: the missing Eunomia constant. `RealField` of the locked eunomia 0.12.1
-  has `PI`, `TAU`, `FRAC_PI_2`, `E`, `LN_2`, `SQRT_2`, `EPSILON` and no `LN_10`
+- Blocker: `RealField` of the locked eunomia 0.12.1 has `PI`, `TAU`, `FRAC_PI_2`, `E`, `LN_2`, `SQRT_2`, `EPSILON` and no `LN_10`
   (`src/traits/field.rs:19-31` in the registry copy). Re-open: a Eunomia release exposing `LN_10`.
 - Outcome: `hemoglobin_absorption` takes ln 10 from `RealField::LN_10` instead of
   `T::from_f64(core::f64::consts::LN_10)` (`chromophore.rs:185`).
@@ -104,7 +104,7 @@
   line at the basis); `git grep -nE "(T|Self|RealField>)::LN_10" -- src/coefficient/chromophore.rs`
   prints the use (nothing at the basis); `cargo nextest run -p hyperion --all-features` passes.
 - Next step: replace line 185 with `T::LN_10` and compare outputs bit for bit in all four formats.
-- Source: [#123 re-judge](https://github.com/ryancinsight/hyperion/pull/123#issuecomment-7229000290) (F2), [#123 re-judge](https://github.com/ryancinsight/hyperion/pull/123#issuecomment-7229061714) (R2).
+- Source: [#123 judge verdict 1](https://github.com/ryancinsight/hyperion/pull/123#issuecomment-7229000290) (F2), [#123 re-judge](https://github.com/ryancinsight/hyperion/pull/123#issuecomment-7229061714) (R2).
 
 <a id="HYPERION-ATTAINMENT-DOC-WORDING"></a>
 ## HYPERION-ATTAINMENT-DOC-WORDING — Separate the corpus bound from the witness rows [patch] — todo
@@ -114,8 +114,10 @@
   one-ULP bound for the external 4,421-pair corpus, so the note either counts
   the committed rows in that corpus, which nothing establishes, or contradicts
   "at most one". The corpus bound and the committed rows' two-ULP are stated apart.
-- Oracle (textual): `tr '\n' ' ' < docs/verification/diffusion-range.md | grep -cE "corpus[[:space:]]+\(two[[:space:]]+at[[:space:]]+the[[:space:]]+five[[:space:]]+witness[[:space:]]+rows"`
-  prints 0 (1 at the basis; the pattern ignores line wrapping).
+- Oracle: `tr '\n' ' ' < docs/verification/diffusion-range.md | grep -oE "external corpus covers[^.]*\.[^.]*\." | grep -c witness`
+  prints 0 (1 at the basis): the two sentences on the corpus do not mention
+  the witness rows. Wrap-insensitive; that the committed rows' bound is then
+  stated correctly is review-judged.
 - Next step: split the sentence, keeping the corpus figures as the note states them.
 - Source: [post-merge review of #120](https://github.com/ryancinsight/hyperion/pull/120#issuecomment-7228806850) (F3).
 
