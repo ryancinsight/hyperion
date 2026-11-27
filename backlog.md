@@ -44,6 +44,31 @@
   evidence; a judge verdict covers the ladder edit (sprint: roadmap).
 - Next step: rewrite the exit and the ADR lines in one PR, apart from the item closeout.
 
+<a id="HYPERION-THRESHOLD-NOTE-DRIFT"></a>
+## HYPERION-THRESHOLD-NOTE-DRIFT — Correct the threshold note's stale text [patch] — todo
+- priority: verification; milestone: M-correctness; needs: none; basis: d5655158f11d.
+- scope: `docs/verification/diffusion-threshold.md`.
+- Outcome: the note states the step limit as `Quantity::max_steps` (two steps)
+  instead of "8ULP", names the eunomia version `Cargo.lock` resolves or none,
+  and restores the spaces dropped before numbers.
+- Oracle: `git grep -nE "8[- ]?ULP|Existing8|earlier24128|contains16|versus1024|are00800000|sign0|fraction0|Eunomia0|exponent2-|field1|subnormal,2|and15|0\.10" -- docs/verification/diffusion-threshold.md`
+  prints nothing (10 lines at the basis); any eunomia version the note names
+  equals the `version` of `eunomia` in `Cargo.lock`.
+- Next step: edit lines 10, 21-26, 67-68, 72 and 84 of the note.
+
+<a id="HYPERION-RADICAND-THREE"></a>
+## HYPERION-RADICAND-THREE — Build the radicand's three without from_f64 [patch] — todo
+- priority: tightening; milestone: M-correctness; needs: none; basis: d5655158f11d.
+- scope: `src/transport/diffusion.rs`, `src/transport/diffusion/range.rs`.
+- Outcome: `effective_attenuation` takes its tripling from `three::<T>()`
+  (`range.rs:5`, private today, so it becomes `pub(super)`) instead of
+  converting a literal inside the generic body.
+- Oracle: `git grep -n "from_f64" -- src/transport/diffusion.rs` prints nothing
+  (prints line 147 at the basis); `python scripts/verify_diffusion_range.py`
+  and `cargo nextest run -p hyperion --all-features` pass with the witness
+  bits of the attainment test unchanged.
+- Next step: widen `three`, call it at `diffusion.rs:147`, keep `(3*a)*t` order.
+
 ## HYPERION-007 — Anchor chromophore source oracle [patch] — done 2026-08-20
 
 - Owner: current Atlas session; scope is the chromophore source citation,
