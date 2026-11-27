@@ -46,28 +46,51 @@
 
 <a id="HYPERION-THRESHOLD-NOTE-DRIFT"></a>
 ## HYPERION-THRESHOLD-NOTE-DRIFT — Correct the threshold note's stale text [patch] — todo
-- priority: verification; milestone: M-correctness; needs: none; basis: d5655158f11d.
+- priority: verification; milestone: M-correctness; needs: none; basis: b840f71cabb398bd43c8ab5e93e5646380f3c065.
 - scope: `docs/verification/diffusion-threshold.md`.
 - Outcome: the note states the step limit as `Quantity::max_steps` (two steps)
   instead of "8ULP", names the eunomia version `Cargo.lock` resolves or none,
-  and restores the spaces dropped before numbers.
-- Oracle: `git grep -nE "8[- ]?ULP|Existing8|earlier24128|contains16|versus1024|are00800000|sign0|fraction0|Eunomia0|exponent2-|field1|subnormal,2|and15|0\.10" -- docs/verification/diffusion-threshold.md`
-  prints nothing (10 lines at the basis); any eunomia version the note names
+  restores the spaces dropped before numbers, and removes the stale clause
+  "owner PR82" on line 85 (hyperion#82 was closed unmerged; respacing keeps it).
+- Oracle: `git grep -nE "8[- ]?ULP|Existing8|earlier24128|contains16|versus1024|are00800000|sign0|fraction0|Eunomia0|exponent2-|field1|subnormal,2|and15|0\.10|PR ?#?82" -- docs/verification/diffusion-threshold.md`
+  prints nothing (11 lines at the basis); `git grep -n "max_steps" -- docs/verification/diffusion-threshold.md`
+  prints a line (nothing at the basis); any eunomia version the note names
   equals the `version` of `eunomia` in `Cargo.lock`.
-- Next step: edit lines 10, 21-26, 67-68, 72 and 84 of the note.
+- Next step: edit lines 10, 21-26, 67-68, 72 and 84; on line 85 replace
+  "publish=false, owner PR82 and every" with "publish=false and every".
+- Source: [post-merge review of #120](https://github.com/ryancinsight/hyperion/pull/120#issuecomment-7228806850).
 
 <a id="HYPERION-RADICAND-THREE"></a>
 ## HYPERION-RADICAND-THREE — Build the radicand's three without from_f64 [patch] — todo
-- priority: tightening; milestone: M-correctness; needs: none; basis: d5655158f11d.
+- priority: tightening; milestone: M-correctness; needs: none; basis: b840f71cabb398bd43c8ab5e93e5646380f3c065.
 - scope: `src/transport/diffusion.rs`, `src/transport/diffusion/range.rs`.
 - Outcome: `effective_attenuation` takes its tripling from `three::<T>()`
   (`range.rs:5`, private today, so it becomes `pub(super)`) instead of
   converting a literal inside the generic body.
-- Oracle: `git grep -n "from_f64" -- src/transport/diffusion.rs` prints nothing
-  (prints line 147 at the basis); `python scripts/verify_diffusion_range.py`
-  and `cargo nextest run -p hyperion --all-features` pass with the witness
-  bits of the attainment test unchanged.
+- Oracle: `git grep -nE "from_f(32|64)" -- src/transport/diffusion.rs src/transport/diffusion/`
+  prints nothing (prints `diffusion.rs:147` at the basis; the directory is in
+  the path so the conversion cannot move into `range.rs`);
+  `python scripts/verify_diffusion_range.py` and
+  `cargo nextest run -p hyperion --all-features` pass with the witness bits of
+  the attainment test unchanged.
 - Next step: widen `three`, call it at `diffusion.rs:147`, keep `(3*a)*t` order.
+- Source: [post-merge review of #120](https://github.com/ryancinsight/hyperion/pull/120#issuecomment-7228806850).
+
+<a id="HYPERION-LN10-CONSTANT"></a>
+## HYPERION-LN10-CONSTANT — Take ln 10 from the scalar trait [patch] — blocked
+- priority: tightening; milestone: M-correctness; needs: none; basis: b840f71cabb398bd43c8ab5e93e5646380f3c065.
+- scope: `src/coefficient/chromophore.rs`.
+- Blocker: `RealField` of the locked eunomia 0.12.1 has `PI`, `TAU`, `FRAC_PI_2`, `E`,
+  `LN_2`, `SQRT_2`, `EPSILON` and no `LN_10` (`src/traits/field.rs:19-31` in the registry
+  copy). Owner: [EUNOMIA-REALFIELD-LN10-MIN-POSITIVE](repos/eunomia/backlog.md#EUNOMIA-REALFIELD-LN10-MIN-POSITIVE).
+  Re-open: a Eunomia release exposing `LN_10`.
+- Outcome: `hemoglobin_absorption` takes ln 10 from `RealField::LN_10` instead of
+  `T::from_f64(core::f64::consts::LN_10)` (`chromophore.rs:185`).
+- Oracle: `git grep -nE "f64::consts|consts::|from_f(32|64)\(.*LN_10" -- src` prints nothing
+  (the one line at the basis); `git grep -nE "(T|Self|RealField>)::LN_10" -- src/coefficient/chromophore.rs`
+  prints the use (nothing at the basis); `cargo nextest run -p hyperion --all-features` passes.
+- Next step: replace line 185 with `T::LN_10` and compare outputs bit for bit in all four formats.
+- Source: [#123 judge verdict 1](https://github.com/ryancinsight/hyperion/pull/123#issuecomment-7229000290) (F2), [#123 re-judge](https://github.com/ryancinsight/hyperion/pull/123#issuecomment-7229061714) (R2).
 
 ## HYPERION-007 — Anchor chromophore source oracle [patch] — done 2026-08-20
 
