@@ -82,7 +82,7 @@
 - scope: `src/coefficient/chromophore.rs`.
 - Blocker: `RealField` of the locked eunomia 0.12.1 has `PI`, `TAU`, `FRAC_PI_2`, `E`,
   `LN_2`, `SQRT_2`, `EPSILON` and no `LN_10` (`src/traits/field.rs:19-31` in the registry
-  copy). Owner: [EUNOMIA-REALFIELD-LN10-MIN-POSITIVE](repos/eunomia/backlog.md#EUNOMIA-REALFIELD-LN10-MIN-POSITIVE).
+  copy). Owner: [EUNOMIA-REALFIELD-LN10-MIN-POSITIVE](../eunomia/backlog.md#EUNOMIA-REALFIELD-LN10-MIN-POSITIVE).
   Re-open: a Eunomia release exposing `LN_10`.
 - Outcome: `hemoglobin_absorption` takes ln 10 from `RealField::LN_10` instead of
   `T::from_f64(core::f64::consts::LN_10)` (`chromophore.rs:185`).
