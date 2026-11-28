@@ -96,8 +96,10 @@ with exact Fraction arithmetic, integer nearest-even division and square-root
 midpoint comparison. An expanded external corpus covers 4,421 input pairs per
 O2/O3/default/no-default mode. All four API outputs agree bit for bit; D differs
 from exact-input rounding by at most two ULP, effective attenuation by at most
-one ULP on that corpus (two at the five witness rows above), with zero policy
-mismatches. The package's whole nextest suite passes in debug,
+one ULP on that corpus, with zero policy
+mismatches. The one-ULP bound belongs to that corpus alone: the five committed
+witness rows of effective attenuation above each lie two ULP from the
+reference. The package's whole nextest suite passes in debug,
 release and no-default modes (author runs, nextest on rustc 1.97.0); all 24
 original tests and their assertions remain unchanged.
 Format, strict Clippy/Rustdoc, doctests in both modes, all three examples and
