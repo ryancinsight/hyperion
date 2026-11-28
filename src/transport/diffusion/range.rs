@@ -2,7 +2,7 @@
 use eunomia::RealField;
 
 #[inline]
-fn three<T: RealField>() -> T {
+pub(super) fn three<T: RealField>() -> T {
     T::ONE + T::ONE + T::ONE
 }
 

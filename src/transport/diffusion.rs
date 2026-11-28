@@ -144,7 +144,7 @@ impl<T: RealField> DiffusionCoefficients<T> {
     ) -> Result<InteractionCoefficient<T, EffectiveAttenuation>, TransportError<T>> {
         let absorption = self.absorption.quantity().into_base();
         let transport = self.transport_value()?;
-        let radicand = T::from_f64(3.0) * absorption * transport;
+        let radicand = range::three::<T>() * absorption * transport;
         let finite_radicand =
             validation::derived_finite(TransportLaw::EffectiveAttenuation, radicand)?;
         let value = range::effective(absorption, transport, finite_radicand);
