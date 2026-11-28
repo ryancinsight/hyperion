@@ -44,22 +44,6 @@
   evidence; a judge verdict covers the ladder edit (sprint: roadmap).
 - Next step: rewrite the exit and the ADR lines in one PR, apart from the item closeout.
 
-<a id="HYPERION-RADICAND-THREE"></a>
-## HYPERION-RADICAND-THREE — Build the radicand's three without from_f64 [patch] — todo
-- priority: tightening; milestone: M-correctness; needs: none; basis: b840f71cabb398bd43c8ab5e93e5646380f3c065.
-- scope: `src/transport/diffusion.rs`, `src/transport/diffusion/range.rs`.
-- Outcome: `effective_attenuation` takes its tripling from `three::<T>()`
-  (`range.rs:5`, private today, so it becomes `pub(super)`) instead of
-  converting a literal inside the generic body.
-- Oracle: `git grep -nE "from_f(32|64)" -- src/transport/diffusion.rs src/transport/diffusion/`
-  prints nothing (prints `diffusion.rs:147` at the basis; the directory is in
-  the path so the conversion cannot move into `range.rs`);
-  `python scripts/verify_diffusion_range.py` and
-  `cargo nextest run -p hyperion --all-features` pass with the witness bits of
-  the attainment test unchanged.
-- Next step: widen `three`, call it at `diffusion.rs:147`, keep `(3*a)*t` order.
-- Source: [post-merge review of #120](https://github.com/ryancinsight/hyperion/pull/120#issuecomment-7228806850).
-
 <a id="HYPERION-LN10-CONSTANT"></a>
 ## HYPERION-LN10-CONSTANT — Take ln 10 from the scalar trait [patch] — blocked
 - priority: tightening; milestone: M-correctness; needs: none; basis: b840f71cabb398bd43c8ab5e93e5646380f3c065.
