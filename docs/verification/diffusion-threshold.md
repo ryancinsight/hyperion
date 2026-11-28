@@ -7,7 +7,8 @@ comparison, subnormal recovery and all result arithmetic remain unchanged.
 
 ## Complete supported scalar argument
 
-The locked Eunomia0.10 provider implements RealField for exactly f32,f64,F32,F64.
+The locked Eunomia 0.12.1 provider (`Cargo.lock`) implements RealField for
+exactly f32, f64, F32 and F64.
 FloatElement has a private sealed supertrait; downstream code cannot introduce
 a new scalar implementation. UnitScalar covers additional formats, but those
 formats do not implement RealField and cannot instantiate this algorithm.
@@ -18,14 +19,15 @@ the finite values selected by an oracle. A future provider cohort must recheck
 these encoding/operation assumptions before accepting the optimization.
 
 Let k be the IEEE exponent-field width, p the precision and b=2^(k-1)-1 the
-exponent bias. ONE has sign0, exponent b and fraction0; HALF has sign0,
-exponent b-1 and fraction0. Since b is odd, b XOR(b-1)=1. ONE XOR HALF therefore
-has exponent field1, sign0 and fraction0: the minimum positive normal value,
-2^(1-b). ONE+ONE=2 and ONE/2=HALF are exact representable native operations.
-The old expression uses infinity's k exponent bits and exponent2-2^(k-1)=1-b,
-so it returns the identical encoding. The native encodings are00800000 and
-0010000000000000; the wrapper encodings are identical. No scalar widening,
-width-dependent branch, tolerance, clamp or changed input domain is introduced.
+exponent bias. ONE has sign 0, exponent b and fraction 0; HALF has sign 0,
+exponent b-1 and fraction 0. Since b is odd, b XOR (b-1) = 1. ONE XOR HALF
+therefore has exponent field 1, sign 0 and fraction 0: the minimum positive
+normal value, 2^(1-b). ONE+ONE=2 and ONE/2=HALF are exact representable native
+operations. The old expression uses infinity's k exponent bits and
+exponent 2-2^(k-1) = 1-b, so it returns the identical encoding. The native
+encodings are 0x00800000 and 0x0010000000000000; the wrapper encodings are
+identical. No scalar widening, width-dependent branch, tolerance, clamp or
+changed input domain is introduced.
 
 This is an identity between constants. For every possible radicand encoding,
 including all representable neighbors, the comparison r<threshold has exactly
@@ -64,12 +66,14 @@ They pass against the original scaling implementation before the change.
 An exact rational simulation locates the first representable scattering value
 whose native radicand reaches MIN_NORMAL, using five absorption scales for each
 native width. Sixteen consecutive scattering neighbors on each side supply
-330 new fixture rows, all absent from the earlier24128-pair oracle. Each group
-contains16 subnormal,2 minimum-normal and15 greater-normal radicands. Absorption
-covers subnormal and normal values with widely separated coefficient scales.
-The existing public range test verifies both this fixture and all 325 original
-rows. The rational checker verifies all 664 expected rows without host floating
-point. Existing8ULP and zero policy/zero-value mismatch limits are unchanged.
+330 new fixture rows, all absent from the earlier 24,128-pair oracle. Each
+group contains 16 subnormal, 2 minimum-normal and 15 greater-normal radicands.
+Absorption covers subnormal and normal values with widely separated coefficient
+scales. The existing public range test verifies both this fixture and all 325
+original rows. The rational checker verifies all 664 expected rows without host
+floating point. The existing step limit (`Quantity::max_steps` in
+`tests/diffusion_range_boundaries/main.rs`, two steps for each quantity) and the
+zero policy/zero-value mismatch limits are unchanged.
 The 664 rows are the 325 original range rows, four two-step rows of D added to
 the range fixture (width, absorption, scattering: `32 31000000 3d2aaaae`,
 `32 405b5879 3400375c`, `64 3c50000000000000 3fa5555555555556`,
@@ -81,6 +85,6 @@ attenuation added there too (`32 447fffb6 5080062f`, `32 03000001 0f0002be`,
 Generated code and paired timing assess the removal of constant libm::scalbn
 calls separately from numerical equivalence. Local frame/heap observations are
 not a total peak-stack/RSS bound or performance/resource acceptance. The corrected
-16-input versus1024-input workload populations remain authoritative. Git-first
-publish=false, owner PR82 and every existing release/authentication/service hold
+16-input versus 1024-input workload populations remain authoritative. Git-first
+publish=false and every existing release/authentication/service hold
 remain unchanged; this proof does not authorize merge or publication.

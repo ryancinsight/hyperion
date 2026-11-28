@@ -44,22 +44,6 @@
   evidence; a judge verdict covers the ladder edit (sprint: roadmap).
 - Next step: rewrite the exit and the ADR lines in one PR, apart from the item closeout.
 
-<a id="HYPERION-THRESHOLD-NOTE-DRIFT"></a>
-## HYPERION-THRESHOLD-NOTE-DRIFT — Correct the threshold note's stale text [patch] — todo
-- priority: verification; milestone: M-correctness; needs: none; basis: b840f71cabb398bd43c8ab5e93e5646380f3c065.
-- scope: `docs/verification/diffusion-threshold.md`.
-- Outcome: the note states the step limit as `Quantity::max_steps` (two steps)
-  instead of "8ULP", names the eunomia version `Cargo.lock` resolves or none,
-  restores the spaces dropped before numbers, and removes the stale clause
-  "owner PR82" on line 85 (hyperion#82 was closed unmerged; respacing keeps it).
-- Oracle: `git grep -nE "8[- ]?ULP|Existing8|earlier24128|contains16|versus1024|are00800000|sign0|fraction0|Eunomia0|exponent2-|field1|subnormal,2|and15|0\.10|PR ?#?82" -- docs/verification/diffusion-threshold.md`
-  prints nothing (11 lines at the basis); `git grep -n "max_steps" -- docs/verification/diffusion-threshold.md`
-  prints a line (nothing at the basis); any eunomia version the note names
-  equals the `version` of `eunomia` in `Cargo.lock`.
-- Next step: edit lines 10, 21-26, 67-68, 72 and 84; on line 85 replace
-  "publish=false, owner PR82 and every" with "publish=false and every".
-- Source: [post-merge review of #120](https://github.com/ryancinsight/hyperion/pull/120#issuecomment-7228806850).
-
 <a id="HYPERION-RADICAND-THREE"></a>
 ## HYPERION-RADICAND-THREE — Build the radicand's three without from_f64 [patch] — todo
 - priority: tightening; milestone: M-correctness; needs: none; basis: b840f71cabb398bd43c8ab5e93e5646380f3c065.
