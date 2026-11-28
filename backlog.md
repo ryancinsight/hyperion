@@ -92,21 +92,6 @@
 - Next step: replace the four sites (6 and 100 are exact in every format; derived).
 - Source: [#123 judge verdict 1](https://github.com/ryancinsight/hyperion/pull/123#issuecomment-7229000290) (F2), [#123 re-judge](https://github.com/ryancinsight/hyperion/pull/123#issuecomment-7229061714) (R2).
 
-<a id="HYPERION-ATTAINMENT-DOC-WORDING"></a>
-## HYPERION-ATTAINMENT-DOC-WORDING — Separate the corpus bound from the witness rows [patch] — todo
-- priority: verification; milestone: M-correctness; needs: none; basis: b840f71cabb398bd43c8ab5e93e5646380f3c065.
-- scope: `docs/verification/diffusion-range.md`.
-- Outcome: lines 96-100 attach "(two at the five witness rows above)" to the
-  one-ULP bound for the external 4,421-pair corpus, so the note either counts
-  the committed rows in that corpus, which nothing establishes, or contradicts
-  "at most one". The corpus bound and the committed rows' two-ULP are stated apart.
-- Oracle: `git grep -nF "(two at the five witness rows above)" -- docs/verification/diffusion-range.md`
-  prints nothing (line 99 at the basis) and `tr '\n' ' ' < docs/verification/diffusion-range.md | grep -oE "4,421.*policy mismatches" | grep -c witness`
-  prints 0 (1 at the basis). A fix that keeps the rows in the corpus sentence fails the second command; their own sentence goes before "4,421" or after "policy mismatches".
-  Limits: deleting "policy mismatches" or rewriting "4,421" switches it off; "(two at the five attaining rows above)" passes; that the split is correct is review-judged.
-- Next step: split the sentence: the corpus bound in one, the five committed rows' two ULP in its own.
-- Source: [post-merge review of #120](https://github.com/ryancinsight/hyperion/pull/120#issuecomment-7228806850) (F3).
-
 ## HYPERION-007 — Anchor chromophore source oracle [patch] — done 2026-08-20
 
 - Owner: current Atlas session; scope is the chromophore source citation,
